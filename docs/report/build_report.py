@@ -118,7 +118,7 @@ if P2.exists():
     poll_rows = [
         ["Poll time (UTC)", t1, t2, "—"],
         ["Active alerts TX", len(s1), len(s2), f"{len(s2 - s1)} new, {len(s1 - s2)} no longer active, {len(s1 & s2)} unchanged ids"],
-        ["Recent alerts TX (/alerts)", len(q1), len(q2), f"{len(q2 - q1)} new ids {new_types}; {len(q1 - q2)} left the window; {changed_al} same id with changed content"],
+        ["Recent alerts TX (/alerts)", len(q1), len(q2), f"{len(q2 - q1)} new ids{(' ' + str(new_types)) if new_types else ''}; {len(q1 - q2)} left the window; {changed_al} same id with changed content"],
         ["Max alert 'sent'", r1.sent.max(), r2.sent.max(), "watermark candidate moves forward"],
         ["Observations (10 stations)", len(o1), len(o2), f"{len(k2.index.difference(k1.index))} new (station, timestamp); {changed_ob} existing keys with revised values"],
         ["Max obs timestamp KDFW", o1[o1.stationId == 'KDFW'].timestamp.max(), o2[o2.stationId == 'KDFW'].timestamp.max(), "per-station watermark"],

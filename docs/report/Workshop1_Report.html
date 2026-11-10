@@ -409,7 +409,66 @@ lookup table, never name matching (<code>HARRIS</code> also matches <code>HARRIS
 <h2>6. Incremental Behaviour — Two Polls at Least One Hour Apart</h2>
 <p>The incremental sources were polled twice with the same requests; identifiers, content hashes and HTTP caching headers
 were compared (notebook §8).</p>
-<p><b>Poll 2 not yet available.</b></p>
+<table class="dataframe t">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Measure</th>
+      <th>Poll 1</th>
+      <th>Poll 2</th>
+      <th>What changed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Poll time (UTC)</td>
+      <td>20261109_232218</td>
+      <td>20261110_002450</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Active alerts TX</td>
+      <td>10</td>
+      <td>8</td>
+      <td>0 new, 2 no longer active, 8 unchanged ids</td>
+    </tr>
+    <tr>
+      <td>Recent alerts TX (/alerts)</td>
+      <td>224</td>
+      <td>202</td>
+      <td>0 new ids; 22 left the window; 0 same id with changed content</td>
+    </tr>
+    <tr>
+      <td>Max alert 'sent'</td>
+      <td>2026-11-09T17:11:00-06:00</td>
+      <td>2026-11-09T17:11:00-06:00</td>
+      <td>watermark candidate moves forward</td>
+    </tr>
+    <tr>
+      <td>Observations (10 stations)</td>
+      <td>5000</td>
+      <td>5000</td>
+      <td>38 new (station, timestamp); 0 existing keys with revised values</td>
+    </tr>
+    <tr>
+      <td>Max obs timestamp KDFW</td>
+      <td>2026-11-09T22:45:00+00:00</td>
+      <td>2026-11-09T23:55:00+00:00</td>
+      <td>per-station watermark</td>
+    </tr>
+    <tr>
+      <td>Alerts ETag / Last-Modified</td>
+      <td>W/"0aba9408137237a9c7a633c9848b5192" / —</td>
+      <td>W/"b2477b055f8fac217e56fa4dff845fe6" / —</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Obs KDFW Expires / Last-Modified</td>
+      <td>Mon, 09 Nov 2026 23:27:32 GMT / —</td>
+      <td>Tue, 10 Nov 2026 00:29:56 GMT / —</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
 <p><b>How new or modified records can be detected.</b> NWS alerts: every message has a stable, globally unique
 <code>id</code>; an alert never changes in place — it evolves through new <code>Update</code>/<code>Cancel</code>
 messages that list superseded ids in <code>references</code>, and leaves <code>/alerts/active</code> when it expires.
