@@ -1,0 +1,9 @@
+{
+  "url": "https://www.ncei.noaa.gov/access/services/data/v1?dataset=daily-summaries&stations=USW00003927&startDate=2026-09-10&endDate=2026-11-09&dataTypes=TMAX%2CTMIN%2CPRCP%2CSNOW%2CSNWD%2CAWND%2CWSF2%2CWSF5&units=metric&includeAttributes=true&includeStationName=true&includeStationLocation=1&format=csv",
+  "status": 200,
+  "retrieved_utc": "20261109_232218",
+  "headers": {
+    "Date": "Mon, 09 Nov 2026 23:22:30 GMT",
+    "Content-Type": "text/csv;charset=utf-8"
+  }
+}

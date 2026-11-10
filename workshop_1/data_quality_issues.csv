@@ -1,0 +1,14 @@
+source,problem,extent,example record
+H1 Storm Events,No coordinates for zone/county-based events,36.7% of rows,"EVENT_ID 1230373: Coastal Flood, CZ_TYPE=Z, CZ_NAME=COASTAL GALVESTON, BEGIN_LAT=NaN"
+H1 Storm Events,Local standard time + 2-digit year in BEGIN_DATE_TIME,all rows,"EVENT_ID 1230373: BEGIN_DATE_TIME='09-JAN-25 20:00:00', CZ_TIMEZONE='CST-6'"
+H1 Storm Events,"Damage stored as text with K/M/B suffix; blanks mean 'unknown', not 0",15.7% blank,EVENT_ID 1256818: DAMAGE_PROPERTY='10.00K'
+H1 Storm Events,"MAGNITUDE has different units per event type (hail inches, wind knots; EG=estimated vs MG=measured)",Hail/Wind rows,EVENT_ID 1230425 Hail MAGNITUDE=1.00 (in); EVENT_ID 1244626 TSTM Wind MAGNITUDE=64.00 EG (kt)
+H1 Storm Events,"CZ_FIPS of forecast zones (Z) is a zone number, not a county FIPS; names vary ('INLAND HARRIS')",36.7% of rows,"EVENT_ID 1230373: CZ_TYPE=Z, CZ_FIPS=338, CZ_NAME=COASTAL GALVESTON"
+H1 Storm Events,"Filtering by the text 'TEXAS' also matches Texas County (MO, OK) and other states' fields; filter must use STATE_FIPS=48","66 wrong rows (MISSOURI: 34, OKLAHOMA: 31, MARYLAND: 1)","EVENT_ID 1251602: STATE=MISSOURI, CZ_NAME=TEXAS, TOR_OTHER_CZ_NAME=nan"
+H2 GHCN-Daily,Implausible wind gust value not flagged by QC,1+ rows,"USW00023042 2025-06-17: WSF5=76.0 m/s (~148 kt), attributes=',,W'"
+H2 GHCN-Daily,Missing elements are absent keys (not null); numbers arrive as strings,WSF5 absent in 0.5%,USW00003927 2025-03-09: keys without WSF5; TMAX='14.4' (str)
+H2 GHCN-Daily,Latency: most recent days not yet published,last DATE 2026-11-06,query endDate = download date; last available = 2026-11-06
+I1 NWS alerts,Alerts without polygon geometry (only UGC zone codes),26.3%,"d7bcdd5771c0a3.002.1: event=Coastal Flood Advisory, geometry=None, UGC=['TXZ245', 'TXZ342', 'TXZ343']"
+I1 NWS alerts,"Timestamps carry local offsets (-05:00/-06:00/-07:00), not UTC",all rows,sent='2026-11-09T17:11:00-06:00'
+I2 NWS observations,Silent 500-feature cap truncates the requested 7-day window,every station (min 91.3 h of 168 h),KDFW: 500 records from 2026-11-05 23:00:00+00:00 to 2026-11-09 22:45:00+00:00
+I2 NWS observations,Nulls encoded as value=None with qualityControl='Z'; some keys absent,windGust null 96%,"KAMA 2026-11-09T22:45:00+00:00: windGust={'value': None, 'qualityControl': 'Z'}"

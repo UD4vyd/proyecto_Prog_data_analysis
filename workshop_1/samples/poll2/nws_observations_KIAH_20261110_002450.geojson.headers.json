@@ -1,0 +1,13 @@
+{
+  "url": "https://api.weather.gov/stations/KIAH/observations?start=2026-11-03T00%3A24%3A51Z",
+  "status": 200,
+  "retrieved_utc": "20261110_002450",
+  "headers": {
+    "Content-Type": "application/geo+json",
+    "X-Correlation-ID": "28107209",
+    "Content-Length": "40373",
+    "Cache-Control": "public, max-age=300, s-maxage=120",
+    "Expires": "Tue, 10 Nov 2026 00:29:57 GMT",
+    "Date": "Tue, 10 Nov 2026 00:24:57 GMT"
+  }
+}

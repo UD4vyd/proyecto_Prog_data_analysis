@@ -1,0 +1,446 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.6e79f59bfb2bd5b63e22a1f2a5aa3e57f93729d5.001.1",
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -99.48,
+       30.7
+      ],
+      [
+       -98.97,
+       30.74
+      ],
+      [
+       -98.97,
+       30.64
+      ],
+      [
+       -99.48,
+       30.57
+      ],
+      [
+       -99.48,
+       30.7
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.6e79f59bfb2bd5b63e22a1f2a5aa3e57f93729d5.001.1",
+    "@type": "wx:Alert",
+    "id": "urn:oid:2.49.0.1.840.0.6e79f59bfb2bd5b63e22a1f2a5aa3e57f93729d5.001.1",
+    "areaDesc": "Mason, TX",
+    "geocode": {
+     "SAME": [
+      "048319"
+     ],
+     "UGC": [
+      "TXC319"
+     ]
+    },
+    "affectedZones": [
+     "https://api.weather.gov/zones/county/TXC319"
+    ],
+    "references": [],
+    "sent": "2026-11-09T17:11:00-06:00",
+    "effective": "2026-11-09T17:11:00-06:00",
+    "onset": "2026-11-10T00:46:00-06:00",
+    "expires": "2026-11-10T05:15:00-06:00",
+    "ends": "2026-11-10T15:00:00-06:00",
+    "status": "Actual",
+    "messageType": "Alert",
+    "category": "Met",
+    "severity": "Severe",
+    "certainty": "Likely",
+    "urgency": "Expected",
+    "event": "Flood Warning",
+    "sender": "w-nws.webmaster@noaa.gov",
+    "senderName": "NWS San Angelo TX",
+    "headline": "Flood Warning issued November 9 at 5:11PM CST until November 10 at 3:00PM CST by NWS San Angelo TX",
+    "description": "...The National Weather Service in San Angelo has issued a Flood\nWarning for the following rivers in Texas...\n\nLlano River Near Mason affecting Mason County.\n\nFor the Llano River...including Junction, Mason...Minor flooding is\nforecast.\n\n* WHAT...Minor flooding is forecast.\n\n* WHERE...Llano River near Mason.\n\n* WHEN...From late tonight to Tuesday afternoon.\n\n* IMPACTS...At 18.0 feet, Minor lowland flooding will occur.\nSecondary roads and low water crossings will become flooded.\n\n* ADDITIONAL DETAILS...\n- At 5:00 PM CST Monday the stage was 16.0 feet.\n- Bankfull stage is 11.0 feet.\n- Forecast...The river will rise to 16.2 feet this evening. It will\nthen fall slightly to 16.0 feet this evening. It will then rise\nabove flood stage to 18.2 feet just after Midnight tonight. It\nwill then fall below flood stage after Midnight tonight.\n- Flood stage is 18.0 feet.\n- Flood History...This crest compares to a previous crest of 18.4\nfeet on 07/12/1988.\n- http://www.weather.gov/safety/flood",
+    "instruction": "Turn around, don't drown when encountering flooded roads. Most flood\ndeaths occur in vehicles.\n\nBe especially cautious at night when it is harder to recognize the\ndangers of flooding.\n\nPlease report observed flooding to local emergency services or law\nenforcement and request they pass this information to the National\nWeather Service when you can do so safely.\n\nAdditional information is available at www.weather.gov.\n\nThe next statement will be issued late tonight at 515 AM CST.",
+    "response": "Avoid",
+    "note": null,
+    "parameters": {
+     "AWIPSidentifier": [
+      "FLWSJT"
+     ],
+     "WMOidentifier": [
+      "WGUS44 KSJT 092311"
+     ],
+     "NWSheadline": [
+      "FLOOD WARNING IN EFFECT FROM LATE TONIGHT TO TUESDAY AFTERNOON"
+     ],
+     "BLOCKCHANNEL": [
+      "EAS",
+      "NWEM",
+      "CMAS"
+     ],
+     "EAS-ORG": [
+      "WXR"
+     ],
+     "VTEC": [
+      "/O.NEW.KSJT.FL.W.0010.261110T0646Z-261110T2100Z/"
+     ],
+     "eventEndingTime": [
+      "2026-11-10T15:00:00-06:00"
+     ]
+    },
+    "scope": "Public",
+    "code": "IPAWSv1.0",
+    "language": "en-US",
+    "web": "http://www.weather.gov",
+    "eventCode": {
+     "SAME": [
+      "FLW"
+     ],
+     "NationalWeatherService": [
+      "FLW"
+     ]
+    }
+   }
+  },
+  {
+   "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.fb9fea71d6327049f94d10e7ac837addeba1eede.001.1",
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -99.96,
+       30.54
+      ],
+      [
+       -99.49,
+       30.7
+      ],
+      [
+       -99.49,
+       30.5
+      ],
+      [
+       -99.84,
+       30.39
+      ],
+      [
+       -99.96,
+       30.54
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.fb9fea71d6327049f94d10e7ac837addeba1eede.001.1",
+    "@type": "wx:Alert",
+    "id": "urn:oid:2.49.0.1.840.0.fb9fea71d6327049f94d10e7ac837addeba1eede.001.1",
+    "areaDesc": "Kimble, TX",
+    "geocode": {
+     "SAME": [
+      "048267"
+     ],
+     "UGC": [
+      "TXC267"
+     ]
+    },
+    "affectedZones": [
+     "https://api.weather.gov/zones/county/TXC267"
+    ],
+    "references": [],
+    "sent": "2026-11-09T17:09:00-06:00",
+    "effective": "2026-11-09T17:09:00-06:00",
+    "onset": "2026-11-09T17:09:00-06:00",
+    "expires": "2026-11-10T05:15:00-06:00",
+    "ends": "2026-11-10T10:00:00-06:00",
+    "status": "Actual",
+    "messageType": "Alert",
+    "category": "Met",
+    "severity": "Severe",
+    "certainty": "Likely",
+    "urgency": "Expected",
+    "event": "Flood Warning",
+    "sender": "w-nws.webmaster@noaa.gov",
+    "senderName": "NWS San Angelo TX",
+    "headline": "Flood Warning issued November 9 at 5:09PM CST until November 10 at 10:00AM CST by NWS San Angelo TX",
+    "description": "...The National Weather Service in San Angelo has issued a Flood\nWarning for the following rivers in Texas...\n\nLlano River Near Junction affecting Kimble County.\n\nFor the Llano River...including Junction, Mason...Minor flooding is\nforecast.\n\n* WHAT...Minor flooding is occurring and minor flooding is forecast.\n\n* WHERE...Llano River near Junction.\n\n* WHEN...From this afternoon to Tuesday morning.\n\n* ADDITIONAL DETAILS...\n- At 4:45 PM CST Monday the stage was 16.1 feet.\n- Bankfull stage is 12.0 feet.\n- Recent Activity...The maximum river stage in the 24 hours ending\nat 4:45 PM CST Monday was 16.1 feet.\n- Forecast...The river is expected to rise to a crest of 19.1 feet\nthis evening. It will then fall below flood stage late this\nevening.\n- Flood stage is 16.0 feet.\n- Flood History...This crest compares to a previous crest of 19.1\nfeet on 07/23/2024.\n- http://www.weather.gov/safety/flood",
+    "instruction": "Turn around, don't drown when encountering flooded roads. Most flood\ndeaths occur in vehicles.\n\nBe especially cautious at night when it is harder to recognize the\ndangers of flooding.\n\nPlease report observed flooding to local emergency services or law\nenforcement and request they pass this information to the National\nWeather Service when you can do so safely.\n\nAdditional information is available at www.weather.gov.\n\nThe next statement will be issued late tonight at 515 AM CST.",
+    "response": "Avoid",
+    "note": null,
+    "parameters": {
+     "AWIPSidentifier": [
+      "FLWSJT"
+     ],
+     "WMOidentifier": [
+      "WGUS44 KSJT 092309"
+     ],
+     "NWSheadline": [
+      "FLOOD WARNING IN EFFECT FROM THIS AFTERNOON TO TUESDAY MORNING"
+     ],
+     "BLOCKCHANNEL": [
+      "EAS",
+      "NWEM",
+      "CMAS"
+     ],
+     "EAS-ORG": [
+      "WXR"
+     ],
+     "VTEC": [
+      "/O.NEW.KSJT.FL.W.0009.261109T2309Z-261110T1600Z/"
+     ],
+     "eventEndingTime": [
+      "2026-11-10T10:00:00-06:00"
+     ]
+    },
+    "scope": "Public",
+    "code": "IPAWSv1.0",
+    "language": "en-US",
+    "web": "http://www.weather.gov",
+    "eventCode": {
+     "SAME": [
+      "FLW"
+     ],
+     "NationalWeatherService": [
+      "FLW"
+     ]
+    }
+   }
+  },
+  {
+   "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.5876c6a9cafe3acffb3eaff882d7bcdd5771c0a3.002.1",
+   "type": "Feature",
+   "geometry": null,
+   "properties": {
+    "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.5876c6a9cafe3acffb3eaff882d7bcdd5771c0a3.002.1",
+    "@type": "wx:Alert",
+    "id": "urn:oid:2.49.0.1.840.0.5876c6a9cafe3acffb3eaff882d7bcdd5771c0a3.002.1",
+    "areaDesc": "Coastal Aransas; Coastal Kleberg; Coastal Nueces; Coastal San Patricio; Coastal Refugio; Coastal Calhoun",
+    "geocode": {
+     "SAME": [
+      "048007",
+      "048273",
+      "048355",
+      "048409",
+      "048391",
+      "048057"
+     ],
+     "UGC": [
+      "TXZ245",
+      "TXZ342",
+      "TXZ343",
+      "TXZ344",
+      "TXZ346",
+      "TXZ347"
+     ]
+    },
+    "affectedZones": [
+     "https://api.weather.gov/zones/forecast/TXZ245",
+     "https://api.weather.gov/zones/forecast/TXZ342",
+     "https://api.weather.gov/zones/forecast/TXZ343",
+     "https://api.weather.gov/zones/forecast/TXZ344",
+     "https://api.weather.gov/zones/forecast/TXZ346",
+     "https://api.weather.gov/zones/forecast/TXZ347"
+    ],
+    "references": [
+     {
+      "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.1579d6afbeb4a21cb88294813183f6790a321349.002.1",
+      "identifier": "urn:oid:2.49.0.1.840.0.1579d6afbeb4a21cb88294813183f6790a321349.002.1",
+      "sender": "w-nws.webmaster@noaa.gov",
+      "sent": "2026-11-08T18:10:00-06:00"
+     },
+     {
+      "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.d53a3c2cb91fc8062c34e1ae78b27e70dcb2b0d5.002.1",
+      "identifier": "urn:oid:2.49.0.1.840.0.d53a3c2cb91fc8062c34e1ae78b27e70dcb2b0d5.002.1",
+      "sender": "w-nws.webmaster@noaa.gov",
+      "sent": "2026-11-09T00:20:00-06:00"
+     }
+    ],
+    "sent": "2026-11-09T11:57:00-06:00",
+    "effective": "2026-11-09T11:57:00-06:00",
+    "onset": "2026-11-09T11:57:00-06:00",
+    "expires": "2026-11-10T03:00:00-06:00",
+    "ends": "2026-11-10T03:00:00-06:00",
+    "status": "Actual",
+    "messageType": "Update",
+    "category": "Met",
+    "severity": "Minor",
+    "certainty": "Likely",
+    "urgency": "Expected",
+    "event": "Coastal Flood Advisory",
+    "sender": "w-nws.webmaster@noaa.gov",
+    "senderName": "NWS Corpus Christi TX",
+    "headline": "Coastal Flood Advisory issued November 9 at 11:57AM CST until November 10 at 3:00AM CST by NWS Corpus Christi TX",
+    "description": "* WHAT...Minor coastal flooding.\n\n* WHERE...Coastal Aransas, Coastal Kleberg, Coastal Nueces,\nCoastal San Patricio, Coastal Refugio and Coastal Calhoun\nCounties.\n\n* WHEN...Until 3 AM CST Tuesday.\n\n* IMPACTS...Flooding of lots, parks, and roads with only\nisolated road closures expected.",
+    "instruction": "If travel is required, allow extra time as some roads may be\nclosed. Do not drive around barricades or through water of\nunknown depth. Take the necessary actions to protect flood-prone\nproperty.",
+    "response": "Monitor",
+    "note": null,
+    "parameters": {
+     "AWIPSidentifier": [
+      "CFWCRP"
+     ],
+     "WMOidentifier": [
+      "WHUS44 KCRP 091757"
+     ],
+     "NWSheadline": [
+      "COASTAL FLOOD ADVISORY REMAINS IN EFFECT UNTIL 3 AM CST TUESDAY"
+     ],
+     "BLOCKCHANNEL": [
+      "EAS",
+      "NWEM",
+      "CMAS"
+     ],
+     "VTEC": [
+      "/O.CON.KCRP.CF.Y.0024.000000T0000Z-261110T0900Z/"
+     ],
+     "eventEndingTime": [
+      "2026-11-10T03:00:00-06:00"
+     ],
+     "expiredReferences": [
+      "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.fe6895b21a0a4b381f06918bd5526ccef2a23482.002.1,2026-11-08T00:27:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.29234dbe534ca2cd2f78ac02eaf37643b0f08fbb.002.1,2026-11-08T12:12:00-06:00"
+     ]
+    },
+    "scope": "Public",
+    "code": "IPAWSv1.0",
+    "language": "en-US",
+    "web": "http://www.weather.gov",
+    "eventCode": {
+     "SAME": [
+      "NWS"
+     ],
+     "NationalWeatherService": [
+      "CFY"
+     ]
+    }
+   }
+  },
+  {
+   "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.52cef77a20dfca89a1fca022bb99a572f5b0163e.001.1",
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -98.5,
+       28.4
+      ],
+      [
+       -99.15,
+       28.03
+      ],
+      [
+       -99.04,
+       27.89
+      ],
+      [
+       -98.39,
+       28.28
+      ],
+      [
+       -98.5,
+       28.4
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.52cef77a20dfca89a1fca022bb99a572f5b0163e.001.1",
+    "@type": "wx:Alert",
+    "id": "urn:oid:2.49.0.1.840.0.52cef77a20dfca89a1fca022bb99a572f5b0163e.001.1",
+    "areaDesc": "La Salle, TX; McMullen, TX; Webb, TX",
+    "geocode": {
+     "SAME": [
+      "048283",
+      "048311",
+      "048479"
+     ],
+     "UGC": [
+      "TXC283",
+      "TXC311",
+      "TXC479"
+     ]
+    },
+    "affectedZones": [
+     "https://api.weather.gov/zones/county/TXC283",
+     "https://api.weather.gov/zones/county/TXC311",
+     "https://api.weather.gov/zones/county/TXC479"
+    ],
+    "references": [
+     {
+      "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.df2a0d4a44fdcb827c3716e4a6883f4d6a1e7b9c.001.1",
+      "identifier": "urn:oid:2.49.0.1.840.0.df2a0d4a44fdcb827c3716e4a6883f4d6a1e7b9c.001.1",
+      "sender": "w-nws.webmaster@noaa.gov",
+      "sent": "2026-11-09T07:54:00-06:00"
+     },
+     {
+      "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.315f3c7a4b8471a62e38bc14e00405113f1cb7a4.001.1",
+      "identifier": "urn:oid:2.49.0.1.840.0.315f3c7a4b8471a62e38bc14e00405113f1cb7a4.001.1",
+      "sender": "w-nws.webmaster@noaa.gov",
+      "sent": "2026-11-09T09:03:00-06:00"
+     }
+    ],
+    "sent": "2026-11-09T09:48:00-06:00",
+    "effective": "2026-11-09T09:48:00-06:00",
+    "onset": "2026-11-09T09:48:00-06:00",
+    "expires": "2026-11-09T10:04:06-06:00",
+    "ends": "2026-11-09T11:00:00-06:00",
+    "status": "Actual",
+    "messageType": "Cancel",
+    "category": "Met",
+    "severity": "Minor",
+    "certainty": "Observed",
+    "urgency": "Past",
+    "event": "Flash Flood Warning",
+    "sender": "w-nws.webmaster@noaa.gov",
+    "senderName": "NWS Corpus Christi TX",
+    "headline": "The Flash Flood Warning has been cancelled.",
+    "description": "The Flash Flood Warning has been cancelled and is no longer in effect.",
+    "instruction": null,
+    "response": "AllClear",
+    "note": null,
+    "parameters": {
+     "AWIPSidentifier": [
+      "FFSCRP"
+     ],
+     "WMOidentifier": [
+      "WGUS74 KCRP 091548"
+     ],
+     "NWSheadline": [
+      "FLASH FLOOD WARNING IS CANCELLED FOR SOUTHEASTERN LA SALLE, SOUTHERN MCMULLEN AND NORTHEASTERN WEBB COUNTIES"
+     ],
+     "BLOCKCHANNEL": [
+      "EAS",
+      "NWEM",
+      "CMAS"
+     ],
+     "EAS-ORG": [
+      "WXR"
+     ],
+     "VTEC": [
+      "/O.CAN.KCRP.FF.W.0046.000000T0000Z-261109T1700Z/"
+     ],
+     "eventEndingTime": [
+      "2026-11-09T11:00:00-06:00"
+     ]
+    },
+    "scope": "Public",
+    "code": "IPAWSv1.0",
+    "language": "en-US",
+    "web": "http://www.weather.gov",
+    "eventCode": {
+     "SAME": [
+      "FFS"
+     ],
+     "NationalWeatherService": [
+      "FFW"
+     ]
+    }
+   }
+  }
+ ]
+}

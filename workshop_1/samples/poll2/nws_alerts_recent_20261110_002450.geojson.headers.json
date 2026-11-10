@@ -1,0 +1,14 @@
+{
+  "url": "https://api.weather.gov/alerts?area=TX&limit=500",
+  "status": 200,
+  "retrieved_utc": "20261110_002450",
+  "headers": {
+    "Content-Type": "application/geo+json",
+    "ETag": "W/\"8bd1b0d5a58fdfb466281d18e6400703\"",
+    "X-Correlation-ID": "7015df2f",
+    "Content-Length": "114849",
+    "Cache-Control": "public, max-age=5, s-maxage=5",
+    "Expires": "Tue, 10 Nov 2026 00:25:00 GMT",
+    "Date": "Tue, 10 Nov 2026 00:24:55 GMT"
+  }
+}
