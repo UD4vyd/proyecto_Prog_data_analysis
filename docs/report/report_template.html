@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workshop 1 Report — Team 5</title>
+<style>
+  @page { size: Letter; margin: 18mm 16mm 18mm 16mm; }
+  body { font-family: "Georgia", "Times New Roman", serif; font-size: 10.5pt; line-height: 1.42; color: #1a1a1a; }
+  h1 { font-size: 20pt; margin: 0 0 4pt; }
+  h2 { font-size: 14pt; border-bottom: 1.5px solid #333; padding-bottom: 2pt; margin-top: 18pt; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 12pt 0 4pt; page-break-after: avoid; }
+  p { margin: 4pt 0 6pt; text-align: justify; }
+  code, pre { font-family: Consolas, "Courier New", monospace; font-size: 8pt; }
+  pre { background: #f4f4f4; border: 1px solid #ddd; padding: 6pt; white-space: pre-wrap; word-break: break-all; page-break-inside: avoid; }
+  table.t, table.d { border-collapse: collapse; width: 100%; font-size: 8.6pt; margin: 6pt 0 10pt; page-break-inside: auto; }
+  table.t th, table.t td, table.d th, table.d td { border: 1px solid #bbb; padding: 3pt 4pt; vertical-align: top; text-align: left; }
+  table.t th, table.d th { background: #e9edf3; }
+  tr { page-break-inside: avoid; }
+  .cover { text-align: center; padding-top: 70pt; page-break-after: always; }
+  .cover h1 { font-size: 24pt; }
+  .cover p { text-align: center; }
+  .cover .sub { font-size: 14pt; margin: 8pt 0 30pt; }
+  .cover table { margin: 0 auto; font-size: 11pt; border-collapse: collapse; }
+  .cover td { padding: 3pt 12pt; text-align: left; }
+  .caption { font-size: 8.8pt; color: #444; text-align: center; margin-top: 2pt; }
+  figure { margin: 8pt 0; text-align: center; page-break-inside: avoid; }
+  figure img { max-width: 100%; }
+  .note { border-left: 3px solid #4472c4; background: #f2f6fc; padding: 4pt 8pt; margin: 6pt 0; }
+  .ms { font-weight: bold; }
+  .toc { columns: 2; font-size: 10pt; }
+  svg text { font-family: Arial, Helvetica, sans-serif; }
+  .pb { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <p>Data Analysis Programming — Semester 2026-II<br>Universidad Distrital Francisco José de Caldas · School of Engineering</p>
+  <h1>Extreme Weather Monitoring System — Texas</h1>
+  <div class="sub">Workshop No. 1 — Hazard Definition, Source Validation, and Data Contract<br>Project Definition Report · Team 5</div>
+  <table>
+    <tr><td>20222020152</td><td>Andrés Mendoza</td></tr>
+    <tr><td>20222020167</td><td>David Martínez</td></tr>
+    <tr><td>20231020002</td><td>Juan Escallón</td></tr>
+  </table>
+  <p style="margin-top:40pt">Professor: Eng. Carlos Andrés Sierra, M.Sc.<br>November 2026</p>
+  <div class="toc" style="text-align:left; margin: 40pt auto 0; width: 80%">
+    1. Project overview<br>2. Hazard definition<br>3. Data sources and validation evidence<br>4. Source profiling<br>
+    5. Data-quality findings<br>6. Incremental behaviour (two polls)<br>7. Cross-source overlap<br>8. Canonical mapping and domain tables<br>
+    9. Ingestion contract<br>10. Functional user<br>11. User stories<br>12. Indicator proposal<br>13. Risks and mitigation<br>
+    14. Architecture overview<br>15. Repository<br>References
+  </div>
+</div>
+
+<h2>1. Project Overview</h2>
+<p><b>Title.</b> Extreme Weather Monitoring System — Texas.</p>
+<p><b>Motivation.</b> Texas concentrates almost every type of extreme weather recorded in the United States: heat waves,
+hard freezes (the February 2021 winter storm), flash floods, large hail, tornadoes, damaging thunderstorm winds,
+dust storms and winter storms. In 2025 alone the NOAA Storm Events Database lists 5,641 Texas records. The information
+needed to judge whether today's weather is unusual is public, but it is spread over services with different formats,
+time conventions, identifiers and update rhythms: bulk CSV archives that are recompiled months later, a daily climate
+archive with a three-day delay, and real-time APIs that only keep a few days of data.</p>
+<p><b>Goal.</b> From a <i>data-engineering</i> perspective: build a reproducible pipeline that loads 2010–present
+history from two bulk/historical sources, polls two operational NWS services incrementally with watermarks, and
+integrates the four into one canonical PostgreSQL/PostGIS model with validation, quarantine, deduplication and
+cross-source event grouping. From an <i>analytical</i> perspective: compare each current measurement with the
+historical distribution of the same station and season and classify it as <b>NORMAL / UNUSUAL / EXTREME</b>,
+supported by active NWS alerts and by the impact history of the same county.</p>
+<p><b>Scope.</b> State of Texas; 10 first-order ASOS stations (KDFW, KIAH, KAUS, KSAT, KELP, KLBB, KAMA, KCRP, KMAF, KBRO)
+that are published both by GHCN-Daily and by the NWS API; all Storm Events of Texas counties and forecast zones;
+all NWS alerts with <code>area=TX</code>. Historical window 2010-01-01 → present.</p>
+<p><b>Explicit exclusions.</b> No forecasting or prediction of hazards; no numerical weather models or radar/satellite
+imagery; no states other than Texas; no marine zones beyond what NWS includes in <code>area=TX</code>; no damage
+estimation; no individual-level or personal data.</p>
+<p><b>Constraints.</b> Free and open sources only; US-only services (hence US scope); NWS requires a descriptive
+User-Agent; the observations endpoint returns at most 500 features; GHCN-Daily has a ~3-day publication delay and Storm
+Events several months; local execution with Docker Compose; all documentation in English.</p>
+
+<h2>2. Hazard Definition</h2>
+<p><b>Phenomenon.</b> Extreme weather is weather at the tails of the local climatological distribution — values that are
+rare for <i>that place and that time of year</i>. Team 5 monitors seven hazard components:</p>
+<table class="d">
+<tr><th>Component</th><th>How it is measured</th><th>Severity measure and unit</th><th>Sources</th></tr>
+<tr><td>Extreme heat</td><td>Daily maximum temperature; instantaneous temperature and heat index</td><td>TMAX, heat index (°C)</td><td>GHCN-Daily, NWS obs, Storm Events (Heat / Excessive Heat), NWS heat alerts</td></tr>
+<tr><td>Extreme cold</td><td>Daily minimum temperature; wind chill</td><td>TMIN, wind chill (°C)</td><td>GHCN-Daily, NWS obs, Storm Events (Cold/Wind Chill, Extreme Cold, Frost/Freeze), freeze alerts</td></tr>
+<tr><td>Heavy precipitation / flash flood</td><td>24-h precipitation accumulation; 1-h rate</td><td>PRCP (mm/day), precipitation 1 h (mm)</td><td>GHCN-Daily, NWS obs, Storm Events (Heavy Rain, Flash Flood), flood alerts</td></tr>
+<tr><td>Severe wind</td><td>Fastest 5-second gust; measured/estimated gust in reports</td><td>WSF5, gust (m/s); Storm Events knots → m/s</td><td>GHCN-Daily, NWS obs, Storm Events (Thunderstorm/High/Strong Wind), wind alerts</td></tr>
+<tr><td>Hail</td><td>Spotter/observer hail size</td><td>Diameter (in → mm)</td><td>Storm Events, Severe Thunderstorm Warnings</td></tr>
+<tr><td>Tornado</td><td>Damage survey</td><td>EF scale (0–5)</td><td>Storm Events, Tornado Watch/Warning</td></tr>
+<tr><td>Winter storm</td><td>Daily snowfall and snow depth</td><td>SNOW, SNWD (mm)</td><td>GHCN-Daily, Storm Events (Winter Storm, Heavy Snow, Ice Storm), winter alerts</td></tr>
+</table>
+<p>Alerts carry an ordinal severity (CAP: Minor 1, Moderate 2, Severe 3, Extreme 4). Storm Events without a physical
+magnitude receive an impact level 0–3 derived from casualties and damage (§8).</p>
+<p><b>Why it matters.</b> Heat is the leading weather-related cause of death in the US, freezes stress the Texas power grid (February 2021), and
+Texas is among the states with the most flood fatalities, most of them in flash floods. Knowing <i>early</i> that a measurement is unusual for the station
+and season helps emergency managers decide on cooling/warming centres, public messaging and resource staging.</p>
+<p><b>Geographic scope and justification.</b> Texas is mandatory-compatible with all four sources (Storm Events and NWS
+are US services; GHCN-Daily's densest coverage is the US). Ten first-order stations give a manageable volume
+(≈62,000 station-days for 2010–2026) while covering the climatic diversity of the state: humid Gulf coast (KIAH, KCRP,
+KBRO), central Texas flash-flood alley (KAUS, KSAT), north Texas (KDFW), Panhandle and South Plains (KAMA, KLBB),
+Permian Basin (KMAF) and the Chihuahuan desert (KELP, Mountain Time).</p>
+<p><b>Historical window.</b> 2010-01-01 → present (≥ 16 years, above the five required). Sixteen years give ≈ 500 values
+per station for a ±15-day seasonal window, enough to estimate the 99th percentile; going further back would add station relocations
+and longer-term climate trends that bias a "current climate" baseline, without improving the tail estimate much.</p>
+<p><b>Current situation.</b> (a) NWS alerts active <i>now</i> for Texas; (b) station observations of the <i>last 24 hours</i>
+(rolling max/min temperature, 24-h precipitation, max gust) compared with the baseline; (c) the <i>last 7 days</i> of alerts
+and observations for context. Storm Events and GHCN-Daily are too delayed to define the current situation; they provide
+the baseline and the impact history.</p>
+
+<h2>3. Data Sources and Validation Evidence</h2>
+<p>All four sources were queried for real on 2026-11-09 with <code>workshop_1/scripts/fetch_samples.py</code>. Every
+response is stored unchanged with its HTTP headers in <code>workshop_1/samples/</code> (and <code>data/raw/</code> for the
+12 MB yearly file).</p>
+<table class="d">
+<tr><th></th><th>H1 NOAA Storm Events</th><th>H2 GHCN-Daily (NCEI ADS)</th><th>I1 NWS alerts</th><th>I2 NWS observations</th></tr>
+<tr><td><b>Owner</b></td><td>NOAA NCEI</td><td>NOAA NCEI</td><td>NOAA National Weather Service</td><td>NOAA National Weather Service</td></tr>
+<tr><td><b>URL</b></td><td>ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/</td><td>ncei.noaa.gov/access/services/data/v1</td><td>api.weather.gov/alerts</td><td>api.weather.gov/stations/{id}/observations</td></tr>
+<tr><td><b>Access</b></td><td>HTTPS bulk download, one file per year</td><td>REST GET with query parameters</td><td>REST GET, cursor pagination</td><td>REST GET per station</td></tr>
+<tr><td><b>Authentication</b></td><td>None</td><td>None</td><td>None; User-Agent required</td><td>None; User-Agent required</td></tr>
+<tr><td><b>Rate limits</b></td><td>None published; download once</td><td>None published; keep requests small</td><td>Not published; 403/429 on abuse</td><td>Not published; 500 features per response</td></tr>
+<tr><td><b>License</b></td><td>US Government, public domain; cite NCEI</td><td>Public domain; cite Menne et al. (2012)</td><td>Public domain</td><td>Public domain</td></tr>
+<tr><td><b>Format</b></td><td>CSV.gz, 51 columns</td><td>JSON (also CSV), 22 keys</td><td>GeoJSON + CAP 1.2 fields</td><td>GeoJSON, WMO unit codes</td></tr>
+<tr><td><b>Key fields</b></td><td>EVENT_ID, EPISODE_ID, EVENT_TYPE, BEGIN_*, CZ_TYPE/FIPS/NAME, CZ_TIMEZONE, MAGNITUDE(_TYPE), damages, BEGIN_LAT/LON</td><td>STATION, DATE, TMAX, TMIN, PRCP, SNOW, SNWD, AWND, WSF2, WSF5, *_ATTRIBUTES, LATITUDE, LONGITUDE</td><td>id, sent, effective, onset, expires, messageType, event, severity, certainty, urgency, geocode.UGC, references, geometry</td><td>stationId, timestamp, temperature, windSpeed, windGust, precipitationLastHour, heatIndex, windChill (value, unitCode, qualityControl)</td></tr>
+<tr><td><b>Time coverage</b></td><td>1950 → current year (several months of delay)</td><td>Station records since 1940s; last day 2026-11-06 (3-day delay)</td><td>Last ~7 days (oldest sent 2026-11-02)</td><td>Last ~4 days per request (500 cap)</td></tr>
+<tr><td><b>Update policy</b></td><td>Monthly; whole years recompiled (<code>_cYYYYMMDD</code>)</td><td>Daily; values re-sourced/QC'd later</td><td>Continuous (minutes)</td><td>Every 5–60 min per station</td></tr>
+</table>
+
+<h3>3.1 H1 — Storm Events (header + one Texas row, unmodified)</h3>
+<pre>GET $se_url
+$se_hdr
+
+$se_snip</pre>
+<h3>3.2 H2 — GHCN-Daily (first record of the JSON response)</h3>
+<pre>GET $gh_url
+$gh_hdr
+
+$gh_snip</pre>
+<h3>3.3 I1 — NWS alerts (one feature, selected properties)</h3>
+<pre>GET $al_url
+$al_hdr
+
+$al_snip</pre>
+<h3>3.4 I2 — NWS observations (first feature for KDFW, selected properties)</h3>
+<pre>GET $ob_url
+$ob_hdr
+
+$ob_snip</pre>
+
+<h2>4. Source Profiling</h2>
+<p>The notebook <code>notebooks/01_source_profiling.ipynb</code> profiles every source (≥ 200 records each): null
+percentage per field, value ranges, duplicated identifiers, timestamp format and time zone, coordinate validity and
+unit consistency, and applies the draft canonical mapping. Summary after mapping:</p>
+$prof_tbl
+<p>Main observations: no duplicated native identifiers in any source; Storm Events uses local standard time per
+county/zone (<code>CST-6</code> for 98% of rows, <code>MST-7</code> for El Paso and Hudspeth counties/zones);
+36.7% of Storm Events rows (all zone-based, <code>CZ_TYPE='Z'</code>) have no coordinates; GHCN-Daily completeness is
+99.9–100% for the ten stations with no TMIN&gt;TMAX inconsistencies; NWS alerts use local offsets (<code>-06:00</code>);
+NWS observations are already UTC, but 96% of wind-gust values and 97% of hourly precipitation values are null.</p>
+<figure><img src="$fig_types" style="width:78%"><div class="caption">Figure 1. Storm Events, Texas 2025 — records per event type (top 15).</div></figure>
+<figure><img src="$fig_tmax" style="width:88%"><div class="caption">Figure 2. GHCN-Daily TMAX for the ten stations, 2025-01-01 → 2026-11-06.</div></figure>
+<p><b>Volume estimate and partitioning.</b> Storm Events 2010–2026: 17 yearly files of 8.6–15.0 MB gz (≈ 186 MB US-wide,
+≈ 96,000 Texas rows at ≈ 5,600 per year) → partition by year. GHCN-Daily: ≈ 62,000 station-days × 8 elements (≈ 500,000 measurements,
+≈ 28 MB JSON) → 170 station-year requests. NWS alerts ≈ 11,600 messages/year for Texas. NWS observations ≈ 450,000
+observations/year for 10 stations (~5-min reporting) → polled every 30 min per station.</p>
+
+<h2>5. Data-Quality Findings</h2>
+<p>Thirteen concrete problems were found (five required); each has a real example record from the samples. The full table is
+saved as <code>workshop_1/data_quality_issues.csv</code>.</p>
+$dq_tbl
+<div class="note"><b>Most relevant for the design:</b> (1) silent truncation of NWS observations at 500 features — a naive
+"last 7 days" request loses 40% of the window, so the incremental poll must be frequent and detect full pages;
+(2) a GHCN-Daily WSF5 of 76.0 m/s (~148 kt) at Lubbock on 2025-06-17 with a blank QC flag, while Storm Events reports a
+50-kt measured gust at the same county that day: the validation layer needs physical-plausibility ranges in addition
+to source QC flags; (3) zone-based Storm Events have neither coordinates nor county FIPS, so matching requires a zone
+lookup table, never name matching (<code>HARRIS</code> also matches <code>HARRISON</code>).</div>
+
+<h2>6. Incremental Behaviour — Two Polls at Least One Hour Apart</h2>
+<p>The incremental sources were polled twice with the same requests; identifiers, content hashes and HTTP caching headers
+were compared (notebook §8).</p>
+$poll_tbl
+<p><b>How new or modified records can be detected.</b> NWS alerts: every message has a stable, globally unique
+<code>id</code>; an alert never changes in place — it evolves through new <code>Update</code>/<code>Cancel</code>
+messages that list superseded ids in <code>references</code>, and leaves <code>/alerts/active</code> when it expires.
+Detection therefore uses <i>new ids since the watermark on <code>sent</code></i>, plus the reference chains. NWS
+observations: the key is <code>(stationId, timestamp)</code>; the API accepts a <code>start</code> parameter, which is the
+natural "updated since" filter. Caching headers are only partly useful: <code>/alerts/active</code> returns a weak
+<code>ETag</code> with <code>max-age=5</code>, which allows a conditional request (<code>If-None-Match</code>) to skip an
+unchanged active set, but it says nothing about <i>which</i> records changed; the observations endpoint and the NCEI Access
+Data Service return neither ETag nor Last-Modified. Record-level content hashes are therefore the change signal.</p>
+<p><b>Revisions and deletions.</b> Storm Events recompiles whole years long after publication (the 2012 file was
+recompiled on 2026-10-26); GHCN-Daily station-days are re-published from another source stream about a year later
+(source flag <code>W</code> before Aug-2025, <code>1</code> afterwards); NWS observations can receive late QC; alerts
+are never edited but disappear from the active set. Consequence for the watermark: it is never a strict "&gt;" filter —
+each source re-reads an overlap window (2 h alerts, 3 h observations, 45 days + monthly 13-month re-read GHCN, whole year
+Storm Events) and the content hash decides between insert, update or no-op.</p>
+
+<h2>7. Cross-Source Overlap</h2>
+<p>Rule used for candidates (refined in Workshop 3): Storm Events record in the county of a station (exact
+<code>CZ_FIPS</code> for county rows; word-boundary name match for zone rows) and on the same local calendar day as
+the GHCN-Daily record, with a compatible variable. The rule produced $n_pairs candidate pairs for 2025; the strongest
+pair per event type is listed:</p>
+$pairs_tbl
+<p><b>What differs.</b> <i>Time:</i> Storm Events gives a local begin time to the minute, GHCN a local-standard
+<i>day</i>; matching must happen on the local day, not the UTC day. <i>Position:</i> zone/county polygons versus a station
+point (zone rows have no coordinates). <i>Severity:</i> knots versus m/s and estimated (EG) versus measured (MG) gusts — the
+High Wind pair at Potter County (72 kt MG = 37.0 m/s vs WSF5 = 37.1 m/s) agrees within 0.1 m/s, whereas the Lubbock
+Thunderstorm Wind pair (50 kt vs 76.0 m/s) exposes the GHCN outlier of §5. Heat/cold/flood reports have no magnitude,
+so the station value is the only physical measurement. <i>Identifier:</i> no shared key at all.</p>
+<p><b>Second overlap — NWS observations ↔ GHCN-Daily.</b> The same ASOS sensors feed both services. For complete local
+days, the maximum of the NWS observations matches GHCN TMAX with a mean absolute difference of 0.11 °C over 9 complete station-days when days are cut at local
+standard midnight, versus 0.22 °C when the UTC day is used (notebook §7) — confirming both the station pairing and the
+local-standard-day rule of §8; incomplete days at the start of the 500-record window must be excluded, another consequence of the
+truncation. <b>Third overlap — alert chains:</b> 105 of 224 alerts reference earlier messages of the same event
+(<code>Update</code>/<code>Cancel</code>), so even within one source several records describe one real-world event.</p>
+
+<h2>8. Canonical Mapping and Domain Tables</h2>
+<p>The full field-by-field mapping is in <code>workshop_1/mapping.md</code> and is implemented as a draft in
+<code>src/normalization/canonical.py</code> (17 pytest tests on recorded fixtures pass).</p>
+<table class="d">
+<tr><th>Canonical</th><th>H1 Storm Events</th><th>H2 GHCN-Daily</th><th>I1 NWS alerts</th><th>I2 NWS observations</th></tr>
+<tr><td>event_id</td><td>noaa_storm_events:EVENT_ID</td><td>ghcn_daily:STATION:DATE:ELEMENT</td><td>nws_alerts:properties.id</td><td>nws_observations:stationId:timestamp:variable</td></tr>
+<tr><td>source</td><td colspan="4">constant per source (FK to <code>source</code>)</td></tr>
+<tr><td>event_type</td><td>EVENT_TYPE → snake_case</td><td>element → daily_max_temperature, daily_precipitation…</td><td>event → snake_case</td><td>variable → air_temperature, wind_gust…</td></tr>
+<tr><td>timestamp (UTC)</td><td>BEGIN_YEARMONTH+DAY+TIME − offset(CZ_TIMEZONE)</td><td>DATE local-standard midnight → UTC (06:00Z / 07:00Z)</td><td>effective (ISO offset → UTC)</td><td>timestamp (already UTC)</td></tr>
+<tr><td>latitude, longitude</td><td>BEGIN_LAT/LON; zone rows → zone centroid</td><td>LATITUDE/LONGITUDE</td><td>polygon centroid; no geometry → UGC zone centroid</td><td>geometry [lon, lat] (station table preferred)</td></tr>
+<tr><td>severity + unit</td><td>hail mm; wind m/s (EG/MG); EF; else impact 0–3</td><td>value °C / mm / m/s</td><td>CAP severity 0–4</td><td>value converted by unitCode</td></tr>
+<tr><td>raw_reference</td><td>EVENT_ID + file compilation; SHA-256 hash</td><td>STATION/DATE/ELEMENT; hash of value+flags</td><td>@id URL; hash</td><td>@id URL; hash of value+QC</td></tr>
+</table>
+<p><b>Rules.</b> UTC everywhere; WGS84 decimal degrees, validated against the Texas bounding box (+0.5°); °C, mm, m/s;
+unit conversion driven by the unit declared in each record (an unknown unit is quarantined); timestamps built from the
+4-digit-year fields, never from the 2-digit <code>BEGIN_DATE_TIME</code>; blank damage = unknown (NULL), not zero.</p>
+<p><b>Domain tables.</b> <code>weather_station</code> (static pairing GHCN↔NWS, LST offset), <code>weather_measurement</code>
+(element, period P1D/PT1H, value, raw value/unit, GHCN flags, NWS QC code), <code>storm_report</code> (episode, CZ type/FIPS/name,
+magnitude and type, casualties, parsed damages, tornado attributes, narrative, file compilation), <code>weather_alert</code>
+(CAP id, message type, severity/certainty/urgency, sent/onset/expires/ends, VTEC, polygon), <code>alert_zone</code> and
+<code>alert_reference</code> (bridges), <code>zone</code> (UGC county/forecast-zone polygons), and in Workshop 4
+<code>station_baseline</code> (percentiles per station, element and seasonal window). Draft DDL: <code>sql/001_schema_draft.sql</code>.</p>
+
+<figure>
+<svg viewBox="0 0 900 470" width="100%" xmlns="http://www.w3.org/2000/svg" font-size="11">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#555"/></marker></defs>
+  <g stroke="#333" fill="#fff">
+    <rect x="20" y="20" width="150" height="80" rx="4"/><rect x="20" y="130" width="150" height="80" rx="4"/>
+    <rect x="20" y="240" width="150" height="80" rx="4"/><rect x="20" y="350" width="150" height="70" rx="4"/>
+    <rect x="330" y="150" width="200" height="170" rx="4" fill="#eef3fb"/>
+    <rect x="650" y="20" width="230" height="95" rx="4" fill="#f6f6f6"/><rect x="650" y="135" width="230" height="95" rx="4" fill="#f6f6f6"/>
+    <rect x="650" y="250" width="230" height="95" rx="4" fill="#f6f6f6"/><rect x="650" y="365" width="230" height="80" rx="4" fill="#f6f6f6"/>
+    <rect x="330" y="20" width="200" height="85" rx="4"/><rect x="330" y="360" width="200" height="85" rx="4"/>
+  </g>
+  <g font-weight="bold"><text x="30" y="38">source</text><text x="30" y="148">ingestion_run</text><text x="30" y="258">ingestion_state</text>
+  <text x="30" y="368">rejected_record</text><text x="340" y="170">event</text><text x="340" y="38">event_group</text><text x="340" y="378">zone</text>
+  <text x="660" y="38">weather_measurement</text><text x="660" y="153">storm_report</text><text x="660" y="268">weather_alert</text><text x="660" y="383">weather_station</text></g>
+  <g fill="#333">
+    <text x="30" y="56">PK source_id</text><text x="30" y="72">name, url, format</text><text x="30" y="88">license, role</text>
+    <text x="30" y="166">PK run_id · FK source_id</text><text x="30" y="182">mode, started, finished</text><text x="30" y="198">status, rows_in/new/rejected</text>
+    <text x="30" y="276">PK/FK source_id</text><text x="30" y="292">watermark</text><text x="30" y="308">last_success</text>
+    <text x="30" y="386">PK id · FK run_id</text><text x="30" y="402">source, reason, payload</text>
+    <text x="340" y="190">PK event_id</text><text x="340" y="206">FK source</text><text x="340" y="222">event_type</text><text x="340" y="238">timestamp (UTC)</text>
+    <text x="340" y="254">latitude, longitude, geom</text><text x="340" y="270">severity, severity_unit</text><text x="340" y="286">raw_reference, content_hash</text><text x="340" y="302">first/last_seen_run</text>
+    <text x="340" y="56">PK group_id, event_id</text><text x="340" y="72">match_rule, match_score</text>
+    <text x="340" y="396">PK ugc_code</text><text x="340" y="412">zone_type, name, county_fips</text><text x="340" y="428">geom (MultiPolygon)</text>
+    <text x="660" y="56">PK/FK event_id · FK station_id</text><text x="660" y="72">element, period, obs_date</text><text x="660" y="88">value, unit, raw_value/unit</text><text x="660" y="104">flags, qc_code</text>
+    <text x="660" y="171">PK/FK event_id · FK ugc_code</text><text x="660" y="187">episode_id, cz_type/fips/name</text><text x="660" y="203">magnitude, magnitude_type</text><text x="660" y="219">casualties, damage_usd, tor_*</text>
+    <text x="660" y="286">PK/FK event_id · cap_id</text><text x="660" y="302">message_type, severity…</text><text x="660" y="318">sent, onset, expires, vtec</text><text x="660" y="334">+ alert_zone, alert_reference</text>
+    <text x="660" y="401">PK station_id (nws_id)</text><text x="660" y="417">ghcn_id, name, lat, lon</text><text x="660" y="433">elevation, utc_offset_lst</text>
+  </g>
+  <g stroke="#555" fill="none" marker-end="url(#a)">
+    <path d="M170,60 C250,60 250,200 328,200"/><path d="M170,170 L328,250" /><path d="M95,210 L95,238"/><path d="M95,100 L95,128"/>
+    <path d="M95,320 L95,348" /><path d="M430,150 L430,107"/>
+    <path d="M530,200 L648,67"/><path d="M530,230 L648,182"/><path d="M530,270 L648,297"/>
+    <path d="M880,405 L894,405 L894,67 L882,67"/><path d="M530,400 C600,400 600,215 648,215"/><path d="M530,420 C620,420 620,330 648,330"/>
+  </g>
+</svg>
+<div class="caption">Figure 3. Draft ER diagram: common contract (left/centre) and Team 5 domain tables (right). Arrows point from parent to child.</div>
+</figure>
+
+<h2>9. Ingestion Contract (Draft)</h2>
+<table class="d">
+<tr><th></th><th>H1 Storm Events</th><th>H2 GHCN-Daily</th><th>I1 NWS alerts</th><th>I2 NWS observations</th></tr>
+<tr><td><b>Historical</b></td><td>17 yearly CSV.gz (2010→), filter TEXAS; partition = year</td><td>10 stations × 17 years = 170 JSON requests; partition = station-year</td><td>— (API keeps ~7 days)</td><td>— (500-feature cap)</td></tr>
+<tr><td><b>Incremental</b></td><td>Monthly listing check; reload year when <code>_cYYYYMMDD</code> changes</td><td>Daily <code>[wm − 45 d, today]</code> per station; monthly 13-month re-read</td><td>Every 15 min <code>?area=TX&amp;start=wm−2h</code>, follow <code>pagination.next</code>; refresh <code>/active</code></td><td>Every 30 min per station <code>?start=wm−3h</code>; split window if 500 rows</td></tr>
+<tr><td><b>Watermark</b></td><td>{year: compilation date}</td><td>max DATE per station</td><td>max <code>sent</code></td><td>max <code>timestamp</code> per station</td></tr>
+<tr><td><b>Overlap</b></td><td>whole year</td><td>45 days</td><td>2 h</td><td>3 h</td></tr>
+<tr><td><b>Duplicate key</b></td><td>EVENT_ID</td><td>(STATION, DATE, ELEMENT)</td><td>properties.id</td><td>(stationId, timestamp, variable)</td></tr>
+<tr><td><b>Change detection</b></td><td>compilation suffix + hash; missing rows → withdrawn flag</td><td>hash of value + attributes</td><td>new ids + reference chains</td><td>hash of value + QC code</td></tr>
+</table>
+<p><b>Correctness if a run fails halfway.</b> (1) The raw response is written to the landing zone
+(<code>source_YYYYMMDD_HHMMSS.ext</code>) before parsing, so it can be replayed. (2) For each source, canonical rows,
+domain rows, quarantined rows and the new watermark are committed in a single transaction; if the process dies, the
+transaction rolls back and the watermark keeps its last successful value. (3) The next run re-requests the same interval
+plus the overlap; deterministic <code>event_id</code>s and <code>INSERT … ON CONFLICT DO UPDATE WHERE content_hash
+differs</code> make the repetition harmless. (4) Historical partitions are logged when committed, so a restart resumes
+from the first unfinished year/station-year. (5) The failed <code>ingestion_run</code> keeps <code>status='failed'</code>
+and the error, visible in <code>--mode status</code> and in the dashboard's data-health panel.
+Details: <code>docs/ingestion_contract.md</code>.</p>
+
+<h2>10. Functional User</h2>
+<p><b>Role.</b> Emergency-management analyst in a Texas county Office of Emergency Management (or a regional office of the
+Texas Division of Emergency Management).</p>
+<p><b>Profile.</b> Not a meteorologist; comfortable with dashboards and maps; works shifts; reads NWS products but has no
+time to cross-check several websites; must brief decision makers twice a day and justify recommendations with facts.</p>
+<p><b>Decisions supported.</b> Whether to open cooling or warming centres; whether to raise the county's readiness level or
+pre-position resources (flood barricades, crews); what to say in public messaging ("hottest night for this time of year in
+15 years"); whether data are fresh enough to trust before a briefing.</p>
+<p><b>Why the dashboard is useful.</b> It puts in one screen what is happening <i>now</i> (alerts + latest observations),
+whether it is <i>unusual for this place and season</i> (percentile-based level), what happened in the past in the same county
+(Storm Events impacts) and how <i>fresh and complete</i> the data are — without claiming to predict anything.</p>
+
+<h2>11. User Stories (MoSCoW)</h2>
+<table class="d">
+<tr><th>#</th><th>Priority</th><th>Theme</th><th>User story</th></tr>
+<tr><td>US1</td><td class="ms">Must</td><td>Monitoring</td><td>As an emergency-management analyst, I want to see the NWS alerts active now for Texas on a map with their severity so that I know which counties are under official warnings.</td></tr>
+<tr><td>US2</td><td class="ms">Must</td><td>Monitoring</td><td>As an analyst, I want a list of what is new since the previous ingestion (new, updated and cancelled alerts, new observations) so that I do not miss changes between briefings.</td></tr>
+<tr><td>US3</td><td class="ms">Must</td><td>Analysis</td><td>As an analyst, I want each station's latest 24-h max/min temperature, precipitation and gust classified as NORMAL / UNUSUAL / EXTREME against the same station and season so that I can tell whether conditions are truly unusual.</td></tr>
+<tr><td>US4</td><td class="ms">Must</td><td>Trust</td><td>As an analyst, I want to see for each source the last successful run, the watermark age and the number of rejected records so that I know how fresh and complete the data are before briefing.</td></tr>
+<tr><td>US5</td><td class="ms">Should</td><td>Analysis</td><td>As an analyst, I want a time series of the last 30 days for a station drawn over its historical percentile band so that I can explain trends to decision makers.</td></tr>
+<tr><td>US6</td><td class="ms">Should</td><td>Analysis</td><td>As an analyst, I want to see past Storm Events (type, date, damage, casualties) in the selected county for situations of the same type so that I can anticipate likely impacts.</td></tr>
+<tr><td>US7</td><td class="ms">Should</td><td>Trust</td><td>As an analyst, I want to see which records were grouped as the same event across sources (alert, observation, storm report) so that I can trust that counts are not duplicated.</td></tr>
+<tr><td>US8</td><td class="ms">Could</td><td>Analysis</td><td>As an analyst, I want to change the percentile thresholds of the indicator and see how many stations change level so that I understand its sensitivity.</td></tr>
+<tr><td>US9</td><td class="ms">Could</td><td>Monitoring</td><td>As an analyst, I want to export the current classification table as CSV so that I can attach it to my briefing.</td></tr>
+<tr><td>US10</td><td class="ms">Won't (this semester)</td><td>—</td><td>As an analyst, I want a forecast of tomorrow's hazard level. Excluded: the system is a monitoring aid, not a prediction tool.</td></tr>
+</table>
+
+<h2>12. Indicator Proposal — Extreme Weather Level (NORMAL / UNUSUAL / EXTREME)</h2>
+<p><b>Inputs.</b> (a) Baseline: GHCN-Daily 2010 → last complete year for each station and element (TMAX, TMIN, PRCP, WSF5,
+SNOW), using a ±15-day window around each day of the year (≈ 31 days × 16 years ≈ 500 values) → percentiles p1, p5, p10,
+p90, p95, p99 and record values. (b) Current values: from NWS observations, rolling 24-h maximum and minimum temperature,
+24-h precipitation sum and maximum gust; from GHCN, the latest published day. (c) Active NWS alerts whose zones contain the
+station.</p>
+<p><b>Rule (parameterised; defaults shown).</b> For "high-tail" elements (TMAX, PRCP, WSF5, SNOW):
+NORMAL if value &lt; p90; UNUSUAL if p90 ≤ value &lt; p99; EXTREME if value ≥ p99 or above the seasonal record. For TMIN the
+mirror rule applies (≤ p10 UNUSUAL, ≤ p1 EXTREME). Precipitation percentiles are computed on wet days only
+(PRCP ≥ 1 mm) to avoid a distribution dominated by zeros. <i>Alert escalation:</i> if an active alert of the matching type
+(e.g., Extreme Heat Warning, Freeze/Hard Freeze Warning, Flash Flood Warning, High Wind Warning) covers the station, the
+level is raised one step (capped at EXTREME) and marked "official alert". Output per station × component: level, percentile
+rank, alert flag; per region: the worst component level and the number of stations at each level.</p>
+<p><b>Validation against historical events.</b> Back-test the rule on 2010–2025 daily GHCN values with a leave-one-year-out
+baseline, and compare with Storm Events of the matching type in the station's county/zone on the same local day:
+<i>hit rate</i> = share of Storm Events days of that type flagged UNUSUAL or EXTREME; <i>false-alarm share</i> = share of
+EXTREME days without any matching report; plus case studies (February 2021 winter storm, summer 2023 heat, 2025 central
+Texas floods). A sensitivity table over p90/p95/p97.5 and p99/p99.5 thresholds will be reported (Workshop 4).</p>
+<p><b>Limitations.</b> Percentiles describe rarity, not impact; ten stations do not represent every county; Storm Events
+reports are biased toward populated areas; GHCN-Daily and the NWS day definitions differ (local standard day vs UTC), which
+is handled explicitly; the indicator is a monitoring aid and <b>does not predict</b> hazards.</p>
+
+<h2>13. Risks and Mitigation</h2>
+<table class="d">
+<tr><th>#</th><th>Risk</th><th>Likelihood / impact</th><th>Mitigation</th></tr>
+<tr><td>R1</td><td>Source outage (NWS API 5xx, NCEI maintenance)</td><td>Medium / High</td><td>Retries with exponential back-off and timeouts; watermark advances only after commit; raw cache allows re-processing; data-health panel shows watermark age.</td></tr>
+<tr><td>R2</td><td>Rate limiting or blocking (403 without User-Agent, 429)</td><td>Medium / High</td><td>Descriptive User-Agent from <code>.env</code>; polling at 15/30 min; ≥ 0.5 s between requests; cache every download; never re-download the archive.</td></tr>
+<tr><td>R3</td><td>Silent truncation (500-feature cap on observations)</td><td>High (observed) / Medium</td><td>Frequent polls with small windows; if a response has 500 rows, split the window and re-request; count check per run.</td></tr>
+<tr><td>R4</td><td>Schema change (new/renamed fields, unit codes, new CSV columns)</td><td>Medium / High</td><td>Explicit expected-schema checks on read; unit conversion by declared unit; unknown units/fields quarantined; recorded fixtures in tests; source-status log and notice to the professor.</td></tr>
+<tr><td>R5</td><td>Revisions and withdrawals (Storm Events recompilations, GHCN re-publication, late QC)</td><td>High (observed) / Medium</td><td>Overlap windows, content hashes, compilation-suffix watermark, soft "withdrawn" flag instead of deletes.</td></tr>
+<tr><td>R6</td><td>Ambiguous identifiers/locations (zone vs county FIPS, name variants, alerts without polygons)</td><td>High (observed) / High</td><td>Static <code>zone</code> table from NWS <code>/zones</code> and Census counties; match on UGC/FIPS codes, never on names; centroid with <code>location_method</code> flag.</td></tr>
+<tr><td>R7</td><td>Data volume (≈ 186 MB Storm Events, ≈ 450 k observations/year)</td><td>Medium / Medium</td><td>Filter Texas at read time; partitioned loads; indexes on (event_type, timestamp) and GiST; daily aggregate views for the dashboard.</td></tr>
+<tr><td>R8</td><td>Latency (GHCN 3 days, Storm Events months) and off-season semester (few heat events in Nov–Dec)</td><td>High / Medium</td><td>"Current" is defined with NWS sources; GHCN/Storm Events used for baseline; cold, wind and rain components remain active in winter; recorded fixtures from past extreme days for demos.</td></tr>
+<tr><td>R9</td><td>License / attribution non-compliance</td><td>Low / Medium</td><td>All sources are public domain; attribution in <code>config/sources.yaml</code>, README and report; GHCN DOI cited.</td></tr>
+<tr><td>R10</td><td>Misinterpretation of the indicator as a forecast</td><td>Medium / High</td><td>Labels "monitoring aid", visible limitations panel, link to official NWS products.</td></tr>
+</table>
+
+<h2>14. Architecture Overview</h2>
+<figure>
+<svg viewBox="0 0 900 330" width="100%" xmlns="http://www.w3.org/2000/svg" font-size="11.5">
+  <defs><marker id="b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444"/></marker></defs>
+  <rect x="5" y="5" width="890" height="320" rx="8" fill="none" stroke="#999" stroke-dasharray="5,4"/>
+  <text x="15" y="22" fill="#666">Docker Compose (local)</text>
+  <g stroke="#333">
+    <rect x="15" y="35" width="150" height="270" rx="5" fill="#fff"/>
+    <rect x="200" y="95" width="125" height="85" rx="5" fill="#fff"/>
+    <rect x="360" y="95" width="145" height="85" rx="5" fill="#eef3fb"/>
+    <rect x="540" y="95" width="160" height="85" rx="5" fill="#e8f4ea"/>
+    <rect x="735" y="95" width="150" height="85" rx="5" fill="#fff"/>
+    <rect x="360" y="230" width="145" height="60" rx="5" fill="#fbecec"/>
+    <rect x="540" y="230" width="160" height="60" rx="5" fill="#fff"/>
+    <rect x="735" y="230" width="150" height="60" rx="5" fill="#fff6e0"/>
+    <rect x="200" y="230" width="125" height="60" rx="5" fill="#f3f3f3"/>
+  </g>
+  <g font-weight="bold"><text x="25" y="55">Sources</text><text x="210" y="115">Raw landing zone</text><text x="370" y="115">Normalize · validate</text>
+  <text x="550" y="115">PostgreSQL + PostGIS</text><text x="745" y="115">Analytics &amp; indicator</text><text x="370" y="250">Quarantine</text>
+  <text x="550" y="250">ingest.py CLI</text><text x="745" y="250">Dash dashboard</text><text x="210" y="250">Scheduler</text></g>
+  <g fill="#333">
+    <text x="25" y="78">H1 Storm Events</text><text x="25" y="93" font-size="10">CSV.gz yearly · monthly</text>
+    <text x="25" y="128">H2 GHCN-Daily (ADS)</text><text x="25" y="143" font-size="10">REST JSON · daily</text>
+    <text x="25" y="185">I1 NWS alerts</text><text x="25" y="200" font-size="10">GeoJSON/CAP · 15 min</text>
+    <text x="25" y="245">I2 NWS observations</text><text x="25" y="260" font-size="10">GeoJSON · 30 min</text>
+    <text x="25" y="290" font-size="10">Texas · 10 ASOS stations</text>
+    <text x="210" y="135" font-size="10">data/raw/</text><text x="210" y="150" font-size="8.5">source_YYYYMMDD_HHMMSS</text><text x="210" y="165" font-size="10">+ headers.json</text>
+    <text x="370" y="135" font-size="10">UTC, WGS84, SI units</text><text x="370" y="150" font-size="10">dedupe (event_id, hash)</text><text x="370" y="165" font-size="10">event grouping</text>
+    <text x="550" y="135" font-size="10">event + domain tables</text><text x="550" y="150" font-size="10">ingestion_run / _state</text><text x="550" y="165" font-size="10">event_group, zone</text>
+    <text x="745" y="135" font-size="10">station-season baseline</text><text x="745" y="150" font-size="9">NORMAL/UNUSUAL/EXTREME</text><text x="745" y="165" font-size="10">hist. vs current views</text>
+    <text x="370" y="270" font-size="10">rejected_record + reason</text>
+    <text x="550" y="270" font-size="10">historical | incremental | status</text>
+    <text x="745" y="270" font-size="10">localhost:8050</text>
+    <text x="210" y="270" font-size="10">Airflow DAG / cron</text>
+  </g>
+  <g stroke="#444" fill="none" marker-end="url(#b)">
+    <path d="M165,140 L198,140"/><path d="M325,138 L358,138"/><path d="M505,138 L538,138"/><path d="M700,138 L733,138"/>
+    <path d="M432,180 L432,228"/><path d="M810,180 L810,228"/><path d="M262,290 L262,312 L620,312 L620,292"/><path d="M620,230 L620,182"/>
+  </g>
+</svg>
+<div class="caption">Figure 4. Reference architecture adapted to Team 5. The scheduler triggers <code>ingest.py --mode incremental</code>;
+the dashboard reads only from the database and its analytical views.</div>
+</figure>
+
+<h2>15. Repository</h2>
+<p>The repository follows the structure required by the workshop: <code>src/</code> (sources, normalization, storage),
+<code>ingest.py</code> (CLI stub with the final arguments), <code>config/sources.yaml</code> (one entry per source with URL,
+format, schedule and watermark field), <code>data/raw/</code> (git-ignored landing zone), <code>sql/</code> (draft schema),
+<code>dashboard/</code>, <code>tests/</code> and <code>tests/fixtures/</code> (recorded real responses, 17 passing tests),
+<code>notebooks/01_source_profiling.ipynb</code> (executed), <code>docs/</code> (this report, ingestion contract, source
+status log), <code>workshop_1/</code> (mapping.md, samples, scripts, data-quality table), <code>.env.example</code>,
+<code>.gitignore</code> and <code>README.md</code>. API keys are not needed by any of the four sources; the NWS
+User-Agent contact lives only in <code>.env</code>.</p>
+
+<h2>References</h2>
+<p>[1] NOAA National Centers for Environmental Information. Storm Events Database. https://www.ncei.noaa.gov/stormevents/ (bulk files accessed 2026-11-09).<br>
+[2] Menne, M.J., Durre, I., Korzeniewski, B., McNeill, S., Thomas, K., Yin, X., Anthony, S., Ray, R., Vose, R.S., Gleason, B.E., and Houston, T.G. (2012). Global Historical Climatology Network – Daily (GHCN-Daily), Version 3. NOAA National Climatic Data Center. doi:10.7289/V5D21VHZ.<br>
+[3] NOAA NCEI. Access Data Service API documentation. https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation<br>
+[4] NOAA National Weather Service. API Web Service documentation. https://www.weather.gov/documentation/services-web-api (accessed 2026-11-09).<br>
+[5] OASIS. Common Alerting Protocol Version 1.2 (2010).<br>
+[6] Sierra, C.A. (2026). Data Analysis Programming — Course Project Description; Team Project Assignment; Workshop No. 1. Universidad Distrital Francisco José de Caldas.</p>
+
+</body>
+</html>

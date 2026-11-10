@@ -1,0 +1,9 @@
+{
+  "url": "https://www.ncei.noaa.gov/access/services/data/v1?dataset=daily-summaries&stations=USW00003927%2CUSW00012960%2CUSW00013904%2CUSW00012921%2CUSW00023044%2CUSW00023042%2CUSW00023047%2CUSW00012924%2CUSW00023023%2CUSW00012919&startDate=2025-01-01&endDate=2026-11-09&dataTypes=TMAX%2CTMIN%2CPRCP%2CSNOW%2CSNWD%2CAWND%2CWSF2%2CWSF5&units=metric&includeAttributes=true&includeStationName=true&includeStationLocation=1&format=json",
+  "status": 200,
+  "retrieved_utc": "20261109_232218",
+  "headers": {
+    "Date": "Mon, 09 Nov 2026 23:22:25 GMT",
+    "Content-Type": "application/json;charset=utf-8"
+  }
+}

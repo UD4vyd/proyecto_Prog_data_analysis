@@ -1,0 +1,93 @@
+# Team 5 - Extreme Weather Monitoring (Texas, USA)
+# One entry per source: URL, format, schedule and watermark field.
+# Secrets never live here: they come from environment variables (see .env.example).
+
+project:
+  hazard: extreme_weather
+  team: 5
+  historical_window: {start: "2010-01-01", end: null}   # null = today (UTC)
+  timezone_storage: UTC
+  crs: EPSG:4326
+
+region:
+  name: Texas
+  state_fips: "48"
+  state_name_storm_events: TEXAS
+  nws_area: TX
+  bbox: {min_lon: -106.65, min_lat: 25.84, max_lon: -93.51, max_lat: 36.50}
+  # First-order (ASOS) stations: the same physical site is published by GHCN-Daily (USW…)
+  # and by the NWS API (ICAO id). This pairing is the station join key of the project.
+  stations:
+    - {nws_id: KDFW, ghcn_id: USW00003927, name: Dallas-Fort Worth Intl}
+    - {nws_id: KIAH, ghcn_id: USW00012960, name: Houston Intercontinental}
+    - {nws_id: KAUS, ghcn_id: USW00013904, name: Austin-Bergstrom Intl}
+    - {nws_id: KSAT, ghcn_id: USW00012921, name: San Antonio Intl}
+    - {nws_id: KELP, ghcn_id: USW00023044, name: El Paso Intl}
+    - {nws_id: KLBB, ghcn_id: USW00023042, name: Lubbock Intl}
+    - {nws_id: KAMA, ghcn_id: USW00023047, name: Amarillo Intl}
+    - {nws_id: KCRP, ghcn_id: USW00012924, name: Corpus Christi Intl}
+    - {nws_id: KMAF, ghcn_id: USW00023023, name: Midland Intl}
+    - {nws_id: KBRO, ghcn_id: USW00012919, name: Brownsville South Padre Intl}
+
+sources:
+  noaa_storm_events:
+    role: historical
+    owner: NOAA National Centers for Environmental Information (NCEI)
+    url: https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/
+    docs: https://www.ncei.noaa.gov/stormevents/
+    format: csv.gz (one "details" file per year; also "locations" and "fatalities" files)
+    auth: none
+    rate_limit: none published; download each yearly file once and cache it
+    license: US Government work, public domain. Cite "NOAA NCEI Storm Events Database".
+    partition: one file per year (2010..current), filter STATE == TEXAS
+    schedule: monthly re-check of the directory listing
+    watermark_field: file compilation suffix _cYYYYMMDD per year (re-load a year when it changes)
+    duplicate_key: EVENT_ID
+    sample_year: 2025
+    event_types: [Excessive Heat, Heat, Extreme Cold/Wind Chill, Cold/Wind Chill, Frost/Freeze,
+                  Heavy Rain, Flash Flood, Hail, Thunderstorm Wind, High Wind, Strong Wind,
+                  Tornado, Winter Storm, Winter Weather, Ice Storm, Heavy Snow, Blizzard]
+
+  ghcn_daily:
+    role: historical
+    owner: NOAA NCEI - Global Historical Climatology Network Daily (GHCN-Daily)
+    url: https://www.ncei.noaa.gov/access/services/data/v1
+    docs: https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation
+    format: json (also csv) via REST query parameters
+    auth: none
+    rate_limit: none published; keep requests small (station x year) and cache them
+    license: Public domain. Cite Menne et al. (2012) GHCN-Daily v3, doi:10.7289/V5D21VHZ
+    partition: one request per station per calendar year
+    schedule: daily (values for a date keep arriving/being QC-revised for weeks)
+    watermark_field: DATE (per station), re-read last 45 days each run
+    duplicate_key: [STATION, DATE]
+    data_types: [TMAX, TMIN, PRCP, SNOW, SNWD, AWND, WSF2, WSF5]
+    sample_start: "2025-01-01"
+
+  nws_alerts:
+    role: incremental
+    owner: NOAA National Weather Service
+    url: https://api.weather.gov/alerts
+    docs: https://www.weather.gov/documentation/services-web-api
+    format: GeoJSON (application/geo+json), CAP 1.2 semantics
+    auth: none, but a descriptive User-Agent header is mandatory (env NWS_USER_AGENT)
+    rate_limit: not published; NWS asks clients to poll no faster than needed (returns 403/429 if abused)
+    license: US Government work, public domain
+    schedule: every 15 minutes
+    watermark_field: properties.sent (max seen), with a 2 h overlap window
+    change_detection: properties.id is stable; updates arrive as new alerts whose
+                      properties.references point to the superseded ones; messageType Alert|Update|Cancel
+    duplicate_key: properties.id
+
+  nws_observations:
+    role: incremental
+    owner: NOAA National Weather Service
+    url: https://api.weather.gov/stations/{station}/observations
+    docs: https://www.weather.gov/documentation/services-web-api
+    format: GeoJSON, values with WMO unit codes (wmoUnit:degC, wmoUnit:km_h-1, wmoUnit:Pa, wmoUnit:mm)
+    auth: none, descriptive User-Agent header required
+    rate_limit: not published; one request per station per run
+    license: US Government work, public domain
+    schedule: every 30 minutes
+    watermark_field: properties.timestamp per station, with a 3 h overlap window (QC revisions)
+    duplicate_key: [station, properties.timestamp]

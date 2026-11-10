@@ -1,0 +1,13 @@
+{
+  "url": "https://api.weather.gov/stations/KELP/observations?start=2026-11-03T00%3A24%3A51Z",
+  "status": 200,
+  "retrieved_utc": "20261110_002450",
+  "headers": {
+    "Content-Type": "application/geo+json",
+    "X-Correlation-ID": "70160317",
+    "Content-Length": "41922",
+    "Cache-Control": "public, max-age=300, s-maxage=120",
+    "Expires": "Tue, 10 Nov 2026 00:30:01 GMT",
+    "Date": "Tue, 10 Nov 2026 00:25:01 GMT"
+  }
+}

@@ -1,0 +1,4 @@
+# Raw evidence must stay byte-identical to what the sources returned: no line-ending conversion
+workshop_1/samples/** -text
+tests/fixtures/** -text
+*.gz binary

@@ -1,0 +1,13 @@
+{
+  "url": "https://api.weather.gov/stations/KCRP/observations?start=2026-11-03T00%3A24%3A51Z",
+  "status": 200,
+  "retrieved_utc": "20261110_002450",
+  "headers": {
+    "Content-Type": "application/geo+json",
+    "X-Correlation-ID": "2810aa3c",
+    "Cache-Control": "public, max-age=300, s-maxage=120",
+    "Expires": "Tue, 10 Nov 2026 00:30:07 GMT",
+    "Date": "Tue, 10 Nov 2026 00:25:07 GMT",
+    "Content-Length": "49315"
+  }
+}

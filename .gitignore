@@ -1,0 +1,28 @@
+# secrets
+.env
+
+# raw landing zone: keep only the folder
+data/raw/*
+!data/raw/.gitkeep
+
+# uncompressed copies of large evidence files (the committed versions are .gz, byte-identical)
+workshop_1/samples/**/nws_observations_*.geojson
+
+# python / jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+venv/
+
+# course PDFs (provided by the professor)
+CourseProject.pdf
+TeamsDistribution.pdf
+Workshop_1.pdf
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
