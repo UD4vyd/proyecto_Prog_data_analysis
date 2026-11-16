@@ -1,0 +1,69 @@
+# Source catalogue for Workshop 1. Only documented limits are listed.
+scope:
+  region: Texas
+  state_fips: "48"
+  stations_file: config/stations.csv
+  windows:
+    F2: {start: "1991-01-01", end: present, baseline: "1991-2020"}
+    F1: {start: "1996-01-01", end: present}
+  current_situation: F4 observations of the last 24 hours plus F3 alerts active now (last 7 days for context)
+
+sources:
+  F1:
+    name: NOAA Storm Events Database
+    owner: NOAA National Centers for Environmental Information (NCEI)
+    url: https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/
+    docs: https://www.ncei.noaa.gov/stormevents/
+    format: CSV.gz, one details file per year (StormEvents_details-ftp_v1.0_dYYYY_cYYYYMMDD.csv.gz)
+    auth: none
+    rate_limits: none documented
+    license: US Government public data
+    historical_strategy: one file per year, 1996 to present
+    schedule: daily check of the bulk listing
+    watermark_field: compilation suffix _cYYYYMMDD per year
+    overlap_window: whole year file
+    duplicate_key: [EVENT_ID]
+  F2:
+    name: GHCN-Daily (daily-summaries)
+    owner: NOAA NCEI
+    url: https://www.ncei.noaa.gov/access/services/data/v1?dataset=daily-summaries
+    docs: https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation
+    citation_doi: 10.7289/V5D21VHZ
+    format: JSON, one object per station-day, values as strings, <ELEMENT>_ATTRIBUTES flags
+    auth: none
+    rate_limits: none documented
+    license: US Government public data
+    historical_strategy: one request per station and year, 1991 to present
+    schedule: daily
+    watermark_field: DATE (max per station)
+    overlap_window: 30 days
+    duplicate_key: [STATION, DATE, element]
+  F3:
+    name: NWS API alerts
+    owner: NOAA National Weather Service
+    url: https://api.weather.gov/alerts?area=TX
+    active_url: https://api.weather.gov/alerts/active?area=TX
+    docs: https://www.weather.gov/documentation/services-web-api
+    format: GeoJSON with CAP fields
+    auth: none, User-Agent header with contact required
+    rate_limits: not published as a number; NWS asks clients to send a User-Agent and cache responses
+    license: US Government public data
+    historical_strategy: none (recent alerts only)
+    schedule: every 15 minutes
+    watermark_field: sent (converted to UTC)
+    overlap_window: 2 hours
+    duplicate_key: [id]
+  F4:
+    name: NWS API station observations
+    owner: NOAA National Weather Service
+    url: https://api.weather.gov/stations/{icao}/observations
+    docs: https://www.weather.gov/documentation/services-web-api
+    format: GeoJSON, values as {value, unitCode, qualityControl}
+    auth: none, User-Agent header with contact required
+    rate_limits: not published as a number
+    license: US Government public data
+    historical_strategy: none (about 7 days kept by NWS)
+    schedule: every hour per station
+    watermark_field: timestamp (max per station)
+    overlap_window: 3 hours
+    duplicate_key: [stationId, timestamp]
