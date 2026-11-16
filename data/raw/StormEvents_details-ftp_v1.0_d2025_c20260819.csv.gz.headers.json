@@ -1,0 +1,19 @@
+{
+ "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/StormEvents_details-ftp_v1.0_d2025_c20260819.csv.gz",
+ "status": 200,
+ "retrieved_utc": "20261116_235241",
+ "headers": {
+  "Date": "Mon, 16 Nov 2026 23:52:39 GMT",
+  "Server": "Apache",
+  "Strict-Transport-Security": "max-age=31536000",
+  "Last-Modified": "Wed, 19 Aug 2026 22:22:37 GMT",
+  "ETag": "\"c008f9-6596dd737e99d\"",
+  "Accept-Ranges": "bytes",
+  "Content-Length": "12585209",
+  "Content-Type": "application/gzip",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "X-Requested-With, Content-Type",
+  "Keep-Alive": "timeout=3, max=100",
+  "Connection": "Keep-Alive"
+ }
+}

@@ -1,0 +1,16 @@
+source,problem,extent,example,handling
+F2,Numeric values arrive as JSON strings,all values,"USW00003927 2025-01-01: ""TMAX"": ""10.0""",pd.to_numeric(errors='coerce')
+F2,"Missing station-days are absent rows, not nulls","0 missing of 1095 expected (3 stations, 2025); USW00003902 misses 2 days in the first query",USW00003902: no rows for 2025-08-30 and 2025-08-31,check completeness against a full calendar
+F2,Trace precipitation stored as 0.0 with measurement flag T,133 trace days of 1095 rows,"USW00003927 2025-01-05: PRCP=0.0, PRCP_ATTRIBUTES=""T,,W""",keep 0.0 and add is_trace flag
+F2,Duplicated station-days after a bad crosswalk (same WBAN twice),365 duplicated station-days in the first query,USW00003904: 730 rows for 2025,"latest ISD row per WBAN, assert unique ids"
+ISD,Two GHCN ids map to the same ICAO code,2 GHCN ids share 1 ICAO code,USW00013961 FT WORTH MEACHAM FLD WBAN 13961 END 20250827; USW00093904 FT WORTH MEACHAM FLD NAAF WBAN 93904 END 19451130,keep the id with the latest ISD END date
+ISD,Sentinel 99999 for missing WBAN (999999 for USAF),25367 ISD rows,"isd-history.csv row 2: USAF=007018, WBAN=99999",convert sentinels to NULL
+F1,Local standard time with offset field and 2-digit year,all rows,"EVENT_ID 1230373: BEGIN_DATE_TIME=""09-JAN-25 20:00:00"", CZ_TIMEZONE=""CST-6""","build the timestamp from BEGIN_YEARMONTH, BEGIN_DAY, BEGIN_TIME and apply the offset"
+F1,Damage as text with K/M/B suffix; blank means unknown,15.7% blank,"EVENT_ID 1256818: DAMAGE_PROPERTY=""10.00K""","parse to USD, keep blank as NULL"
+F1,MAGNITUDE units depend on EVENT_TYPE,"hail in inches, wind in knots, empty for heat and flood",EVENT_ID 1230425 Hail MAGNITUDE=1.00; EVENT_ID 1244626 Thunderstorm Wind MAGNITUDE=64.00 EG,unit column derived from EVENT_TYPE
+F1,Zone-based rows have no coordinates,100.0% of CZ_TYPE=Z rows,"EVENT_ID 1230373: Coastal Flood, CZ_TYPE=Z, CZ_NAME=COASTAL GALVESTON, BEGIN_LAT empty","locate by zone, latitude NULL"
+F3,"Timestamps carry local offsets, not UTC","offsets {'-06:00': 166, '-07:00': 6}","6a47a58e058776b0015d3245f6a6d8ff5d.001.2: sent=""2026-11-16T16:49:00-06:00""","parse with offset, store UTC"
+F3,Alerts without geometry (zone list only),77 of 172 alerts,"Rip Current Statement, UGC=['TXZ345', 'TXZ442', 'TXZ443']",locate by UGC zone codes
+F3/F4,"GeoJSON coordinates are [lon, lat], opposite order to F2",all features,"KAUS 2026-11-16T22:55:00+00:00: coordinates=[-97.67, 30.19]",swap when mapping
+F4,"Values are {value, unitCode, qualityControl} objects; nulls are value: null",windGust null 94.9%,"KAUS 2026-11-16T22:55:00+00:00: windGust.value=None, unitCode=wmoUnit:km_h-1","flatten, keep unit and QC code"
+F4,"Default response capped at 500 records, less than the 7 days kept by NWS","500 records per station, 88.5 to 97.2 hours","KDFW first=2026-11-12 21:40:00+00:00, last=2026-11-16 22:55:00+00:00","request by start/end window, poll every hour"

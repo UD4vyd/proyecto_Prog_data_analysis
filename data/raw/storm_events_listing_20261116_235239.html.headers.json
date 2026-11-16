@@ -1,0 +1,18 @@
+{
+ "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/",
+ "status": 200,
+ "retrieved_utc": "20261116_235239",
+ "headers": {
+  "Date": "Mon, 16 Nov 2026 23:52:39 GMT",
+  "Server": "Apache",
+  "Strict-Transport-Security": "max-age=31536000",
+  "Content-Type": "text/html; charset=UTF-8",
+  "Vary": "Accept-Encoding",
+  "Content-Encoding": "gzip",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "X-Requested-With, Content-Type",
+  "Keep-Alive": "timeout=3, max=100",
+  "Connection": "Keep-Alive",
+  "Transfer-Encoding": "chunked"
+ }
+}

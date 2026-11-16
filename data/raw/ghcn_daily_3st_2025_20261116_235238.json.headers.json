@@ -1,0 +1,18 @@
+{
+ "url": "https://www.ncei.noaa.gov/access/services/data/v1?dataset=daily-summaries&stations=USW00003927%2CUSW00012960%2CUSW00013904&startDate=2025-01-01&endDate=2025-12-31&dataTypes=TMAX%2CTMIN%2CPRCP&includeAttributes=true&units=metric&format=json",
+ "status": 200,
+ "retrieved_utc": "20261116_235238",
+ "headers": {
+  "Date": "Mon, 16 Nov 2026 23:52:35 GMT",
+  "Server": "Apache",
+  "Strict-Transport-Security": "max-age=31536000",
+  "Vary": "Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+  "Content-Disposition": "attachment; filename=\"daily-summaries-2026-11-16T23-52-34.json\"",
+  "Content-Type": "application/json;charset=utf-8",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "X-Requested-With, Content-Type",
+  "Keep-Alive": "timeout=3, max=100",
+  "Connection": "Keep-Alive",
+  "Transfer-Encoding": "chunked"
+ }
+}
