@@ -1,0 +1,10 @@
+# Python and Jupyter
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Secrets
+.env
+
+# Large raw files (re-downloadable from the bulk listing; .headers.json evidence is kept)
+data/raw/*.csv.gz
