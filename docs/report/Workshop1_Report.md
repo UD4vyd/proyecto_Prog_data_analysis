@@ -180,7 +180,28 @@ claim that no damage happened.
 
 ## 6. Incremental behaviour from the two polls
 
-POLL_SECTION
+We took two polls of F3 and F4 with the same script (`workshop_1/poll_nws.py`): poll 1 at
+2026-11-16 23:12:34 UTC and poll 2 at 2026-11-17 00:13:10 UTC, about one hour apart.
+
+| | Poll 1 | Poll 2 | Change |
+|---|---|---|---|
+| F3 active alerts (TX) | 6 | 6 | 0 new, 0 no longer active |
+| F3 recent alerts (7 days) | 172 | 172 | 0 new ids |
+| F3 active ETag | W/"0f24a630..." | W/"a4c902ce..." | changed |
+| F4 KAUS latest report | 22:55 UTC | 23:55 UTC | 4 new timestamps, 4 old ones dropped |
+| F4 KDFW latest report | 22:55 UTC | 23:40 UTC | 3 new, 3 dropped |
+| F4 KIAH latest report | 22:55 UTC | 23:55 UTC | 4 new, 4 dropped |
+
+What this shows:
+
+- F3 had a quiet hour: no new alert ids. The ETag still changed, so the ETag alone does not mean new
+  alerts, and the loader must compare ids. The `Cache-Control` of the alert lists is only 4 to 5 seconds.
+- Poll 1 already shows how alerts change: an Update or Cancel is a new message with its own id, and it
+  points to the earlier ids in `references` (87 of 172 messages). So the duplicate key is the id, and
+  the chain of messages is kept in `alert_reference`.
+- F4 keeps exactly 500 records per station by default, so each new report pushes out the oldest one.
+  Each station got 3 or 4 new reports in one hour. The watermark per station is the latest `timestamp`,
+  and with a 3-hour overlap the next poll repeats a few records that the key (station, timestamp) removes.
 
 ## 7. Cross-source overlap
 

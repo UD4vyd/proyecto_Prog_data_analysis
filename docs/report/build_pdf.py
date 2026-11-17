@@ -25,7 +25,7 @@ def set_widths(match):
     cells = [re.findall(r"<t[hd](?:\s[^>]*)?>(.*?)</t[hd]>", r, flags=re.S) for r in rows]
     n = len(cells[0])
     longest = [max(len(re.sub(r"<[^>]+>", "", row[i])) for row in cells if i < len(row)) for i in range(n)]
-    weights = [min(max(length, 10), 45) for length in longest]
+    weights = [min(max(length, 12), 45) for length in longest]
     widths = [round(100 * w / sum(weights)) for w in weights]
     heads = iter(widths)
     return re.sub(r"<th(\s[^>]*)?>", lambda m: f'<th width="{next(heads)}%">', table, count=n)
