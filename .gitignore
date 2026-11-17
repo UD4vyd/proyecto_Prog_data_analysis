@@ -23,3 +23,10 @@ CLAUDE.md
 
 # Airflow runtime files
 airflow/logs/
+airflow/config/
+.pytest_cache/
+
+# Data lake: working folders and the large Storm Events Bronze file (rebuilt by the Bronze DAG)
+datalake_bronze/_staging/
+datalake_bronze/**/storm_events_*.json
+datalake_silver/.*.tmp
