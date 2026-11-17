@@ -8,3 +8,18 @@ __pycache__/
 
 # Large raw files (re-downloadable from the bulk listing; .headers.json evidence is kept)
 data/raw/*.csv.gz
+
+# Large reference files (download instructions in README.md)
+data/raw/S2_stations.txt
+data/raw/S2_inventory.txt
+data/raw/isd-history.csv
+
+# Course material and local tool files
+/CourseProject.pdf
+/TeamsDistribution.pdf
+/Workshop_*.pdf
+CLAUDE.md
+.claude/
+
+# Airflow runtime files
+airflow/logs/

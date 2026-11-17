@@ -55,6 +55,15 @@ poetry run python ingest.py --mode status
 The F1 yearly file (`data/raw/*.csv.gz`) is not committed because of its size. The notebook
 downloads it again from the bulk listing if it is missing.
 
+Three reference files used by the station selection are also not committed (52 MB in total).
+Download them into `data/raw/` with these names before running the notebook:
+
+| File in `data/raw/` | Download from |
+|---|---|
+| `S2_stations.txt` | https://www.ncei.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt |
+| `S2_inventory.txt` | https://www.ncei.noaa.gov/pub/data/ghcn/daily/ghcnd-inventory.txt |
+| `isd-history.csv` | https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv |
+
 ## Workshop 1 deliverables
 
 - Report: [docs/Workshop1_Report.pdf](docs/Workshop1_Report.pdf) (source: [docs/report/Workshop1_Report.md](docs/report/Workshop1_Report.md))
