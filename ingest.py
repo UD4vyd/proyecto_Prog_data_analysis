@@ -60,7 +60,7 @@ def incremental(args, now, stamp):
 
 def status():
     print("Watermarks:")
-    print(json.dumps(bronze.read_state(), indent=1, sort_keys=True))
+    print(json.dumps({s: bronze.read_state(s) for s in pipeline.SOURCES}, indent=1, sort_keys=True))
     pending = sum(len(paths) for paths in silver.pending_files().values())
     processed = len(list(settings.PROCESSED_DIR.glob("*.json")))
     print(f"Bronze files: {pending} pending, {processed} processed")

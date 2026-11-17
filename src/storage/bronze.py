@@ -19,11 +19,24 @@ REQUIRED = {
 GEOJSON_SOURCES = {"nws_alerts", "nws_observations"}
 
 
-def read_state():
-    """Watermarks per source, as written by persist_file."""
-    if settings.STATE_FILE.exists():
-        return json.loads(settings.STATE_FILE.read_text(encoding="utf-8"))
+def read_state(source):
+    """Watermarks of one source, as written by persist_file.
+
+    Each source has its own file. The persist tasks of different sources run at the same time, and with a
+    shared file one task could read it while another one was writing it.
+    """
+    path = settings.STATE_DIR / f"{source}.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
     return {}
+
+
+def _write_state(source, state):
+    """Write to a temporary file and rename it, so a reader never finds a half-written file."""
+    settings.STATE_DIR.mkdir(parents=True, exist_ok=True)
+    temporary = settings.STATE_DIR / f".{source}.json.tmp"
+    temporary.write_text(json.dumps(state, indent=1, sort_keys=True), encoding="utf-8")
+    os.replace(temporary, settings.STATE_DIR / f"{source}.json")
 
 
 def write_staging(source, run_stamp, result, mode="incremental"):
@@ -77,19 +90,21 @@ def validate_file(path):
 
 def persist_file(path):
     """Move a validated file from staging to Bronze and only then advance the watermarks."""
-    with open(path, encoding="utf-8") as f:
-        payload = json.load(f)
     final = settings.BRONZE_DIR / os.path.basename(path)
-    os.replace(path, final)  # a rename, so the Silver DAG never sees a half-written file
-    state = read_state()
-    source_state = state.setdefault(payload["source"], {})
+    if os.path.exists(path):
+        os.replace(path, final)  # a rename, so the Silver DAG never sees a half-written file
+    elif not final.exists():
+        raise FileNotFoundError(f"{path} is not in staging and {final.name} is not in Bronze")
+    # On a retry the file was already moved, so the task goes on from the watermark step.
+    with open(final, encoding="utf-8") as f:
+        payload = json.load(f)
+    source_state = read_state(payload["source"])
     for key, value in payload.get("state", {}).items():
         # A watermark never moves back: a historical load of old years must not hide recent data.
         if key not in source_state or value > source_state[key]:
             source_state[key] = value
     if payload.get("mode") != "historical":
         source_state["_last_run_stamp"] = payload["run_stamp"]
-    settings.STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    settings.STATE_FILE.write_text(json.dumps(state, indent=1, sort_keys=True), encoding="utf-8")
+    _write_state(payload["source"], source_state)
     log.info("Persisted %s (%s records)", final.name, payload["record_count"])
     return str(final)

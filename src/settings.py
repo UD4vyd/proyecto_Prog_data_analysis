@@ -11,7 +11,7 @@ SILVER_DIR = Path(os.environ.get("SILVER_DIR", PROJECT_DIR / "datalake_silver"))
 
 STAGING_DIR = BRONZE_DIR / "_staging"      # files being written, not yet visible to the Silver DAG
 PROCESSED_DIR = BRONZE_DIR / "processed"   # Bronze files already converted to Silver
-STATE_FILE = BRONZE_DIR / "_state" / "watermarks.json"
+STATE_DIR = BRONZE_DIR / "_state"             # one watermark file per source
 QUARANTINE_DIR = SILVER_DIR / "quarantine"
 
 STAMP_FORMAT = "%Y%m%d_%H%M%S"

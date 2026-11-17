@@ -28,7 +28,7 @@ def extract_alerts(stamp):
 
 def extract_observations(stamp, now):
     config = settings.load_settings()["nws_observations"]
-    watermarks = {k: v for k, v in bronze.read_state().get("nws_observations", {}).items() if not k.startswith("_")}
+    watermarks = {k: v for k, v in bronze.read_state("nws_observations").items() if not k.startswith("_")}
     icaos = [s["icao"] for s in settings.load_stations()]
     result = nws.fetch_observations(icaos, watermarks, now, overlap_hours=config["overlap_hours"],
                                     first_run_hours=config["first_run_hours"],
@@ -39,7 +39,7 @@ def extract_observations(stamp, now):
 def extract_daily(stamp, now):
     """GHCN-Daily is published once a day, so only the first run of each UTC day asks for it."""
     config = settings.load_settings()["ghcn_daily"]
-    state = bronze.read_state().get("ghcn_daily", {})
+    state = bronze.read_state("ghcn_daily")
     last = state.get("_last_run_stamp", "")
     if last[:8] == stamp[:8] and last != stamp:
         log.info("F2 already ingested today (run %s), nothing to do", last)
@@ -54,7 +54,7 @@ def extract_daily(stamp, now):
 def extract_storm_events(stamp, years=None, mode="incremental"):
     """Scrape the listing and download a year file only when its compilation date changed."""
     config = settings.load_settings()["storm_events"]
-    loaded = bronze.read_state().get("storm_events", {})
+    loaded = bronze.read_state("storm_events")
     result = storm_events.fetch_events(years or config["years"], loaded, state_fips=config["state_fips"])
     if not result["records"]:
         return None

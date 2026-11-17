@@ -20,6 +20,7 @@ SCHEMA = {
     "pressure_hpa": "float64",
     "sea_level_pressure_hpa": "float64",
     "precip_1h_mm": "float64",
+    "precip_3h_mm": "float64",
     "temperature_qc": "category",       # qualityControl code of the temperature (V verified, Z no data, ...)
     "text_description": "string",
     "out_of_range": "string",           # columns set to null by the physical range check
@@ -40,7 +41,8 @@ VARIABLES = [
     ("wind_direction_deg", "windDirection"),
     ("pressure_hpa", "barometricPressure"),
     ("sea_level_pressure_hpa", "seaLevelPressure"),
-    ("precip_1h_mm", "precipitationLastHour"),
+    ("precip_1h_mm", "precipitationLastHour"),      # not present in every answer
+    ("precip_3h_mm", "precipitationLast3Hours"),
 ]
 # Conversions to the canonical units of workshop_1/mapping.md.
 UNIT_FACTORS = {
@@ -64,6 +66,7 @@ RANGES = {
     "pressure_hpa": (500.0, 1100.0),
     "sea_level_pressure_hpa": (850.0, 1100.0),
     "precip_1h_mm": (0.0, 400.0),
+    "precip_3h_mm": (0.0, 1000.0),
 }
 
 
