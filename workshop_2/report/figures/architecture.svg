@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 560" font-family="Arial, Helvetica, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .box { stroke: #333; stroke-width: 1.2; rx: 6; }
+      .src { fill: #dbe8f6; } .air { fill: #fdf1d8; } .brz { fill: #ecd9c6; } .slv { fill: #e3e6ea; }
+      .gld { fill: #f7ecc0; } .plan { stroke-dasharray: 6 4; } .db { fill: #e4dcf1; }
+      .title { font-weight: bold; font-size: 14px; } .small { font-size: 11.5px; fill: #333; }
+      .layer { fill: none; stroke: #888; stroke-width: 1; stroke-dasharray: 3 3; }
+      .layername { font-size: 12px; fill: #555; font-style: italic; }
+      .flow { stroke: #333; stroke-width: 1.4; fill: none; marker-end: url(#arrow); }
+      .ctrl { stroke: #b06a00; stroke-width: 1.2; fill: none; stroke-dasharray: 5 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- Docker boundary -->
+  <rect x="235" y="14" width="930" height="532" class="layer"/>
+  <text x="245" y="32" class="layername">Docker Compose stack (one network, folders mounted from the host)</text>
+
+  <!-- Sources -->
+  <text x="20" y="32" class="layername">Data sources (internet)</text>
+  <rect x="15" y="60" width="190" height="62" class="box src"/>
+  <text x="25" y="82" class="title">F1 Storm Events</text>
+  <text x="25" y="100" class="small">HTML listing + CSV.gz</text>
+  <text x="25" y="114" class="small">web scraping</text>
+  <rect x="15" y="140" width="190" height="62" class="box src"/>
+  <text x="25" y="162" class="title">F2 GHCN-Daily</text>
+  <text x="25" y="180" class="small">NCEI Access Data Service</text>
+  <text x="25" y="194" class="small">REST API, JSON</text>
+  <rect x="15" y="220" width="190" height="62" class="box src"/>
+  <text x="25" y="242" class="title">F3 NWS alerts</text>
+  <text x="25" y="260" class="small">api.weather.gov</text>
+  <text x="25" y="274" class="small">REST API, GeoJSON</text>
+  <rect x="15" y="300" width="190" height="62" class="box src"/>
+  <text x="25" y="322" class="title">F4 NWS observations</text>
+  <text x="25" y="340" class="small">api.weather.gov</text>
+  <text x="25" y="354" class="small">REST API, GeoJSON</text>
+
+  <!-- Airflow -->
+  <rect x="255" y="50" width="250" height="330" class="box air"/>
+  <text x="267" y="72" class="title">Apache Airflow 3.4 (LocalExecutor)</text>
+  <rect x="270" y="88" width="220" height="118" class="box" fill="#fff"/>
+  <text x="280" y="108" class="title">DAG bronze_ingestion</text>
+  <text x="280" y="126" class="small">schedule: @hourly</text>
+  <text x="280" y="144" class="small">extract (API / scraping)</text>
+  <text x="280" y="160" class="small">validate (basic schema check)</text>
+  <text x="280" y="176" class="small">persist (move to Bronze)</text>
+  <text x="280" y="194" class="small">code: src/sources, src/storage</text>
+  <rect x="270" y="222" width="220" height="142" class="box" fill="#fff"/>
+  <text x="280" y="242" class="title">DAG silver_processing</text>
+  <text x="280" y="260" class="small">schedule: @continuous</text>
+  <text x="280" y="278" class="small">FileSensor on datalake_bronze/*.json</text>
+  <text x="280" y="294" class="small">process (clean with Pandas)</text>
+  <text x="280" y="310" class="small">check (read the Parquet back)</text>
+  <text x="280" y="326" class="small">archive_bronze</text>
+  <text x="280" y="348" class="small">code: src/normalization, src/storage</text>
+
+  <!-- Airflow services -->
+  <rect x="255" y="400" width="250" height="130" class="box db"/>
+  <text x="267" y="422" class="title">Airflow services (containers)</text>
+  <text x="267" y="442" class="small">airflow-apiserver: web UI, localhost:8080</text>
+  <text x="267" y="460" class="small">airflow-scheduler: starts runs and tasks</text>
+  <text x="267" y="478" class="small">airflow-dag-processor: parses airflow/dags</text>
+  <text x="267" y="496" class="small">airflow-triggerer: waits for the FileSensor</text>
+  <text x="267" y="514" class="small">postgres: Airflow metadata database</text>
+
+  <!-- Bronze -->
+  <rect x="560" y="50" width="250" height="200" class="box brz"/>
+  <text x="572" y="72" class="title">Bronze layer: datalake_bronze/</text>
+  <text x="572" y="94" class="small">raw answers as JSON, never edited</text>
+  <text x="572" y="114" class="small" font-family="Consolas, monospace">source_YYYYMMDD_HHMMSS.json</text>
+  <text x="572" y="140" class="small">_staging/   files being written</text>
+  <text x="572" y="158" class="small">*.json      new files (watched)</text>
+  <text x="572" y="176" class="small">processed/  files already in Silver</text>
+  <text x="572" y="194" class="small">_state/     watermarks per source</text>
+  <text x="572" y="226" class="small">sources: nws_alerts, nws_observations,</text>
+  <text x="572" y="242" class="small">ghcn_daily, storm_events</text>
+
+  <!-- Silver -->
+  <rect x="560" y="290" width="250" height="170" class="box slv"/>
+  <text x="572" y="312" class="title">Silver layer: datalake_silver/</text>
+  <text x="572" y="334" class="small">clean, typed, deduplicated Parquet</text>
+  <text x="572" y="354" class="small" font-family="Consolas, monospace">topic_YYYYMMDD_HHMMSS.parquet</text>
+  <text x="572" y="380" class="small">topics: weather_alerts,</text>
+  <text x="572" y="396" class="small">station_observations, daily_summaries,</text>
+  <text x="572" y="412" class="small">storm_events</text>
+  <text x="572" y="438" class="small">quarantine/  rows without a required field</text>
+
+  <!-- Gold and dashboard (planned) -->
+  <rect x="880" y="130" width="260" height="130" class="box gld plan"/>
+  <text x="892" y="152" class="title">Gold layer (planned, Workshop 3)</text>
+  <text x="892" y="174" class="small">datalake_gold/ and PostgreSQL</text>
+  <text x="892" y="192" class="small">canonical event model</text>
+  <text x="892" y="210" class="small">percentile baseline 1991-2020</text>
+  <text x="892" y="228" class="small">NORMAL / UNUSUAL / EXTREME</text>
+  <text x="892" y="246" class="small">per station and day</text>
+  <rect x="880" y="330" width="260" height="100" class="box src plan"/>
+  <text x="892" y="352" class="title">Dashboard (planned, Workshop 4)</text>
+  <text x="892" y="374" class="small">Plotly Dash, localhost:8050</text>
+  <text x="892" y="392" class="small">current situation, station indicator,</text>
+  <text x="892" y="410" class="small">data freshness</text>
+
+  <!-- Flows -->
+  <path class="flow" d="M205,91 L268,120"/>
+  <path class="flow" d="M205,171 L268,140"/>
+  <path class="flow" d="M205,251 L268,160"/>
+  <path class="flow" d="M205,331 L268,180"/>
+  <path class="flow" d="M490,140 L558,140"/>
+  <text x="497" y="132" class="small">JSON</text>
+  <path class="ctrl" d="M558,180 L492,270"/>
+  <text x="500" y="218" class="small" fill="#b06a00">new file</text>
+  <path class="flow" d="M490,320 L558,340"/>
+  <text x="494" y="344" class="small">Parquet</text>
+  <path class="flow" d="M810,375 C850,375 850,230 878,215"/>
+  <path class="flow" d="M1010,260 L1010,328"/>
+
+  <!-- Legend -->
+  <path class="flow" d="M880,480 L930,480"/>
+  <text x="940" y="484" class="small">data flow</text>
+  <path class="ctrl" d="M880,502 L930,502"/>
+  <text x="940" y="506" class="small">trigger (FileSensor)</text>
+  <rect x="880" y="518" width="50" height="16" class="box plan" fill="#fff"/>
+  <text x="940" y="531" class="small">planned component</text>
+</svg>
