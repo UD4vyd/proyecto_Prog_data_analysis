@@ -1,0 +1,24 @@
+{
+ "url": "https://api.weather.gov/alerts?area%5B0%5D=TX&limit=500&cursor=eyJ0IjoxNzk0MjcxMzIwLCJpIjoidXJuOm9pZDoyLjQ5LjAuMS44NDAuMC5jNTczZWYyN2VkNDFiYTcwNDJmNTE1MGM4NTkxNzU1OTFiMTIzYmM3LjAwMS4xIn0%3D",
+ "status": 200,
+ "retrieved_utc": "20261117_001903",
+ "headers": {
+  "Server": "nginx/1.28.3",
+  "Content-Type": "application/geo+json",
+  "ETag": "W/\"46405e01127bde8951cb054ded1995f3\"",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Expose-Headers": "X-Correlation-Id, X-Request-Id, X-Server-Id",
+  "X-Request-ID": "01a1e6df-1b07-7015-bb8c-c425184082f7",
+  "X-Correlation-ID": "27092128",
+  "X-Server-ID": "vm-bldr-api-ops-app1.ncep.noaa.gov",
+  "Content-Encoding": "gzip",
+  "Content-Length": "173",
+  "Cache-Control": "public, max-age=5, s-maxage=5",
+  "Expires": "Tue, 17 Nov 2026 00:19:08 GMT",
+  "Date": "Tue, 17 Nov 2026 00:19:03 GMT",
+  "Connection": "keep-alive",
+  "Vary": "Accept-Encoding, Accept,Feature-Flags,Accept-Language",
+  "X-Edge-Request-ID": "4e5251ae",
+  "Strict-Transport-Security": "max-age=31536000 ; includeSubDomains ; preload"
+ }
+}

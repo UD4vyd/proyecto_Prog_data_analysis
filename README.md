@@ -22,6 +22,12 @@ observations plus the alerts active now.
 | F3 | NWS API alerts (`/alerts`, `/alerts/active?area=TX`) | incremental warnings by zone |
 | F4 | NWS API station observations (`/stations/{icao}/observations`) | incremental current station data |
 
+## Licenses and attribution
+
+- F1: US Government work, public domain. Cite "NOAA National Centers for Environmental Information (NCEI), Storm Events Database".
+- F2: public domain. Cite Menne et al. (2012), Global Historical Climatology Network - Daily (GHCN-Daily), Version 3, NOAA NCEI, doi:10.7289/V5D21VHZ.
+- F3 and F4: US Government work, public domain. Credit "NOAA National Weather Service (api.weather.gov)". A descriptive User-Agent header is required.
+
 ## Repository structure
 
 ```

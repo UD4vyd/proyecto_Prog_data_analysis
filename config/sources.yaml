@@ -17,7 +17,7 @@ sources:
     format: CSV.gz, one details file per year (StormEvents_details-ftp_v1.0_dYYYY_cYYYYMMDD.csv.gz)
     auth: none
     rate_limits: none documented
-    license: US Government public data
+    license: "US Government work, public domain; cite NOAA National Centers for Environmental Information (NCEI), Storm Events Database"
     historical_strategy: one file per year, 1996 to present
     schedule: daily check of the bulk listing
     watermark_field: compilation suffix _cYYYYMMDD per year
@@ -32,7 +32,7 @@ sources:
     format: JSON, one object per station-day, values as strings, <ELEMENT>_ATTRIBUTES flags
     auth: none
     rate_limits: none documented
-    license: US Government public data
+    license: "Public domain; cite Menne et al. (2012), Global Historical Climatology Network - Daily (GHCN-Daily), Version 3, NOAA NCEI, doi:10.7289/V5D21VHZ"
     historical_strategy: one request per station and year, 1991 to present
     schedule: daily
     watermark_field: DATE (max per station)
@@ -47,7 +47,7 @@ sources:
     format: GeoJSON with CAP fields
     auth: none, User-Agent header with contact required
     rate_limits: not published as a number; NWS asks clients to send a User-Agent and cache responses
-    license: US Government public data
+    license: "US Government work, public domain; credit NOAA National Weather Service (api.weather.gov); a descriptive User-Agent header is required"
     historical_strategy: none (recent alerts only)
     schedule: every 15 minutes
     watermark_field: sent (converted to UTC)
@@ -61,7 +61,7 @@ sources:
     format: GeoJSON, values as {value, unitCode, qualityControl}
     auth: none, User-Agent header with contact required
     rate_limits: not published as a number
-    license: US Government public data
+    license: "US Government work, public domain; credit NOAA National Weather Service (api.weather.gov); a descriptive User-Agent header is required"
     historical_strategy: none (about 7 days kept by NWS)
     schedule: every hour per station
     watermark_field: timestamp (max per station)

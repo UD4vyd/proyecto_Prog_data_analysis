@@ -56,7 +56,7 @@ are shown for context.
 | Access | bulk HTTPS listing | REST, Access Data Service | REST, api.weather.gov | REST, api.weather.gov |
 | Auth | none | none | none, User-Agent required | none, User-Agent required |
 | Limits | none documented | none documented | no number published | no number published |
-| License | US public data | US public data | US public data | US public data |
+| License | US Government work, public domain; cite "NOAA National Centers for Environmental Information (NCEI), Storm Events Database" | public domain; cite Menne et al. (2012), Global Historical Climatology Network - Daily (GHCN-Daily), Version 3, NOAA NCEI, doi:10.7289/V5D21VHZ | US Government work, public domain; credit "NOAA National Weather Service (api.weather.gov)"; a descriptive User-Agent header is required | US Government work, public domain; credit "NOAA National Weather Service (api.weather.gov)"; a descriptive User-Agent header is required |
 | Format | CSV.gz, 51 fields | JSON, values as strings | GeoJSON with CAP fields | GeoJSON, value objects |
 | Coverage | US, 1950-2026 files | station-days | last 7 days, active now | about 7 days per station |
 | Update | yearly file recompiled (`_cYYYYMMDD`) | daily, values can be re-published | continuous | about 5 reports per hour |
@@ -148,7 +148,11 @@ Heat 347.
 
 **F3 poll 1:** 172 alerts in the last 7 days and 6 active, no duplicated ids. 85 Alert, 67 Update and 20
 Cancel messages; severity Moderate 79, Minor 61, Severe 32. Most frequent events: Flood Warning 31,
-Dense Fog Advisory 31, Flood Advisory 29.
+Dense Fog Advisory 31, Flood Advisory 29. Poll 1 returned 172 recent alerts and 6 active alerts, which is
+the complete set of Texas alerts available in the NWS 7-day window: the response is below `limit=500` and
+its `pagination.next` link returns an empty page (checked at 2026-11-17 00:19 UTC, saved in
+`workshop_1/samples/poll2/`). So for our scope F3 is profiled on the full source, which the rubric allows
+when the source has fewer than 200 records.
 
 **F4 poll 1:** 500 records per station covering 94.6 h (KAUS), 97.2 h (KDFW) and 88.5 h (KIAH). No
 duplicates on (station, timestamp). Temperature null 0.1%, range 7.0 to 27.2 degC, QC codes V (1,498)
@@ -321,8 +325,8 @@ Repository: https://github.com/UD4vyd/proyecto_Prog_data_analysis. Deliverables:
 
 - NOAA National Centers for Environmental Information. Storm Events Database.
   https://www.ncei.noaa.gov/stormevents/
-- Menne, M. J., et al. Global Historical Climatology Network - Daily (GHCN-Daily), Version 3. NOAA
-  National Climatic Data Center. doi:10.7289/V5D21VHZ
+- Menne, M. J., et al. (2012). Global Historical Climatology Network - Daily (GHCN-Daily), Version 3.
+  NOAA National Climatic Data Center. doi:10.7289/V5D21VHZ
 - NOAA NCEI. Access Data Service API documentation.
   https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation
 - NOAA NCEI. Integrated Surface Database station history (isd-history.csv).
