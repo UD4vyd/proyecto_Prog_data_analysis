@@ -39,6 +39,7 @@ x-airflow-common:
     - ./datalake_gold:/opt/airflow/datalake_gold
     - ./src:/opt/airflow/project/src
     - ./config:/opt/airflow/project/config
+    - ./ingest.py:/opt/airflow/project/ingest.py
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

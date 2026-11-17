@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 
 from airflow.exceptions import AirflowSkipException
 from airflow.providers.standard.sensors.filesystem import FileSensor
-from airflow.sdk import dag, get_current_context, task
+from airflow.sdk import dag, task
 
 from src import pipeline
 from src.storage import silver
@@ -47,22 +47,23 @@ def silver_processing():
 
     @task
     def list_pending():
-        """Bronze files waiting to be processed, grouped by source."""
-        pending = silver.pending_files()
-        for source, paths in pending.items():
+        """Bronze files waiting to be processed, grouped by source, and the timestamp of this processing run.
+
+        The timestamp is taken once here and shared through XCom, so every Parquet file of the run has the
+        same one and a retried task writes the same file name again.
+        """
+        files = silver.pending_files()
+        for source, paths in files.items():
             log.info("%s: %s pending files", source, len(paths))
-        return pending
+        return {"stamp": pipeline.run_stamp(datetime.now(timezone.utc)), "files": files}
 
     @task
     def process(source: str, pending: dict):
         """Apply the preprocessing pipeline to the files of one source and write one Parquet file."""
-        paths = pending.get(source, [])
+        paths = pending["files"].get(source, [])
         if not paths:
             raise AirflowSkipException(f"{source}: no pending Bronze files")
-        dag_run = get_current_context()["dag_run"]
-        # run_after is the moment this processing run was created, so the file name carries the processing time.
-        stamp = pipeline.run_stamp(dag_run.run_after.astimezone(timezone.utc))
-        return silver.process_source(source, paths, stamp)
+        return silver.process_source(source, paths, pending["stamp"])
 
     @task
     def check(summary: dict):
@@ -74,7 +75,7 @@ def silver_processing():
     @task(trigger_rule="none_failed_min_one_success")
     def archive_bronze(pending: dict):
         """Move the processed Bronze files out of the watched folder. Runs only if no source failed."""
-        return silver.archive([path for paths in pending.values() for path in paths])
+        return silver.archive([path for paths in pending["files"].values() for path in paths])
 
     pending = list_pending()
     wait_for_bronze_file >> pending

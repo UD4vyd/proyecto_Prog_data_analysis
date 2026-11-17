@@ -51,14 +51,14 @@ def extract_daily(stamp, now):
     return bronze.write_staging("ghcn_daily", stamp, result)
 
 
-def extract_storm_events(stamp, years=None):
+def extract_storm_events(stamp, years=None, mode="incremental"):
     """Scrape the listing and download a year file only when its compilation date changed."""
     config = settings.load_settings()["storm_events"]
     loaded = bronze.read_state().get("storm_events", {})
     result = storm_events.fetch_events(years or config["years"], loaded, state_fips=config["state_fips"])
     if not result["records"]:
         return None
-    return bronze.write_staging("storm_events", stamp, result)
+    return bronze.write_staging("storm_events", stamp, result, mode=mode)
 
 
 def extract_daily_history(stamp, start_year, end_year):
@@ -72,4 +72,4 @@ def extract_daily_history(stamp, start_year, end_year):
         merged["requests"] += result["requests"]
         merged["records"] += result["records"]
         merged["state"].update(result["state"])
-    return bronze.write_staging("ghcn_daily", stamp, merged)
+    return bronze.write_staging("ghcn_daily", stamp, merged, mode="historical")

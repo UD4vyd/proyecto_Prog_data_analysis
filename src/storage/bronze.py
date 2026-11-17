@@ -26,10 +26,11 @@ def read_state():
     return {}
 
 
-def write_staging(source, run_stamp, result):
+def write_staging(source, run_stamp, result, mode="incremental"):
     """Write one extraction as a JSON file in the staging folder and return its path."""
     payload = {
         "source": source,
+        "mode": mode,
         "run_stamp": run_stamp,
         "extracted_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "record_count": len(result["records"]),
@@ -81,8 +82,13 @@ def persist_file(path):
     final = settings.BRONZE_DIR / os.path.basename(path)
     os.replace(path, final)  # a rename, so the Silver DAG never sees a half-written file
     state = read_state()
-    state.setdefault(payload["source"], {}).update(payload.get("state", {}))
-    state[payload["source"]]["_last_run_stamp"] = payload["run_stamp"]
+    source_state = state.setdefault(payload["source"], {})
+    for key, value in payload.get("state", {}).items():
+        # A watermark never moves back: a historical load of old years must not hide recent data.
+        if key not in source_state or value > source_state[key]:
+            source_state[key] = value
+    if payload.get("mode") != "historical":
+        source_state["_last_run_stamp"] = payload["run_stamp"]
     settings.STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
     settings.STATE_FILE.write_text(json.dumps(state, indent=1, sort_keys=True), encoding="utf-8")
     log.info("Persisted %s (%s records)", final.name, payload["record_count"])
