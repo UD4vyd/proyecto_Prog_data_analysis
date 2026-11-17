@@ -74,3 +74,31 @@ Download them into `data/raw/` with these names before running the notebook:
 - Source catalogue: [config/sources.yaml](config/sources.yaml)
 - Source status log: [docs/source_status_log.md](docs/source_status_log.md)
 - Evidence: [workshop_1/samples/](workshop_1/samples/)
+
+## Workshop 2: Bronze and Silver pipeline
+
+Status: the Airflow stack runs locally with Docker Compose. The DAG `bronze_ingestion` saves raw JSON
+files of the four sources in `datalake_bronze/` every hour, and the DAG `silver_processing` detects them
+with a FileSensor and writes clean Parquet files in `datalake_silver/`. Gold and the dashboard are planned.
+
+```bash
+cp .env.example .env            # fill FERNET_KEY and NWS_USER_AGENT
+docker compose build
+docker compose up -d            # Airflow UI on http://localhost:8080 (user and password from .env)
+```
+
+In the UI turn on `silver_processing` and `bronze_ingestion`. To start a run by hand use the Trigger
+button or `docker compose exec airflow-scheduler airflow dags trigger bronze_ingestion`.
+If a new DAG file does not appear, run `docker compose restart airflow-dag-processor`.
+
+The same code runs from the command line:
+
+```bash
+docker compose exec airflow-scheduler python /opt/airflow/project/ingest.py --mode status
+docker compose exec airflow-scheduler python /opt/airflow/project/ingest.py --mode historical --source ghcn_daily --start-year 2025 --end-year 2025 --skip-silver
+```
+
+Deliverables: [report](workshop_2/Workshop2_Report.pdf), DAGs in `airflow/dags/`, pipeline code in `src/`,
+[Silver notebook](notebooks/02_silver_exploration.ipynb), samples in `datalake_bronze/processed/` and
+`datalake_silver/`, screenshots in `workshop_2/evidence/`. The Storm Events Bronze file (11.5 MB) is not
+committed; the Bronze DAG rebuilds it.
