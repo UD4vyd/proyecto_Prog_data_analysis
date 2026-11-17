@@ -8,3 +8,5 @@ __pycache__/
 
 # Large raw files (re-downloadable from the bulk listing; .headers.json evidence is kept)
 data/raw/*.csv.gz
+ 
+ CLAUDE.md
