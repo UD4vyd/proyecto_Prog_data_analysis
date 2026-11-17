@@ -8,5 +8,7 @@ __pycache__/
 
 # Large raw files (re-downloadable from the bulk listing; .headers.json evidence is kept)
 data/raw/*.csv.gz
- 
- CLAUDE.md
+
+# Local assistant instructions (not part of the deliverables)
+CLAUDE.md
+CLAUDE_W2.md
