@@ -1,0 +1,5 @@
+# Packages our DAGs need that the apache/airflow:3.4.0 image does not ship.
+# Checked with `docker run --rm apache/airflow:3.4.0 pip list` on 2026-11-17: the image already has
+# pandas 3.1.0, pyarrow 25.0.1, requests 2.34.2 and tzdata 2026.6, so nothing is missing today.
+# Add a package here only if it is missing from the image; airflow/Dockerfile installs this file
+# with the Airflow constraints so it can never upgrade what Airflow pins.

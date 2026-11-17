@@ -12,3 +12,14 @@ data/raw/*.csv.gz
 # Local assistant instructions (not part of the deliverables)
 CLAUDE.md
 CLAUDE_W2.md
+
+# Workshop 2: Airflow logs and the data lake. Only small samples are committed; they are listed
+# one by one below (and in datalake_bronze/README.md and datalake_silver/README.md).
+airflow/logs/
+datalake_bronze/**
+!datalake_bronze/**/
+!datalake_bronze/README.md
+datalake_silver/**
+!datalake_silver/**/
+!datalake_silver/README.md
+!datalake_gold/.gitkeep
