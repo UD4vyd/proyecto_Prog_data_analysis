@@ -42,7 +42,7 @@ ingest.py       command-line stub (--mode historical|incremental|status)
 
 ## Setup
 
-Requires Python 3.12 and Poetry.
+Requires Python 3.11 to 3.13 and Poetry.
 
 ```bash
 poetry install                       # creates .venv in the project folder
@@ -81,10 +81,23 @@ Status: the Airflow stack runs locally with Docker Compose. The DAG `bronze_inge
 files of the four sources in `datalake_bronze/` every hour, and the DAG `silver_processing` detects them
 with a FileSensor and writes clean Parquet files in `datalake_silver/`. Gold and the dashboard are planned.
 
+Dependencies are managed with Poetry (`pyproject.toml` and `poetry.lock`). The Airflow image installs the
+dependency list of `pyproject.toml`, and `requirements.txt` is the export of the lock
+(`poetry export --only main --without-hashes -o requirements.txt`).
+
 ```bash
 cp .env.example .env            # fill FERNET_KEY and NWS_USER_AGENT
-docker compose build
+docker compose build            # image with the dependencies of pyproject.toml
 docker compose up -d            # Airflow UI on http://localhost:8080 (user and password from .env)
+```
+
+To add a library: `poetry add <name>`, export `requirements.txt` again and run `docker compose build`.
+Tests and notebooks run in the Poetry environment:
+
+```bash
+poetry install
+poetry run pytest
+poetry run jupyter nbconvert --to notebook --execute --inplace notebooks/02_silver_exploration.ipynb
 ```
 
 In the UI turn on `silver_processing` and `bronze_ingestion`. To start a run by hand use the Trigger

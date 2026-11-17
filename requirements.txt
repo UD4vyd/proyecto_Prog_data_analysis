@@ -1,7 +1,18 @@
-# Libraries used by the pipeline code in src/ and by the DAGs.
-# Airflow itself comes from the base image (apache/airflow:3.4.0).
-requests==2.34.2
-beautifulsoup4==4.15.0
-pandas==3.1.0
-pyarrow==25.0.1
-pyyaml==6.0.3
+# Main dependencies of the project with the exact versions of poetry.lock.
+# Generated file, do not edit. To update it after `poetry add` or `poetry lock`:
+#   poetry export --only main --without-hashes -o requirements.txt   (needs poetry-plugin-export)
+# The Airflow image does not use this file, see the Dockerfile.
+beautifulsoup4==4.15.0 ; python_version >= "3.11" and python_version < "3.14"
+certifi==2026.10.23 ; python_version >= "3.11" and python_version < "3.14"
+charset-normalizer==3.5.2 ; python_version >= "3.11" and python_version < "3.14"
+idna==3.20 ; python_version >= "3.11" and python_version < "3.14"
+numpy==2.4.6 ; python_version >= "3.11" and python_version < "3.14"
+pandas==3.1.1 ; python_version >= "3.11" and python_version < "3.14"
+pyarrow==25.0.1 ; python_version >= "3.11" and python_version < "3.14"
+python-dateutil==4.0.0 ; python_version >= "3.11" and python_version < "3.14"
+pyyaml==6.0.3 ; python_version >= "3.11" and python_version < "3.14"
+requests==2.34.2 ; python_version >= "3.11" and python_version < "3.14"
+soupsieve==2.10 ; python_version >= "3.11" and python_version < "3.14"
+typing-extensions==4.16.0 ; python_version >= "3.11" and python_version < "3.14"
+tzdata==2026.6 ; python_version >= "3.11" and python_version < "3.14"
+urllib3==2.8.0 ; python_version >= "3.11" and python_version < "3.14"
