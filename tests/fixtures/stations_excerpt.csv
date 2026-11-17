@@ -1,0 +1,3 @@
+ghcn_id,wban,icao,name,lat,lon,forecast_zone,county_zone,timezone
+USW00003927,03927,KDFW,DAL-FTW WSCMO AP,32.8975,-97.0219,TXZ119,TXC113,America/Chicago
+USW00023044,23044,KELP,EL PASO INTL AP,31.8122,-106.3775,TXZ419,TXC141,America/Denver

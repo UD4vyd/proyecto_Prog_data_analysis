@@ -1,0 +1,685 @@
+{
+ "f4_features": {
+  "out_of_physical_bounds": {
+   "id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.03,
+     32.9
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+    "@type": "wx:ObservationStation",
+    "elevation": {
+     "unitCode": "wmoUnit:m",
+     "value": 182
+    },
+    "station": "https://api.weather.gov/stations/KDFW",
+    "stationId": "KDFW",
+    "stationName": "Dallas/Fort Worth International Airport",
+    "timestamp": "2026-11-16T23:55:00+00:00",
+    "rawMessage": "",
+    "textDescription": "Clear",
+    "icon": "https://api.weather.gov/icons/land/night/skc?size=medium",
+    "presentWeather": [],
+    "temperature": {
+     "unitCode": "wmoUnit:degC",
+     "value": 70,
+     "qualityControl": "V"
+    },
+    "dewpoint": {
+     "unitCode": "wmoUnit:degC",
+     "value": -1,
+     "qualityControl": "V"
+    },
+    "windDirection": {
+     "unitCode": "wmoUnit:degree_(angle)",
+     "value": 50,
+     "qualityControl": "V"
+    },
+    "windSpeed": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": 5.544,
+     "qualityControl": "V"
+    },
+    "windGust": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "barometricPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": 102776.9,
+     "qualityControl": "V"
+    },
+    "seaLevelPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "visibility": {
+     "unitCode": "wmoUnit:m",
+     "value": 16093.44,
+     "qualityControl": "C"
+    },
+    "maxTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "minTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "precipitationLast3Hours": {
+     "unitCode": "wmoUnit:mm",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "relativeHumidity": {
+     "unitCode": "wmoUnit:percent",
+     "value": 37.995659795772,
+     "qualityControl": "V"
+    },
+    "windChill": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "heatIndex": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "cloudLayers": [
+     {
+      "base": {
+       "unitCode": "wmoUnit:m",
+       "value": 3810
+      },
+      "amount": "CLR"
+     }
+    ]
+   }
+  },
+  "unknown_unit": {
+   "id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.03,
+     32.9
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+    "@type": "wx:ObservationStation",
+    "elevation": {
+     "unitCode": "wmoUnit:m",
+     "value": 182
+    },
+    "station": "https://api.weather.gov/stations/KDFW",
+    "stationId": "KDFW",
+    "stationName": "Dallas/Fort Worth International Airport",
+    "timestamp": "2026-11-16T23:55:00+00:00",
+    "rawMessage": "",
+    "textDescription": "Clear",
+    "icon": "https://api.weather.gov/icons/land/night/skc?size=medium",
+    "presentWeather": [],
+    "temperature": {
+     "unitCode": "wmoUnit:degF",
+     "value": 13,
+     "qualityControl": "V"
+    },
+    "dewpoint": {
+     "unitCode": "wmoUnit:degC",
+     "value": -1,
+     "qualityControl": "V"
+    },
+    "windDirection": {
+     "unitCode": "wmoUnit:degree_(angle)",
+     "value": 50,
+     "qualityControl": "V"
+    },
+    "windSpeed": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": 5.544,
+     "qualityControl": "V"
+    },
+    "windGust": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "barometricPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": 102776.9,
+     "qualityControl": "V"
+    },
+    "seaLevelPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "visibility": {
+     "unitCode": "wmoUnit:m",
+     "value": 16093.44,
+     "qualityControl": "C"
+    },
+    "maxTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "minTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "precipitationLast3Hours": {
+     "unitCode": "wmoUnit:mm",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "relativeHumidity": {
+     "unitCode": "wmoUnit:percent",
+     "value": 37.995659795772,
+     "qualityControl": "V"
+    },
+    "windChill": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "heatIndex": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "cloudLayers": [
+     {
+      "base": {
+       "unitCode": "wmoUnit:m",
+       "value": 3810
+      },
+      "amount": "CLR"
+     }
+    ]
+   }
+  },
+  "failed_nws_qc": {
+   "id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.03,
+     32.9
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+    "@type": "wx:ObservationStation",
+    "elevation": {
+     "unitCode": "wmoUnit:m",
+     "value": 182
+    },
+    "station": "https://api.weather.gov/stations/KDFW",
+    "stationId": "KDFW",
+    "stationName": "Dallas/Fort Worth International Airport",
+    "timestamp": "2026-11-16T23:55:00+00:00",
+    "rawMessage": "",
+    "textDescription": "Clear",
+    "icon": "https://api.weather.gov/icons/land/night/skc?size=medium",
+    "presentWeather": [],
+    "temperature": {
+     "unitCode": "wmoUnit:degC",
+     "value": 13,
+     "qualityControl": "X"
+    },
+    "dewpoint": {
+     "unitCode": "wmoUnit:degC",
+     "value": -1,
+     "qualityControl": "V"
+    },
+    "windDirection": {
+     "unitCode": "wmoUnit:degree_(angle)",
+     "value": 50,
+     "qualityControl": "V"
+    },
+    "windSpeed": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": 5.544,
+     "qualityControl": "V"
+    },
+    "windGust": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "barometricPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": 102776.9,
+     "qualityControl": "V"
+    },
+    "seaLevelPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "visibility": {
+     "unitCode": "wmoUnit:m",
+     "value": 16093.44,
+     "qualityControl": "C"
+    },
+    "maxTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "minTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "precipitationLast3Hours": {
+     "unitCode": "wmoUnit:mm",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "relativeHumidity": {
+     "unitCode": "wmoUnit:percent",
+     "value": 37.995659795772,
+     "qualityControl": "V"
+    },
+    "windChill": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "heatIndex": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "cloudLayers": [
+     {
+      "base": {
+       "unitCode": "wmoUnit:m",
+       "value": 3810
+      },
+      "amount": "CLR"
+     }
+    ]
+   }
+  },
+  "out_of_scope": {
+   "id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.19,
+     25.79
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+    "@type": "wx:ObservationStation",
+    "elevation": {
+     "unitCode": "wmoUnit:m",
+     "value": 182
+    },
+    "station": "https://api.weather.gov/stations/KDFW",
+    "stationId": "KDFW",
+    "stationName": "Dallas/Fort Worth International Airport",
+    "timestamp": "2026-11-16T23:55:00+00:00",
+    "rawMessage": "",
+    "textDescription": "Clear",
+    "icon": "https://api.weather.gov/icons/land/night/skc?size=medium",
+    "presentWeather": [],
+    "temperature": {
+     "unitCode": "wmoUnit:degC",
+     "value": 13,
+     "qualityControl": "V"
+    },
+    "dewpoint": {
+     "unitCode": "wmoUnit:degC",
+     "value": -1,
+     "qualityControl": "V"
+    },
+    "windDirection": {
+     "unitCode": "wmoUnit:degree_(angle)",
+     "value": 50,
+     "qualityControl": "V"
+    },
+    "windSpeed": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": 5.544,
+     "qualityControl": "V"
+    },
+    "windGust": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "barometricPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": 102776.9,
+     "qualityControl": "V"
+    },
+    "seaLevelPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "visibility": {
+     "unitCode": "wmoUnit:m",
+     "value": 16093.44,
+     "qualityControl": "C"
+    },
+    "maxTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "minTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "precipitationLast3Hours": {
+     "unitCode": "wmoUnit:mm",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "relativeHumidity": {
+     "unitCode": "wmoUnit:percent",
+     "value": 37.995659795772,
+     "qualityControl": "V"
+    },
+    "windChill": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "heatIndex": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "cloudLayers": [
+     {
+      "base": {
+       "unitCode": "wmoUnit:m",
+       "value": 3810
+      },
+      "amount": "CLR"
+     }
+    ]
+   }
+  },
+  "missing_key": {
+   "id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -97.03,
+     32.9
+    ]
+   },
+   "properties": {
+    "@id": "https://api.weather.gov/stations/KDFW/observations/2026-11-16T23:55:00+00:00",
+    "@type": "wx:ObservationStation",
+    "elevation": {
+     "unitCode": "wmoUnit:m",
+     "value": 182
+    },
+    "station": "https://api.weather.gov/stations/KDFW",
+    "stationName": "Dallas/Fort Worth International Airport",
+    "timestamp": "2026-11-16T23:55:00+00:00",
+    "rawMessage": "",
+    "textDescription": "Clear",
+    "icon": "https://api.weather.gov/icons/land/night/skc?size=medium",
+    "presentWeather": [],
+    "temperature": {
+     "unitCode": "wmoUnit:degC",
+     "value": 13,
+     "qualityControl": "V"
+    },
+    "dewpoint": {
+     "unitCode": "wmoUnit:degC",
+     "value": -1,
+     "qualityControl": "V"
+    },
+    "windDirection": {
+     "unitCode": "wmoUnit:degree_(angle)",
+     "value": 50,
+     "qualityControl": "V"
+    },
+    "windSpeed": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": 5.544,
+     "qualityControl": "V"
+    },
+    "windGust": {
+     "unitCode": "wmoUnit:km_h-1",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "barometricPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": 102776.9,
+     "qualityControl": "V"
+    },
+    "seaLevelPressure": {
+     "unitCode": "wmoUnit:Pa",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "visibility": {
+     "unitCode": "wmoUnit:m",
+     "value": 16093.44,
+     "qualityControl": "C"
+    },
+    "maxTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "minTemperatureLast24Hours": {
+     "unitCode": "wmoUnit:degC",
+     "value": null
+    },
+    "precipitationLast3Hours": {
+     "unitCode": "wmoUnit:mm",
+     "value": null,
+     "qualityControl": "Z"
+    },
+    "relativeHumidity": {
+     "unitCode": "wmoUnit:percent",
+     "value": 37.995659795772,
+     "qualityControl": "V"
+    },
+    "windChill": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "heatIndex": {
+     "unitCode": "wmoUnit:degC",
+     "value": null,
+     "qualityControl": "V"
+    },
+    "cloudLayers": [
+     {
+      "base": {
+       "unitCode": "wmoUnit:m",
+       "value": 3810
+      },
+      "amount": "CLR"
+     }
+    ]
+   }
+  }
+ },
+ "f2_records": {
+  "failed_ncei_qc": {
+   "DATE": "2025-01-01",
+   "STATION": "USW00003927",
+   "PRCP_ATTRIBUTES": ",,W",
+   "TMAX": "10.0",
+   "TMAX_ATTRIBUTES": ",I,W",
+   "TMIN": "2.2",
+   "PRCP": "0.0",
+   "TMIN_ATTRIBUTES": ",,W"
+  },
+  "not_numeric": {
+   "DATE": "2025-01-01",
+   "STATION": "USW00003927",
+   "PRCP_ATTRIBUTES": ",,W",
+   "TMAX": "10.0",
+   "TMAX_ATTRIBUTES": ",,W",
+   "TMIN": "abc",
+   "PRCP": "0.0",
+   "TMIN_ATTRIBUTES": ",,W"
+  },
+  "out_of_physical_bounds": {
+   "DATE": "2025-01-01",
+   "STATION": "USW00003927",
+   "PRCP_ATTRIBUTES": ",,W",
+   "TMAX": "10.0",
+   "TMAX_ATTRIBUTES": ",,W",
+   "TMIN": "2.2",
+   "PRCP": "800.0",
+   "TMIN_ATTRIBUTES": ",,W"
+  },
+  "out_of_scope": {
+   "DATE": "2025-01-01",
+   "STATION": "USW00099999",
+   "PRCP_ATTRIBUTES": ",,W",
+   "TMAX": "10.0",
+   "TMAX_ATTRIBUTES": ",,W",
+   "TMIN": "2.2",
+   "PRCP": "0.0",
+   "TMIN_ATTRIBUTES": ",,W"
+  }
+ },
+ "f3_out_of_scope": {
+  "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.3c8cb3a85de63662615e82aa3de94fc649624fe8.001.1",
+  "type": "Feature",
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      -106.8,
+      38.17
+     ],
+     [
+      -106.59,
+      38.36
+     ],
+     [
+      -106.33,
+      38.45
+     ],
+     [
+      -106.33,
+      38.33
+     ],
+     [
+      -106.54,
+      38.260000000000005
+     ],
+     [
+      -106.8,
+      38.07
+     ],
+     [
+      -106.8,
+      38.17
+     ]
+    ]
+   ]
+  },
+  "properties": {
+   "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.3c8cb3a85de63662615e82aa3de94fc649624fe8.001.1",
+   "@type": "wx:Alert",
+   "id": "urn:oid:2.49.0.1.840.0.3c8cb3a85de63662615e82aa3de94fc649624fe8.001.1",
+   "areaDesc": "McMullen, TX",
+   "geocode": {
+    "SAME": [
+     "048311"
+    ],
+    "UGC": [
+     "TXC311"
+    ]
+   },
+   "affectedZones": [
+    "https://api.weather.gov/zones/county/TXC311"
+   ],
+   "references": [
+    {
+     "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.e98fa667dbddb33c715d8cc82aefe3f3184d0bd2.001.1",
+     "identifier": "urn:oid:2.49.0.1.840.0.e98fa667dbddb33c715d8cc82aefe3f3184d0bd2.001.1",
+     "sender": "w-nws.webmaster@noaa.gov",
+     "sent": "2026-11-15T19:36:00-06:00"
+    }
+   ],
+   "sent": "2026-11-16T09:44:00-06:00",
+   "effective": "2026-11-16T09:44:00-06:00",
+   "onset": "2026-11-16T09:44:00-06:00",
+   "expires": "2026-11-17T00:45:00-06:00",
+   "ends": "2026-11-17T23:48:00-06:00",
+   "status": "Actual",
+   "messageType": "Update",
+   "category": "Met",
+   "severity": "Severe",
+   "certainty": "Observed",
+   "urgency": "Immediate",
+   "event": "Flood Warning",
+   "sender": "w-nws.webmaster@noaa.gov",
+   "senderName": "NWS Corpus Christi TX",
+   "headline": "Flood Warning issued November 16 at 9:44AM CST until November 17 at 11:48PM CST by NWS Corpus Christi TX",
+   "description": "...The Flood Warning is extended for the following rivers in Texas...\n\nNueces River Near Tilden affecting McMullen County.\n\nFor the Nueces River...including Cotulla, Tilden, Three Rivers,\nMathis, Bluntzer, Calallen...Moderate flooding is forecast.\n\n- Forecast...The river is expected to fall below flood stage\ntomorrow morning and continue falling to 4.1 feet Thursday\nevening.\n- Flood stage is 14.0 feet.\n- http://www.weather.gov/safety/flood",
+   "instruction": "Turn around, don't drown when encountering flooded roads. Most flood\ndeaths occur in vehicles.\n\nCaution is urged when walking near riverbanks.\n\nPlease report observed flooding to local emergency services or law\nenforcement and request they pass this information to the National\nWeather Service when you can do so safely.\n\nAdditional information is available at www.weather.gov/crp.",
+   "response": "Avoid",
+   "note": null,
+   "parameters": {
+    "AWIPSidentifier": [
+     "FLSCRP"
+    ],
+    "WMOidentifier": [
+     "WGUS84 KCRP 161544"
+    ],
+    "BLOCKCHANNEL": [
+     "EAS",
+     "NWEM",
+     "CMAS"
+    ],
+    "EAS-ORG": [
+     "WXR"
+    ],
+    "VTEC": [
+     "/O.EXT.KCRP.FL.W.0029.000000T0000Z-261118T0548Z/"
+    ],
+    "eventEndingTime": [
+     "2026-11-17T23:48:00-06:00"
+    ],
+    "expiredReferences": [
+     "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.884a2986aa03c1fa0b7e8fbbfb4797ef2b10d698.001.1,2026-11-15T13:30:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.40b6170256c15c4006bf8dd75dcb4052240655a5.001.1,2026-11-15T09:47:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.bdf26212e0aefd846b02a927ce0356e50037a4d5.001.1,2026-11-14T19:02:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.345324fc558f5c9e6675fb3c22721808d96fc4a3.001.1,2026-11-14T08:54:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.3cfa0b70a6989855fa7c22e761815c65c7a1afe4.001.1,2026-11-13T20:06:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.fbd7c04b6ed4e0eb360466d1a792c42b6fc9faf9.001.1,2026-11-13T08:17:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.79f54306900ef4f7373e0c7a36f1cc25dcf1b383.001.1,2026-11-12T18:55:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.18e883687f46e7c2a345a1cd781a4152492db08b.001.1,2026-11-12T08:31:00-06:00"
+    ]
+   },
+   "scope": "Public",
+   "code": "IPAWSv1.0",
+   "language": "en-US",
+   "web": "http://www.weather.gov",
+   "eventCode": {
+    "SAME": [
+     "FLS"
+    ],
+    "NationalWeatherService": [
+     "FLW"
+    ]
+   }
+  }
+ }
+}
