@@ -1,0 +1,601 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "@vocab": "https://api.weather.gov/ontology#"
+        }
+    ],
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0031146a47a58e058776b0015d3245f6a6d8ff5d.001.1",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0031146a47a58e058776b0015d3245f6a6d8ff5d.001.1",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.0031146a47a58e058776b0015d3245f6a6d8ff5d.001.1",
+                "areaDesc": "Aransas Islands; Kleberg Islands; Nueces Islands; Calhoun Islands",
+                "geocode": {
+                    "SAME": [
+                        "048007",
+                        "048273",
+                        "048355",
+                        "048057"
+                    ],
+                    "UGC": [
+                        "TXZ345",
+                        "TXZ442",
+                        "TXZ443",
+                        "TXZ447"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/forecast/TXZ345",
+                    "https://api.weather.gov/zones/forecast/TXZ442",
+                    "https://api.weather.gov/zones/forecast/TXZ443",
+                    "https://api.weather.gov/zones/forecast/TXZ447"
+                ],
+                "references": [
+                    {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.da52aa5bdab62d096a63422335c94be5986016e6.001.1",
+                        "identifier": "urn:oid:2.49.0.1.840.0.da52aa5bdab62d096a63422335c94be5986016e6.001.1",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "sent": "2026-11-16T00:44:00-06:00"
+                    }
+                ],
+                "sent": "2026-11-16T16:49:00-06:00",
+                "effective": "2026-11-16T16:49:00-06:00",
+                "onset": "2026-11-16T16:49:00-06:00",
+                "expires": "2026-11-17T01:00:00-06:00",
+                "ends": "2026-11-17T09:00:00-06:00",
+                "status": "Actual",
+                "messageType": "Update",
+                "category": "Met",
+                "severity": "Minor",
+                "certainty": "Likely",
+                "urgency": "Expected",
+                "event": "Coastal Flood Advisory",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Corpus Christi TX",
+                "headline": "Coastal Flood Advisory issued November 16 at 4:49PM CST until November 17 at 9:00AM CST by NWS Corpus Christi TX",
+                "description": "* WHAT...For the Coastal Flood Advisory, minor coastal flooding.\nFor the High Rip Current Risk, dangerous rip currents.\n\n* WHERE...Aransas Islands, Kleberg Islands, Nueces Islands and\nCalhoun Islands Counties.\n\n* WHEN...For the Coastal Flood Advisory, until 9 AM CST Tuesday.\nFor the High Rip Current Risk, through Tuesday afternoon.\n\n* IMPACTS...Flooding of lots, parks, and roads with only\nisolated road closures expected. Rip currents can sweep even\nthe most experienced swimmers away from shore into deeper\nwater. These rip currents can become life-threatening to\nanyone entering the surf.",
+                "instruction": "If travel is required, allow extra time as some roads may be\nclosed. Do not drive around barricades or through water of\nunknown depth. Take the necessary actions to protect flood-prone\nproperty.\n\nSwim near a lifeguard. If caught in a rip current, relax and\nfloat. Don't swim against the current. If able, swim in a\ndirection following the shoreline. If unable to escape, face the\nshore and call or wave for help.",
+                "response": "Monitor",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "CFWCRP"
+                    ],
+                    "WMOidentifier": [
+                        "WHUS44 KCRP 162249"
+                    ],
+                    "NWSheadline": [
+                        "COASTAL FLOOD ADVISORY REMAINS IN EFFECT UNTIL 9 AM CST TUESDAY... ...HIGH RIP CURRENT RISK REMAINS IN EFFECT THROUGH TUESDAY AFTERNOON"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "VTEC": [
+                        "/O.CON.KCRP.CF.Y.0025.000000T0000Z-261117T1500Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-11-17T09:00:00-06:00"
+                    ],
+                    "expiredReferences": [
+                        "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.857dcd9f40e5723d42e33270cd8808a4ac4cf6be.001.1,2026-11-15T13:53:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.c989205c158b3053443ed06532b366af00f64879.001.1,2026-11-15T04:15:00-06:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "NWS"
+                    ],
+                    "NationalWeatherService": [
+                        "CFY"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0031146a47a58e058776b0015d3245f6a6d8ff5d.001.2",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0031146a47a58e058776b0015d3245f6a6d8ff5d.001.2",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.0031146a47a58e058776b0015d3245f6a6d8ff5d.001.2",
+                "areaDesc": "Aransas Islands; Kleberg Islands; Nueces Islands; Calhoun Islands",
+                "geocode": {
+                    "SAME": [
+                        "048007",
+                        "048273",
+                        "048355",
+                        "048057"
+                    ],
+                    "UGC": [
+                        "TXZ345",
+                        "TXZ442",
+                        "TXZ443",
+                        "TXZ447"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/forecast/TXZ345",
+                    "https://api.weather.gov/zones/forecast/TXZ442",
+                    "https://api.weather.gov/zones/forecast/TXZ443",
+                    "https://api.weather.gov/zones/forecast/TXZ447"
+                ],
+                "references": [
+                    {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.da52aa5bdab62d096a63422335c94be5986016e6.001.2",
+                        "identifier": "urn:oid:2.49.0.1.840.0.da52aa5bdab62d096a63422335c94be5986016e6.001.2",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "sent": "2026-11-16T00:44:00-06:00"
+                    }
+                ],
+                "sent": "2026-11-16T16:49:00-06:00",
+                "effective": "2026-11-16T16:49:00-06:00",
+                "onset": "2026-11-16T16:49:00-06:00",
+                "expires": "2026-11-17T01:00:00-06:00",
+                "ends": "2026-11-17T18:00:00-06:00",
+                "status": "Actual",
+                "messageType": "Update",
+                "category": "Met",
+                "severity": "Moderate",
+                "certainty": "Likely",
+                "urgency": "Expected",
+                "event": "Rip Current Statement",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Corpus Christi TX",
+                "headline": "Rip Current Statement issued November 16 at 4:49PM CST until November 17 at 6:00PM CST by NWS Corpus Christi TX",
+                "description": "* WHAT...For the Coastal Flood Advisory, minor coastal flooding.\nFor the High Rip Current Risk, dangerous rip currents.\n\n* WHERE...Aransas Islands, Kleberg Islands, Nueces Islands and\nCalhoun Islands Counties.\n\n* WHEN...For the Coastal Flood Advisory, until 9 AM CST Tuesday.\nFor the High Rip Current Risk, through Tuesday afternoon.\n\n* IMPACTS...Flooding of lots, parks, and roads with only\nisolated road closures expected. Rip currents can sweep even\nthe most experienced swimmers away from shore into deeper\nwater. These rip currents can become life-threatening to\nanyone entering the surf.",
+                "instruction": "If travel is required, allow extra time as some roads may be\nclosed. Do not drive around barricades or through water of\nunknown depth. Take the necessary actions to protect flood-prone\nproperty.\n\nSwim near a lifeguard. If caught in a rip current, relax and\nfloat. Don't swim against the current. If able, swim in a\ndirection following the shoreline. If unable to escape, face the\nshore and call or wave for help.",
+                "response": "Avoid",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "CFWCRP"
+                    ],
+                    "WMOidentifier": [
+                        "WHUS44 KCRP 162249"
+                    ],
+                    "NWSheadline": [
+                        "COASTAL FLOOD ADVISORY REMAINS IN EFFECT UNTIL 9 AM CST TUESDAY... ...HIGH RIP CURRENT RISK REMAINS IN EFFECT THROUGH TUESDAY AFTERNOON"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "VTEC": [
+                        "/O.CON.KCRP.RP.S.0009.000000T0000Z-261118T0000Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-11-17T18:00:00-06:00"
+                    ],
+                    "expiredReferences": [
+                        "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.857dcd9f40e5723d42e33270cd8808a4ac4cf6be.001.2,2026-11-15T13:53:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.c989205c158b3053443ed06532b366af00f64879.001.2,2026-11-15T04:15:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.0782bf130a1b9a4c25da48706608704a3aa55066.001.1,2026-11-14T23:56:00-06:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "NWS"
+                    ],
+                    "NationalWeatherService": [
+                        "RPS"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.1",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.1",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.1",
+                "areaDesc": "Kenedy Island; Willacy Island; Cameron Island",
+                "geocode": {
+                    "SAME": [
+                        "048261",
+                        "048489",
+                        "048061"
+                    ],
+                    "UGC": [
+                        "TXZ451",
+                        "TXZ454",
+                        "TXZ455"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/forecast/TXZ451",
+                    "https://api.weather.gov/zones/forecast/TXZ454",
+                    "https://api.weather.gov/zones/forecast/TXZ455"
+                ],
+                "references": [
+                    {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.9e8c1e7b5e90f5be0dfe6d56ae63d33df69e47eb.001.1",
+                        "identifier": "urn:oid:2.49.0.1.840.0.9e8c1e7b5e90f5be0dfe6d56ae63d33df69e47eb.001.1",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "sent": "2026-11-16T02:34:00-06:00"
+                    }
+                ],
+                "sent": "2026-11-16T13:28:00-06:00",
+                "effective": "2026-11-16T13:28:00-06:00",
+                "onset": "2026-11-16T13:28:00-06:00",
+                "expires": "2026-11-17T00:00:00-06:00",
+                "ends": "2026-11-18T06:00:00-06:00",
+                "status": "Actual",
+                "messageType": "Update",
+                "category": "Met",
+                "severity": "Minor",
+                "certainty": "Likely",
+                "urgency": "Expected",
+                "event": "Coastal Flood Advisory",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Brownsville TX",
+                "headline": "Coastal Flood Advisory issued November 16 at 1:28PM CST until November 18 at 6:00AM CST by NWS Brownsville TX",
+                "description": "* WHAT...For the Coastal Flood Advisory, minor coastal flooding.\nFor the High Surf Advisory, large breaking waves of 4 to 8\nfeet in the surf zone. For the High Rip Current Risk,\ndangerous rip currents.\n\n* WHERE...Kenedy Island, Willacy Island and Cameron Island\nCounties.\n\n* WHEN...For the Coastal Flood Advisory, until 6 AM CST\nWednesday. For the High Rip Current Risk, through late Tuesday\nnight.\n\n* IMPACTS...Nuisance flooding is expected, with water reaching or\npushing into the dunes on South Padre Island. Vehicles, except\nthose with four wheel drive and high wheel bases, will be unable\nto be driven on the beach. This includes locations north of\nPublic Beach Access #3. Minor to moderate beach erosion is\nexpected. Dangerous swimming and surfing conditions and\nlocalized beach erosion. Rip currents can sweep even the best\nswimmers away from shore into deeper water.",
+                "instruction": "If travel is required, allow extra time as some roads may be\nclosed. Do not drive around barricades or through water of\nunknown depth. Take the necessary actions to protect flood-prone\nproperty.\n\nInexperienced swimmers should remain out of the water due to\ndangerous surf conditions.\n\nSwim near a lifeguard. If caught in a rip current, relax and\nfloat. Don't swim against the current. If able, swim in a\ndirection following the shoreline. If unable to escape, face the\nshore and call or wave for help.",
+                "response": "Monitor",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "CFWBRO"
+                    ],
+                    "WMOidentifier": [
+                        "WHUS44 KBRO 161928"
+                    ],
+                    "NWSheadline": [
+                        "COASTAL FLOOD ADVISORY REMAINS IN EFFECT UNTIL 6 AM CST WEDNESDAY... ...HIGH SURF ADVISORY REMAINS IN EFFECT UNTIL 6 AM CST WEDNESDAY... ...HIGH RIP CURRENT RISK REMAINS IN EFFECT THROUGH LATE TUESDAY NIGHT"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "VTEC": [
+                        "/O.CON.KBRO.CF.Y.0005.000000T0000Z-261118T1200Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-11-18T06:00:00-06:00"
+                    ],
+                    "expiredReferences": [
+                        "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.cd7d9dd8c2e060d4075a298f8596605738437178.001.1,2026-11-15T22:48:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.3bedeb93d250cb048c128aed0ffba5eacebe1361.001.1,2026-11-15T02:27:00-06:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "NWS"
+                    ],
+                    "NationalWeatherService": [
+                        "CFY"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.2",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.2",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.2",
+                "areaDesc": "Kenedy Island; Willacy Island; Cameron Island",
+                "geocode": {
+                    "SAME": [
+                        "048261",
+                        "048489",
+                        "048061"
+                    ],
+                    "UGC": [
+                        "TXZ451",
+                        "TXZ454",
+                        "TXZ455"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/forecast/TXZ451",
+                    "https://api.weather.gov/zones/forecast/TXZ454",
+                    "https://api.weather.gov/zones/forecast/TXZ455"
+                ],
+                "references": [
+                    {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.9e8c1e7b5e90f5be0dfe6d56ae63d33df69e47eb.001.2",
+                        "identifier": "urn:oid:2.49.0.1.840.0.9e8c1e7b5e90f5be0dfe6d56ae63d33df69e47eb.001.2",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "sent": "2026-11-16T02:34:00-06:00"
+                    }
+                ],
+                "sent": "2026-11-16T13:28:00-06:00",
+                "effective": "2026-11-16T13:28:00-06:00",
+                "onset": "2026-11-16T13:28:00-06:00",
+                "expires": "2026-11-17T00:00:00-06:00",
+                "ends": "2026-11-18T06:00:00-06:00",
+                "status": "Actual",
+                "messageType": "Update",
+                "category": "Met",
+                "severity": "Minor",
+                "certainty": "Likely",
+                "urgency": "Expected",
+                "event": "High Surf Advisory",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Brownsville TX",
+                "headline": "High Surf Advisory issued November 16 at 1:28PM CST until November 18 at 6:00AM CST by NWS Brownsville TX",
+                "description": "* WHAT...For the Coastal Flood Advisory, minor coastal flooding.\nFor the High Surf Advisory, large breaking waves of 4 to 8\nfeet in the surf zone. For the High Rip Current Risk,\ndangerous rip currents.\n\n* WHERE...Kenedy Island, Willacy Island and Cameron Island\nCounties.\n\n* WHEN...For the Coastal Flood Advisory, until 6 AM CST\nWednesday. For the High Rip Current Risk, through late Tuesday\nnight.\n\n* IMPACTS...Nuisance flooding is expected, with water reaching or\npushing into the dunes on South Padre Island. Vehicles, except\nthose with four wheel drive and high wheel bases, will be unable\nto be driven on the beach. This includes locations north of\nPublic Beach Access #3. Minor to moderate beach erosion is\nexpected. Dangerous swimming and surfing conditions and\nlocalized beach erosion. Rip currents can sweep even the best\nswimmers away from shore into deeper water.",
+                "instruction": "If travel is required, allow extra time as some roads may be\nclosed. Do not drive around barricades or through water of\nunknown depth. Take the necessary actions to protect flood-prone\nproperty.\n\nInexperienced swimmers should remain out of the water due to\ndangerous surf conditions.\n\nSwim near a lifeguard. If caught in a rip current, relax and\nfloat. Don't swim against the current. If able, swim in a\ndirection following the shoreline. If unable to escape, face the\nshore and call or wave for help.",
+                "response": "Avoid",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "CFWBRO"
+                    ],
+                    "WMOidentifier": [
+                        "WHUS44 KBRO 161928"
+                    ],
+                    "NWSheadline": [
+                        "COASTAL FLOOD ADVISORY REMAINS IN EFFECT UNTIL 6 AM CST WEDNESDAY... ...HIGH SURF ADVISORY REMAINS IN EFFECT UNTIL 6 AM CST WEDNESDAY... ...HIGH RIP CURRENT RISK REMAINS IN EFFECT THROUGH LATE TUESDAY NIGHT"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "VTEC": [
+                        "/O.CON.KBRO.SU.Y.0013.000000T0000Z-261118T1200Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-11-18T06:00:00-06:00"
+                    ],
+                    "expiredReferences": [
+                        "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.cd7d9dd8c2e060d4075a298f8596605738437178.001.2,2026-11-15T22:48:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.3bedeb93d250cb048c128aed0ffba5eacebe1361.001.2,2026-11-15T02:27:00-06:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "NWS"
+                    ],
+                    "NationalWeatherService": [
+                        "SUY"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.3",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.3",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.7a8f0eb4633d0cc69b1faeae78fd6657b475ff93.001.3",
+                "areaDesc": "Kenedy Island; Willacy Island; Cameron Island",
+                "geocode": {
+                    "SAME": [
+                        "048261",
+                        "048489",
+                        "048061"
+                    ],
+                    "UGC": [
+                        "TXZ451",
+                        "TXZ454",
+                        "TXZ455"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/forecast/TXZ451",
+                    "https://api.weather.gov/zones/forecast/TXZ454",
+                    "https://api.weather.gov/zones/forecast/TXZ455"
+                ],
+                "references": [
+                    {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.9e8c1e7b5e90f5be0dfe6d56ae63d33df69e47eb.001.3",
+                        "identifier": "urn:oid:2.49.0.1.840.0.9e8c1e7b5e90f5be0dfe6d56ae63d33df69e47eb.001.3",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "sent": "2026-11-16T02:34:00-06:00"
+                    }
+                ],
+                "sent": "2026-11-16T13:28:00-06:00",
+                "effective": "2026-11-16T13:28:00-06:00",
+                "onset": "2026-11-16T13:28:00-06:00",
+                "expires": "2026-11-17T00:00:00-06:00",
+                "ends": "2026-11-18T06:00:00-06:00",
+                "status": "Actual",
+                "messageType": "Update",
+                "category": "Met",
+                "severity": "Moderate",
+                "certainty": "Likely",
+                "urgency": "Expected",
+                "event": "Rip Current Statement",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Brownsville TX",
+                "headline": "Rip Current Statement issued November 16 at 1:28PM CST until November 18 at 6:00AM CST by NWS Brownsville TX",
+                "description": "* WHAT...For the Coastal Flood Advisory, minor coastal flooding.\nFor the High Surf Advisory, large breaking waves of 4 to 8\nfeet in the surf zone. For the High Rip Current Risk,\ndangerous rip currents.\n\n* WHERE...Kenedy Island, Willacy Island and Cameron Island\nCounties.\n\n* WHEN...For the Coastal Flood Advisory, until 6 AM CST\nWednesday. For the High Rip Current Risk, through late Tuesday\nnight.\n\n* IMPACTS...Nuisance flooding is expected, with water reaching or\npushing into the dunes on South Padre Island. Vehicles, except\nthose with four wheel drive and high wheel bases, will be unable\nto be driven on the beach. This includes locations north of\nPublic Beach Access #3. Minor to moderate beach erosion is\nexpected. Dangerous swimming and surfing conditions and\nlocalized beach erosion. Rip currents can sweep even the best\nswimmers away from shore into deeper water.",
+                "instruction": "If travel is required, allow extra time as some roads may be\nclosed. Do not drive around barricades or through water of\nunknown depth. Take the necessary actions to protect flood-prone\nproperty.\n\nInexperienced swimmers should remain out of the water due to\ndangerous surf conditions.\n\nSwim near a lifeguard. If caught in a rip current, relax and\nfloat. Don't swim against the current. If able, swim in a\ndirection following the shoreline. If unable to escape, face the\nshore and call or wave for help.",
+                "response": "Avoid",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "CFWBRO"
+                    ],
+                    "WMOidentifier": [
+                        "WHUS44 KBRO 161928"
+                    ],
+                    "NWSheadline": [
+                        "COASTAL FLOOD ADVISORY REMAINS IN EFFECT UNTIL 6 AM CST WEDNESDAY... ...HIGH SURF ADVISORY REMAINS IN EFFECT UNTIL 6 AM CST WEDNESDAY... ...HIGH RIP CURRENT RISK REMAINS IN EFFECT THROUGH LATE TUESDAY NIGHT"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "VTEC": [
+                        "/O.CON.KBRO.RP.S.0025.000000T0000Z-261118T1200Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-11-18T06:00:00-06:00"
+                    ],
+                    "expiredReferences": [
+                        "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.cd7d9dd8c2e060d4075a298f8596605738437178.001.3,2026-11-15T22:48:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.3bedeb93d250cb048c128aed0ffba5eacebe1361.001.3,2026-11-15T02:27:00-06:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "NWS"
+                    ],
+                    "NationalWeatherService": [
+                        "RPS"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.3c8cb3a85de63662615e82aa3de94fc649624fe8.001.1",
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            -98.8,
+                            28.17
+                        ],
+                        [
+                            -98.59,
+                            28.36
+                        ],
+                        [
+                            -98.33,
+                            28.45
+                        ],
+                        [
+                            -98.33,
+                            28.33
+                        ],
+                        [
+                            -98.54,
+                            28.26
+                        ],
+                        [
+                            -98.8,
+                            28.07
+                        ],
+                        [
+                            -98.8,
+                            28.17
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.3c8cb3a85de63662615e82aa3de94fc649624fe8.001.1",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.3c8cb3a85de63662615e82aa3de94fc649624fe8.001.1",
+                "areaDesc": "McMullen, TX",
+                "geocode": {
+                    "SAME": [
+                        "048311"
+                    ],
+                    "UGC": [
+                        "TXC311"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/county/TXC311"
+                ],
+                "references": [
+                    {
+                        "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.e98fa667dbddb33c715d8cc82aefe3f3184d0bd2.001.1",
+                        "identifier": "urn:oid:2.49.0.1.840.0.e98fa667dbddb33c715d8cc82aefe3f3184d0bd2.001.1",
+                        "sender": "w-nws.webmaster@noaa.gov",
+                        "sent": "2026-11-15T19:36:00-06:00"
+                    }
+                ],
+                "sent": "2026-11-16T09:44:00-06:00",
+                "effective": "2026-11-16T09:44:00-06:00",
+                "onset": "2026-11-16T09:44:00-06:00",
+                "expires": "2026-11-17T00:45:00-06:00",
+                "ends": "2026-11-17T23:48:00-06:00",
+                "status": "Actual",
+                "messageType": "Update",
+                "category": "Met",
+                "severity": "Severe",
+                "certainty": "Observed",
+                "urgency": "Immediate",
+                "event": "Flood Warning",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Corpus Christi TX",
+                "headline": "Flood Warning issued November 16 at 9:44AM CST until November 17 at 11:48PM CST by NWS Corpus Christi TX",
+                "description": "...The Flood Warning is extended for the following rivers in Texas...\n\nNueces River Near Tilden affecting McMullen County.\n\nFor the Nueces River...including Cotulla, Tilden, Three Rivers,\nMathis, Bluntzer, Calallen...Moderate flooding is forecast.\n\n- Forecast...The river is expected to fall below flood stage\ntomorrow morning and continue falling to 4.1 feet Thursday\nevening.\n- Flood stage is 14.0 feet.\n- http://www.weather.gov/safety/flood",
+                "instruction": "Turn around, don't drown when encountering flooded roads. Most flood\ndeaths occur in vehicles.\n\nCaution is urged when walking near riverbanks.\n\nPlease report observed flooding to local emergency services or law\nenforcement and request they pass this information to the National\nWeather Service when you can do so safely.\n\nAdditional information is available at www.weather.gov/crp.",
+                "response": "Avoid",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "FLSCRP"
+                    ],
+                    "WMOidentifier": [
+                        "WGUS84 KCRP 161544"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "EAS-ORG": [
+                        "WXR"
+                    ],
+                    "VTEC": [
+                        "/O.EXT.KCRP.FL.W.0029.000000T0000Z-261118T0548Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-11-17T23:48:00-06:00"
+                    ],
+                    "expiredReferences": [
+                        "w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.884a2986aa03c1fa0b7e8fbbfb4797ef2b10d698.001.1,2026-11-15T13:30:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.40b6170256c15c4006bf8dd75dcb4052240655a5.001.1,2026-11-15T09:47:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.bdf26212e0aefd846b02a927ce0356e50037a4d5.001.1,2026-11-14T19:02:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.345324fc558f5c9e6675fb3c22721808d96fc4a3.001.1,2026-11-14T08:54:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.3cfa0b70a6989855fa7c22e761815c65c7a1afe4.001.1,2026-11-13T20:06:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.fbd7c04b6ed4e0eb360466d1a792c42b6fc9faf9.001.1,2026-11-13T08:17:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.79f54306900ef4f7373e0c7a36f1cc25dcf1b383.001.1,2026-11-12T18:55:00-06:00 w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.18e883687f46e7c2a345a1cd781a4152492db08b.001.1,2026-11-12T08:31:00-06:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "FLS"
+                    ],
+                    "NationalWeatherService": [
+                        "FLW"
+                    ]
+                }
+            }
+        }
+    ],
+    "title": "Current watches, warnings, and advisories for Texas",
+    "updated": "2026-11-17T00:07:23+00:00"
+}

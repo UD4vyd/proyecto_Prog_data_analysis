@@ -1,0 +1,24 @@
+{
+ "url": "https://api.weather.gov/alerts?area=TX&limit=500",
+ "status": 200,
+ "retrieved_utc": "20261117_001350",
+ "headers": {
+  "Server": "nginx/1.28.3",
+  "Content-Type": "application/geo+json",
+  "ETag": "W/\"4577dad4d3ca2767e19f1ea195281b68\"",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Expose-Headers": "X-Correlation-Id, X-Request-Id, X-Server-Id",
+  "X-Request-ID": "01a1e6da-5540-7c88-b1cf-a4735ac157dc",
+  "X-Correlation-ID": "2485d78a",
+  "X-Server-ID": "vm-bldr-api-ops-app4.ncep.noaa.gov",
+  "Content-Encoding": "gzip",
+  "Cache-Control": "public, max-age=5, s-maxage=5",
+  "Expires": "Tue, 17 Nov 2026 00:13:55 GMT",
+  "Date": "Tue, 17 Nov 2026 00:13:50 GMT",
+  "Transfer-Encoding": "chunked",
+  "Connection": "keep-alive, Transfer-Encoding",
+  "Vary": "Accept-Encoding, Accept,Feature-Flags,Accept-Language",
+  "X-Edge-Request-ID": "4e41c646",
+  "Strict-Transport-Security": "max-age=31536000 ; includeSubDomains ; preload"
+ }
+}

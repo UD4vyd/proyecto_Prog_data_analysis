@@ -1,0 +1,23 @@
+{
+ "url": "https://api.weather.gov/stations/KAUS/observations",
+ "status": 200,
+ "retrieved_utc": "20261117_001351",
+ "headers": {
+  "Server": "nginx/1.28.3",
+  "Content-Type": "application/geo+json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Expose-Headers": "X-Correlation-Id, X-Request-Id, X-Server-Id",
+  "X-Request-ID": "01a1e6d9-bbb9-76d5-b95a-ec20a6bd1920",
+  "X-Correlation-ID": "27007ca3",
+  "X-Server-ID": "vm-bldr-api-ops-app6.ncep.noaa.gov",
+  "Content-Encoding": "gzip",
+  "Content-Length": "42416",
+  "Cache-Control": "public, max-age=261, s-maxage=120",
+  "Expires": "Tue, 17 Nov 2026 00:18:12 GMT",
+  "Date": "Tue, 17 Nov 2026 00:13:51 GMT",
+  "Connection": "keep-alive",
+  "Vary": "Accept-Encoding, Accept,Feature-Flags,Accept-Language",
+  "X-Edge-Request-ID": "4e41cc6d",
+  "Strict-Transport-Security": "max-age=31536000 ; includeSubDomains ; preload"
+ }
+}
