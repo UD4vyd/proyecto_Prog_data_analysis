@@ -1,0 +1,23 @@
+# Settings of the Bronze and Silver pipeline (Workshop 2).
+
+# Stations polled for F4 (NWS observations) and F2 (GHCN-Daily), by ICAO code.
+# This first version uses the three stations profiled in Workshop 1.
+# Write "all" to use the 46 stations of config/stations.csv.
+stations: [KDFW, KIAH, KAUS]
+
+nws_alerts:
+  area: TX
+  page_limit: 500
+
+nws_observations:
+  overlap_hours: 3          # re-read window before the watermark (ingestion contract, F4)
+  first_run_hours: 6        # window of the first run, when there is no watermark yet
+  max_lookback_days: 7      # the NWS API keeps about 7 days
+
+ghcn_daily:
+  overlap_days: 30          # late days and re-published values (ingestion contract, F2)
+  elements: [TMAX, TMIN, PRCP]
+
+storm_events:
+  years: [2025]             # year files loaded by the Bronze DAG
+  state_fips: "48"          # Texas
