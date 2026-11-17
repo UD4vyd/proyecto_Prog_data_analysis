@@ -1,0 +1,3 @@
+- `nws_alerts_active_20261116_231234.geojson`: F3 response of `https://api.weather.gov/alerts/active?area=TX` (6 alerts), copied byte for byte from `workshop_1/samples/poll1/` (poll 1, 2026-11-16 23:12:34 UTC).
+- `nws_alerts_active_20261116_231234.geojson.headers.json`: URL, status, UTC time and HTTP headers of that same request, copied byte for byte.
+- `storm_events_tx_excerpt.csv`: header plus the first 20 data rows of `workshop_1/samples/storm_events_tx_d2025_c20260819.csv` (F1 Texas rows of `StormEvents_details-ftp_v1.0_d2025_c20260819.csv.gz`), cut at a record boundary without changing any byte.
