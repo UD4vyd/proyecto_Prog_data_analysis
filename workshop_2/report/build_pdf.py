@@ -26,8 +26,9 @@ code { font-family: Consolas, monospace; font-size: 8.6pt; background: #f2f2f2; 
 pre { background: #f2f2f2; padding: 6px 8px; font-size: 7.6pt; white-space: pre-wrap; word-break: break-all;
       break-inside: avoid; }
 pre code { background: none; padding: 0; font-size: 7.6pt; }
-img { max-width: 100%; display: block; margin: 8px auto 2px auto; border: 1px solid #ccc; }
-p:has(> img), p:has(> img) + p { break-inside: avoid; break-after: avoid; }
+img { max-width: 100%; max-height: 340px; display: block; margin: 8px auto 2px auto; border: 1px solid #ccc; }
+h2, h3 { break-after: avoid; }
+p:has(> img) { break-inside: avoid; break-after: avoid; }   /* keep a figure with its caption */
 p > em { font-size: 8.8pt; color: #333; }
 """
 FOOTER = ('<div style="font-size:8px; width:100%; text-align:center; color:#555;">'

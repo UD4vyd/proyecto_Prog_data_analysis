@@ -1,8 +1,8 @@
 # Workshop 2 Report: Technical Architecture and Bronze/Silver Pipeline
 
-**Project:** Extreme Weather Monitoring (Texas)
-**Team 5:** Andrés Mendoza, David Martínez, Juan Escallón
-**Course:** Data Analysis Programming 2026-II, Universidad Distrital. Prof. Carlos Andrés Sierra.
+**Project:** Extreme Weather Monitoring (Texas)<br>
+**Team 5:** Andrés Mendoza, David Martínez, Juan Escallón<br>
+**Course:** Data Analysis Programming 2026-II, Universidad Distrital. Prof. Carlos Andrés Sierra.<br>
 **Repository:** https://github.com/UD4vyd/proyecto_Prog_data_analysis (branch `workshop-2`)
 
 ## 1. Executive summary
