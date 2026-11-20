@@ -6,6 +6,8 @@ from src.normalization import common, text
 TOPIC = "station_observations"
 KEY = ["icao", "timestamp_utc"]
 REQUIRED = ["icao", "timestamp_utc"]
+# Derived columns left out of the record hash (see common.add_record_hash).
+HASH_EXCLUDE = ["temperature_outlier", "text_description"]
 SCHEMA = {
     "icao": "category",
     "timestamp_utc": "datetime_utc",

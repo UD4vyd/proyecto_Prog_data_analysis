@@ -7,6 +7,8 @@ from src.normalization import common
 TOPIC = "daily_summaries"
 KEY = ["ghcn_id", "date"]
 REQUIRED = ["ghcn_id", "date"]
+# Derived columns left out of the record hash (see common.add_record_hash).
+HASH_EXCLUDE = ["tmax_outlier", "tmin_outlier", "prcp_outlier"]
 SCHEMA = {
     "ghcn_id": "category",
     "icao": "category",

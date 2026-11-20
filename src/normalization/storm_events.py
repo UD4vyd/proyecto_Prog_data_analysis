@@ -9,6 +9,8 @@ from src.normalization import common, text
 TOPIC = "storm_events"
 KEY = ["event_id"]
 REQUIRED = ["event_id", "event_type", "begin_utc"]
+# Derived columns left out of the record hash (see common.add_record_hash).
+HASH_EXCLUDE = ["source_file", "damage_outlier", "narrative_clean"]
 SCHEMA = {
     "event_id": "int64",
     "episode_id": "Int64",

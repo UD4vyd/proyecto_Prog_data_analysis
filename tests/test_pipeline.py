@@ -121,3 +121,59 @@ def test_validate_file_rejects_incomplete_records(tmp_path):
     path.write_text(json.dumps(bad), encoding="utf-8")
     with pytest.raises(ValueError):
         bronze.validate_file(str(path))
+
+
+# Workshop 3 improvements
+
+
+def test_clean_text_removes_links_and_noise():
+    clean = text.clean_text("Crest at 4 PM CST Friday. - http://www.weather.gov/safety/flood")
+    assert "http" not in clean and "weather gov" not in clean
+    assert text.tokenize(clean) == ["crest"]
+
+
+def test_hash_ignores_derived_columns():
+    """A new Storm Events compilation only changes source_file: the record hash must stay the same."""
+    with open(FIXTURES / "storm_events_tx_excerpt.csv", encoding="utf-8", newline="") as f:
+        records = list(csv.DictReader(f))
+    first = storm_events.normalize({"records": records})
+    second = storm_events.normalize({"records": [dict(r, _source_file="other_c20991231.csv.gz") for r in records]})
+    first = common.add_record_hash(first, exclude=storm_events.HASH_EXCLUDE)
+    second = common.add_record_hash(second, exclude=storm_events.HASH_EXCLUDE)
+    assert (first["record_hash"] == second["record_hash"]).all()
+    second.loc[0, "deaths_direct"] = 99                     # a real change in a source value
+    assert common.add_record_hash(second, exclude=storm_events.HASH_EXCLUDE).loc[0, "record_hash"] != \
+        first.loc[0, "record_hash"]
+
+
+def test_retry_after_is_followed():
+    from src.sources import http
+
+    class Answer:
+        def __init__(self, headers):
+            self.headers = headers
+
+    assert http.wait_seconds(Answer({"Retry-After": "30"}), 1) == 30
+    assert http.wait_seconds(Answer({"Retry-After": "9999"}), 1) == http.MAX_WAIT
+    assert http.wait_seconds(Answer({}), 2) == 10
+    assert http.wait_seconds(None, 3) == 15
+
+
+def test_second_processing_writes_nothing(tmp_path, monkeypatch):
+    """The same Bronze answer processed twice must not reach Silver twice (Workshop 3 re-hash fix)."""
+    from src import settings
+    from src.storage import silver
+
+    monkeypatch.setattr(settings, "SILVER_DIR", tmp_path / "silver")
+    monkeypatch.setattr(settings, "QUARANTINE_DIR", tmp_path / "silver" / "quarantine")
+    features = json.loads((FIXTURES / "nws_alerts_active_20261116_231234.geojson").read_text(encoding="utf-8"))
+    payload = {"extracted_utc": "2026-11-16T23:12:34+00:00", "records": features["features"]}
+    paths = []
+    for stamp in ["20261116_230000", "20261117_000000"]:
+        path = tmp_path / f"nws_alerts_{stamp}.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        paths.append(str(path))
+    first = silver.process_source("nws_alerts", [paths[0]], "20261116_230500")
+    second = silver.process_source("nws_alerts", [paths[1]], "20261117_000500")
+    assert first["rows_out"] == 6
+    assert second["rows_out"] == 0 and second["silver_file"] is None

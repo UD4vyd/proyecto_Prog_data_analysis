@@ -60,9 +60,15 @@ def _plain(value):
     return value if isinstance(value, (str, int, float, bool)) else str(value)
 
 
-def add_record_hash(df):
-    """SHA-1 of the content columns of each row. Two rows with the same key and hash are the same record."""
-    content = [c for c in df.columns if c not in METADATA_COLUMNS]
+def add_record_hash(df, exclude=()):
+    """SHA-1 of the content columns of each row. Two rows with the same key and hash are the same record.
+
+    `exclude` lists the columns derived by the pipeline (outlier flags, cleaned text, source file name).
+    They are left out so the hash only changes when the source changes a value. Workshop 3 finding: the flags
+    are computed on the whole batch, and the Storm Events file name changes with each NOAA compilation, so
+    with those columns inside the hash every re-download looked like a new version of every record.
+    """
+    content = [c for c in df.columns if c not in METADATA_COLUMNS and c not in exclude]
 
     def row_hash(row):
         text = json.dumps([_plain(v) for v in row], ensure_ascii=False)

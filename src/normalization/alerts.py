@@ -6,6 +6,10 @@ from src.normalization import common, text
 TOPIC = "weather_alerts"
 KEY = ["alert_id"]
 REQUIRED = ["alert_id", "event", "message_type", "sent_utc"]
+# Derived columns left out of the record hash (see common.add_record_hash). The raw description stays in it.
+# The centroid is derived too: a float sum depends on the order of the vertices, and its last digit changed
+# between two answers for the same alert.
+HASH_EXCLUDE = ["description_clean", "description_tokens", "token_count", "centroid_lat", "centroid_lon"]
 SCHEMA = {
     "alert_id": "string",
     "event": "category",
@@ -47,7 +51,8 @@ def _centroid(geometry):
     points = [point for ring in rings for point in ring]
     if not points:
         return None, None
-    return sum(p[1] for p in points) / len(points), sum(p[0] for p in points) / len(points)
+    # Rounded to 5 decimals (about 1 m): more digits only carry floating point noise.
+    return round(sum(p[1] for p in points) / len(points), 5), round(sum(p[0] for p in points) / len(points), 5)
 
 
 def normalize(payload):

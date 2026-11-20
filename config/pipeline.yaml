@@ -19,5 +19,5 @@ ghcn_daily:
   elements: [TMAX, TMIN, PRCP]
 
 storm_events:
-  years: [2025]             # year files loaded by the Bronze DAG
+  years: [2021, 2022, 2023, 2024, 2025]   # year files checked by the Bronze DAG (Workshop 3: five years)
   state_fips: "48"          # Texas

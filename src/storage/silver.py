@@ -40,12 +40,19 @@ def _key_text(df, columns):
     return df[columns].astype(str).agg("|".join, axis=1)
 
 
-def _known_records(topic, key, skip_name):
-    """Key plus content hash of every record already stored in Silver for this topic."""
+def _known_records(module, skip_name):
+    """Key plus content hash of every record already stored in Silver for this topic.
+
+    The hash is computed again from the stored values with the current rule, instead of reading the stored
+    record_hash. Workshop 3: when the rule changed (HASH_EXCLUDE), the stored hashes no longer matched the
+    new ones and the next runs wrote again every record of their overlap window.
+    """
     known = set()
-    for path in settings.SILVER_DIR.glob(f"{topic}_*.parquet"):
+    for path in settings.SILVER_DIR.glob(f"{module.TOPIC}_*.parquet"):
         if path.name != skip_name:
-            known.update(_key_text(pd.read_parquet(path, columns=key + ["record_hash"]), key + ["record_hash"]))
+            stored = pd.read_parquet(path).drop(columns=common.METADATA_COLUMNS)
+            stored = common.add_record_hash(stored, exclude=module.HASH_EXCLUDE)
+            known.update(_key_text(stored, module.KEY + ["record_hash"]))
     return known
 
 
@@ -62,7 +69,7 @@ def process_source(source, paths, run_stamp):
     for path in paths:
         with open(path, encoding="utf-8") as f:
             payload = json.load(f)
-        frame = common.add_record_hash(module.normalize(payload))
+        frame = common.add_record_hash(module.normalize(payload), exclude=module.HASH_EXCLUDE)
         frame["bronze_file"] = os.path.basename(path)
         frame["ingested_at"] = payload["extracted_utc"]
         if len(frame):
@@ -89,7 +96,7 @@ def process_source(source, paths, run_stamp):
     before = len(df)
     df = df.sort_values("ingested_at").drop_duplicates(subset=module.KEY, keep="last")
     # Duplicates against earlier runs: same key and same content. A changed value has a new hash and is kept.
-    known = _known_records(module.TOPIC, module.KEY, out_name)
+    known = _known_records(module, out_name)
     df = df[~_key_text(df, module.KEY + ["record_hash"]).isin(known)].reset_index(drop=True)
     summary["rows_duplicated"] = before - len(df)
     if df.empty:
