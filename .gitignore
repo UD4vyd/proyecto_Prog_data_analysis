@@ -28,3 +28,4 @@ airflow/config/
 datalake_bronze/_staging/
 datalake_bronze/**/storm_events_*.json
 datalake_silver/.*.tmp
+datalake_gold/.*/

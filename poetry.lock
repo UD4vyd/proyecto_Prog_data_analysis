@@ -2523,6 +2523,18 @@ files = [
 tests = ["pytest"]
 
 [[package]]
+name = "py4j"
+version = "0.10.9.9"
+description = "Enables Python programs to dynamically access arbitrary Java objects"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "py4j-0.10.9.9-py2.py3-none-any.whl", hash = "sha256:c7c26e4158defb37b0bb124933163641a2ff6e3a3913f7811b0ddbe07ed61533"},
+    {file = "py4j-0.10.9.9.tar.gz", hash = "sha256:f694cad19efa5bd1dee4f3e5270eb406613c974394035e5bfc4ec1aba870b879"},
+]
+
+[[package]]
 name = "pyarrow"
 version = "25.0.1"
 description = "Python library for Apache Arrow"
@@ -2617,6 +2629,28 @@ files = [
 
 [package.extras]
 diagrams = ["jinja2", "railroad-diagrams"]
+
+[[package]]
+name = "pyspark"
+version = "4.3.0"
+description = "Apache Spark Python API"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "pyspark-4.3.0.tar.gz", hash = "sha256:e8c517948eff7088a7aa07449aa8eafa4a15a8d50319de2525a6fd26622476c6"},
+]
+
+[package.dependencies]
+py4j = ">=0.10.9.7,<0.10.9.10"
+
+[package.extras]
+connect = ["googleapis-common-protos (>=1.71.0)", "grpcio (>=1.76.0)", "grpcio-status (>=1.76.0)", "numpy (>=1.23.2)", "pandas (>=2.2.0)", "pyarrow (>=18.0.0)", "zstandard (>=0.25.0)"]
+ml = ["numpy (>=1.23.2)"]
+mllib = ["numpy (>=1.23.2)"]
+pandas-on-spark = ["numpy (>=1.23.2)", "pandas (>=2.2.0)", "pyarrow (>=18.0.0)"]
+pipelines = ["googleapis-common-protos (>=1.71.0)", "grpcio (>=1.76.0)", "grpcio-status (>=1.76.0)", "numpy (>=1.23.2)", "pandas (>=2.2.0)", "pyarrow (>=18.0.0)", "pyyaml (>=3.11)", "zstandard (>=0.25.0)"]
+sql = ["numpy (>=1.23.2)", "pandas (>=2.2.0)", "pyarrow (>=18.0.0)"]
 
 [[package]]
 name = "pytest"
@@ -3431,4 +3465,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11, <3.14"
-content-hash = "d5ea976d64371142c03934205c13382302ffed39597c0b8ced7c1b977284c143"
+content-hash = "a315dad1b070ad8b9fa8bb182827df4160b204177f550f0284f26c0e946b6f34"

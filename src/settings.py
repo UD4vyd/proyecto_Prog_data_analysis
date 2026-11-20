@@ -8,6 +8,7 @@ import yaml
 PROJECT_DIR = Path(os.environ.get("PROJECT_DIR", Path(__file__).resolve().parents[1]))
 BRONZE_DIR = Path(os.environ.get("BRONZE_DIR", PROJECT_DIR / "datalake_bronze"))
 SILVER_DIR = Path(os.environ.get("SILVER_DIR", PROJECT_DIR / "datalake_silver"))
+GOLD_DIR = Path(os.environ.get("GOLD_DIR", PROJECT_DIR / "datalake_gold"))
 
 STAGING_DIR = BRONZE_DIR / "_staging"      # files being written, not yet visible to the Silver DAG
 PROCESSED_DIR = BRONZE_DIR / "processed"   # Bronze files already converted to Silver
