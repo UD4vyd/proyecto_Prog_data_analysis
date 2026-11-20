@@ -79,7 +79,7 @@ Download them into `data/raw/` with these names before running the notebook:
 
 Status: the Airflow stack runs locally with Docker Compose. The DAG `bronze_ingestion` saves raw JSON
 files of the four sources in `datalake_bronze/` every hour, and the DAG `silver_processing` detects them
-with a FileSensor and writes clean Parquet files in `datalake_silver/`. Gold and the dashboard are planned.
+with a FileSensor and writes clean Parquet files in `datalake_silver/`. Gold is described below (Workshop 3).
 
 Dependencies are managed with Poetry (`pyproject.toml` and `poetry.lock`). The Airflow image installs the
 dependency list of `pyproject.toml`, and `requirements.txt` is the export of the lock
@@ -115,3 +115,59 @@ Deliverables: [report](workshop_2/Workshop2_Report.pdf), DAGs in `airflow/dags/`
 [Silver notebook](notebooks/02_silver_exploration.ipynb), samples in `datalake_bronze/processed/` and
 `datalake_silver/`, screenshots in `workshop_2/evidence/`. The Storm Events Bronze file (11.5 MB) is not
 committed; the Bronze DAG rebuilds it.
+
+## Workshop 3: Gold layer with PySpark
+
+Status: the three layers run in Airflow.
+
+| Layer | DAG | Schedule | Output |
+|---|---|---|---|
+| Bronze | `bronze_ingestion` | `@hourly` | raw JSON in `datalake_bronze/` |
+| Silver | `silver_processing` | `@continuous` + FileSensor | clean Parquet per topic in `datalake_silver/` |
+| Gold | `gold_processing` | `15 6 * * *` (00:15 in Texas) | `governance_*.parquet` and `storytelling_*.parquet` in `datalake_gold/` |
+
+The Gold DAG runs PySpark in local mode (`local[*]`, 2 GB driver) inside the Airflow containers. It reads all
+the Silver files of each topic as one DataFrame (`spark.read.parquet("datalake_silver/<topic>_*.parquet")`),
+keeps the latest version of each record and writes two summaries in a long layout
+(`section, topic, period, dim_1, dim_2, metric, value, label, computed_at`):
+
+- governance: volume, duplicate rate, null rate per field, schema compliance, outlier rate, text length,
+  ingestion compliance, freshness and station completeness (`src/gold/governance.py`)
+- storytelling: NORMAL / UNUSUAL / EXTREME class of each station-day against 1991-2020, class distribution,
+  current situation with active alerts, alert severity per day and event type, top keywords and bigrams,
+  keyword-severity association, storm impacts and the match of EXTREME days with Storm Events reports
+  (`src/gold/storytelling.py`)
+
+The image now includes a Java runtime (`default-jre-headless`) for Spark, so build it again after pulling:
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+In the UI turn on `gold_processing`, or trigger it by hand:
+
+```bash
+docker compose exec airflow-scheduler airflow dags trigger gold_processing
+```
+
+The indicator needs the 1991-2020 baseline of GHCN-Daily, loaded once with the historical mode:
+
+```bash
+docker compose exec airflow-scheduler python /opt/airflow/project/ingest.py --mode historical --source ghcn_daily --start-year 1991 --end-year 2026 --skip-silver
+```
+
+Storm Events is loaded for the five years 2021-2025 (the Course Project asks for at least five years of each
+historical source):
+
+```bash
+docker compose exec airflow-scheduler python /opt/airflow/project/ingest.py --mode historical --source storm_events --start-year 2021 --end-year 2025 --skip-silver
+```
+
+Notebooks: [data quality findings](notebooks/03_data_quality_findings.ipynb) and
+[Gold preview](notebooks/04_gold_preview.ipynb). Run them with `poetry run python -m nbconvert --to notebook --execute --inplace <notebook>`.
+
+Deliverables: [report](workshop_3/Workshop3_Report.pdf), Gold DAG `airflow/dags/gold_processing_dag.py`,
+PySpark modules in `src/gold/`, Silver and Bronze improvements in `src/normalization/`, `src/storage/silver.py`
+and `src/sources/http.py`, sample Gold files in `datalake_gold/`, screenshots in `workshop_3/evidence/`.
+

@@ -1,0 +1,58 @@
+"""Convert Workshop3_Report.md to workshop_3/Workshop3_Report.pdf.
+
+The Markdown is converted to HTML and printed to PDF with Microsoft Edge (installed with Windows).
+Needs two libraries that are not part of the pipeline:  pip install markdown playwright
+Run from the repository root:  python workshop_3/report/build_pdf.py
+"""
+from pathlib import Path
+
+import markdown
+from playwright.sync_api import sync_playwright
+
+HERE = Path(__file__).parent
+SOURCE = HERE / "Workshop3_Report.md"
+OUTPUT = HERE.parent / "Workshop3_Report.pdf"
+
+CSS = """
+body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.38; color: #111; }
+h1 { font-size: 18pt; color: #14285a; margin-bottom: 6px; }
+h2 { font-size: 13pt; color: #14285a; margin-top: 18px; border-bottom: 1px solid #bbb; padding-bottom: 2px; }
+h3 { font-size: 11pt; color: #14285a; margin-top: 12px; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 8.6pt; }
+th, td { border: 1px solid #999; padding: 3px 5px; text-align: left; vertical-align: top; }
+th { background: #e8edf5; }
+tr { break-inside: avoid; }
+code { font-family: Consolas, monospace; font-size: 8.6pt; background: #f2f2f2; padding: 0 2px; }
+pre { background: #f2f2f2; padding: 6px 8px; font-size: 7.6pt; white-space: pre-wrap; word-break: break-all;
+      break-inside: avoid; }
+pre code { background: none; padding: 0; font-size: 7.6pt; }
+img { max-width: 100%; max-height: 340px; display: block; margin: 8px auto 2px auto; border: 1px solid #ccc; }
+h2, h3 { break-after: avoid; }
+p:has(> img) { break-inside: avoid; break-after: avoid; }   /* keep a figure with its caption */
+p > em { font-size: 8.8pt; color: #333; }
+"""
+FOOTER = ('<div style="font-size:8px; width:100%; text-align:center; color:#555;">'
+          'Team 5, Workshop 3 report. Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>')
+
+
+def main():
+    body = markdown.markdown(SOURCE.read_text(encoding="utf-8"), extensions=["tables", "fenced_code"])
+    html = f"<!doctype html><html><head><meta charset='utf-8'><style>{CSS}</style></head><body>{body}</body></html>"
+    page_file = HERE / "_report.html"     # next to the Markdown file, so relative image paths work
+    page_file.write_text(html, encoding="utf-8")
+    try:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch(channel="msedge")
+            page = browser.new_page()
+            page.goto(page_file.as_uri(), wait_until="networkidle")
+            page.pdf(path=str(OUTPUT), format="A4", print_background=True, display_header_footer=True,
+                     header_template="<span></span>", footer_template=FOOTER,
+                     margin={"top": "16mm", "bottom": "18mm", "left": "16mm", "right": "16mm"})
+            browser.close()
+    finally:
+        page_file.unlink()
+    print("written", OUTPUT)
+
+
+if __name__ == "__main__":
+    main()
