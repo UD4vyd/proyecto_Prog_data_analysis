@@ -185,14 +185,21 @@ def keyword_rows(alerts, storms):
 
     The tokens are computed again here from the cleaned text, so files written before the Workshop 3 text
     improvements get the same treatment as new ones.
+
+    Workshop 4: the keyword-severity association is computed for the same 25 alert words as top_keywords. Before,
+    it ranked words by the number of alerts that contain them, a different top 25, so 9 of the words in the
+    dashboard keyword chart (rip, high, beach, island, ...) had no severity to colour them.
     """
     parts = []
+    alert_words = None
     issued = _tokens(_issued(alerts), "description_clean") \
         .withColumn("score", _severity_score())
     narratives = _tokens(storms, "narrative_clean")
     for topic, frame in [("weather_alerts", issued), ("storm_events", narratives)]:
         words = frame.select(F.explode("tokens").alias("term")).groupBy("term").count() \
             .orderBy(F.desc("count"), "term").limit(TOP_WORDS)
+        if topic == "weather_alerts":
+            alert_words = words
         bigrams = NGram(n=2, inputCol="tokens", outputCol="bigrams").transform(frame) \
             .select(F.explode("bigrams").alias("term")).groupBy("term").count() \
             .orderBy(F.desc("count"), "term").limit(TOP_BIGRAMS)
@@ -201,10 +208,8 @@ def keyword_rows(alerts, storms):
                   rows(bigrams, "top_keywords", topic, dim_1="term", dim_2=F.lit("bigram"), metric=F.lit("count"),
                        value="count")]
     # Each alert counts once per keyword, however many times the word appears in it.
-    top = issued.select(F.explode(F.array_distinct("tokens")).alias("term")).groupBy("term").count() \
-        .orderBy(F.desc("count"), "term").limit(TOP_WORDS)
     per_alert = issued.select("score", F.explode(F.array_distinct("tokens")).alias("term"))
-    association = per_alert.join(top.select("term"), "term").groupBy("term") \
+    association = per_alert.join(alert_words.select("term"), "term").groupBy("term") \
         .agg(F.mean("score").alias("mean_score"), F.count("*").alias("alerts"))
     parts += [rows(association, "keyword_severity", "weather_alerts", dim_1="term",
                    metric=F.lit("mean_severity_score"), value="mean_score"),

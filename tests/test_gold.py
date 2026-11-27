@@ -61,3 +61,20 @@ def test_test_messages_are_not_alerts(spark):
     alerts = spark.createDataFrame([("Actual", "Alert"), ("Actual", "Cancel"), ("Test", "Alert")],
                                    "status string, message_type string")
     assert storytelling._issued(alerts).count() == 1
+
+
+def test_keyword_severity_covers_the_top_alert_words(spark):
+    """Workshop 4: every alert word of the keyword chart has a mean severity to colour it."""
+    alerts = spark.createDataFrame([
+        ("Actual", "Alert", "Severe", "flood warning river"),
+        ("Actual", "Alert", "Minor", "rip current risk rip current"),
+        ("Actual", "Alert", "Moderate", "dense fog visibility river"),
+    ], "status string, message_type string, severity string, description_clean string")
+    storms = spark.createDataFrame([("hail reported near the city",)], "narrative_clean string")
+    result = storytelling.union_all(storytelling.keyword_rows(alerts, storms))
+    words = {r.dim_1 for r in result.filter("section = 'top_keywords' AND topic = 'weather_alerts' "
+                                            "AND dim_2 = 'word'").collect()}
+    severity = {r.dim_1: r.value for r in result.filter("section = 'keyword_severity' "
+                                                         "AND metric = 'mean_severity_score'").collect()}
+    assert words and words == set(severity)
+    assert severity["river"] == 2.5  # one Severe (3) and one Moderate (2) alert
