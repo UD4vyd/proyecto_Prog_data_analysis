@@ -1,0 +1,48 @@
+/* Shared style of both dashboards. Dash serves every file of assets/ automatically. */
+body {
+  background: #f5f6f8;
+  color: #191919;
+  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.app-header {
+  background: #ffffff;
+  border-left: 6px solid #257de0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.dash-subtitle { color: #444; font-size: 1.05rem; }
+.updated { color: #444; font-size: 0.9rem; }
+
+.section-title { border-bottom: 1px solid #dcdcdc; padding-bottom: 4px; }
+.section-question { color: #666; font-size: 0.95rem; }
+
+.card { border: none; border-radius: 8px; }
+.chart-note { color: #555; font-size: 0.88rem; border-top: 1px dashed #e0e0e0; padding-top: 6px; }
+
+.kpi-card .kpi-title { color: #666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.kpi-card .kpi-value { font-size: 1.9rem; font-weight: 700; line-height: 1.2; }
+.kpi-card .kpi-detail { color: #555; font-size: 0.85rem; }
+.kpi-card .kpi-status { font-weight: 600; font-size: 0.85rem; margin-top: 4px; }
+
+.kpi-table th { color: #444; font-weight: 600; border-bottom: 2px solid #dcdcdc; }
+.kpi-table td { vertical-align: top; font-size: 0.9rem; }
+
+.story-card { border-left: 6px solid #1a9e77; }
+.story-card h3 { font-size: 1.1rem; }
+.story-card li { margin-bottom: 4px; }
+
+.station-card .station-name { font-weight: 600; }
+.station-card .station-metric { font-size: 0.9rem; color: #444; }
+.class-pill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* No horizontal scrolling at 1080p: charts follow the width of their column. */
+.js-plotly-plot, .dash-graph { width: 100%; }

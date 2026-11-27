@@ -1,0 +1,71 @@
+# Targets of the governance KPIs, shown in the "Data quality summary" table of the governance dashboard
+# (Workshop 4). Values come from the Gold governance file; these are only the limits they are compared with.
+#
+#   direction  max: the value must stay at or below the limit; min: at or above it
+#   limit      the threshold
+#   breach     status when the limit is broken: critical (the data cannot be trusted for that use) or
+#              warning (known limitation, explained in the reports)
+#   why        reason for the limit, shown in the table
+
+kpis:
+  duplicate_rate_after_pct:
+    text: Duplicate rate after Gold de-duplication (%)
+    direction: max
+    limit: 0.0
+    breach: critical
+    why: Gold keeps one version per key, every chart counts each record once
+  duplicate_rate_before_pct:
+    text: Duplicate rows stored in Silver (%)
+    direction: max
+    limit: 5.0
+    breach: warning
+    why: copies written before the Workshop 3 hash fix stay in Silver; Gold removes them
+  null_cell_pct:
+    text: Null cells, all fields (%)
+    direction: max
+    limit: 25.0
+    breach: warning
+    why: some NWS fields are always null at our stations (finding 3)
+  files_compliant_pct:
+    text: Silver files with the target schema (%)
+    direction: min
+    limit: 100.0
+    breach: critical
+    why: Gold reads every file of a topic as one DataFrame
+  rows_with_required_fields_pct:
+    text: Rows with every required field (%)
+    direction: min
+    limit: 99.0
+    breach: critical
+    why: keys and timestamps are needed for de-duplication and time charts
+  outlier_flagged_pct:
+    text: Highest outlier flag rate (%)
+    direction: max
+    limit: 5.0
+    breach: warning
+    why: extremes are the signal of this project, but more than 5 % flagged suggests a unit or parsing error
+  text_empty_pct:
+    text: Empty cleaned texts (%)
+    direction: max
+    limit: 25.0
+    breach: warning
+    why: alert descriptions and storm narratives feed the keyword charts
+  ingestion_compliance_pct:
+    text: Hourly runs that reached Silver, last 7 days (%)
+    direction: min
+    limit: 90.0
+    breach: critical
+    why: the NWS API keeps about seven days, missed hours are lost (finding 6)
+  freshness_hours:
+    text: Hours since the last ingestion (now)
+    direction: max
+    # hourly NWS sources, daily GHCN-Daily, monthly NOAA compilations of Storm Events
+    limit: {weather_alerts: 2, station_observations: 2, daily_summaries: 48, storm_events: 744}
+    breach: critical
+    why: user story 5, the analyst must know how fresh the data are
+  station_days_present_pct:
+    text: Days present per station, worst year since 2021 (%)
+    direction: min
+    limit: 95.0
+    breach: warning
+    why: user story 6, the indicator needs complete station history
