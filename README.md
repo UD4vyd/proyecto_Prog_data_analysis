@@ -244,7 +244,18 @@ poetry run python dashboard/storytelling_app.py     # http://localhost:8051
 
 Dashboard libraries are pinned in the Poetry group `dashboard` and in `dashboard/requirements.txt` (used by the
 dashboard image). They are not installed in the Airflow image, which pins its own Flask. `requirements.txt` is
-exported with `poetry export --only main,dashboard --without-hashes -o requirements.txt`.
+exported with `poetry export --only "main,dashboard" --without-hashes -o requirements.txt`.
+
+Notes for Windows (checked on a fresh Windows 11 laptop):
+
+- Docker Desktop needs WSL 2: run `wsl --install` in an administrator PowerShell and restart.
+- Use Python 3.11-3.13 (3.14 is not supported by the project). With several versions installed:
+  `poetry env use (py -3.13 -c "import sys; print(sys.executable)")`.
+- If Smart App Control blocks `pipx.exe` or `poetry.exe`, install and run Poetry as a module:
+  `py -3.13 -m pip install --user poetry`, then `py -3.13 -m poetry install --with dashboard`.
+- In PowerShell, quote comma lists: `--only "main,dashboard"`.
+- The PySpark tests (`tests/test_gold.py`) need Spark with Hadoop binaries and fail on plain Windows; the Gold
+  code runs inside the Airflow containers.
 
 Tests: `poetry run pytest` (the dashboard figure test runs when the `dashboard` group is installed).
 

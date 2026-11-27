@@ -24,12 +24,13 @@ summaries. This workshop adds the layer people actually use:
   shown in the keyword chart), the KPI thresholds as configuration, a separate Docker image for the dashboards
   and a Poetry group for their libraries (section 2).
 - **Key insight for the analyst.** Since 2021, 17.5 % of the days at our three stations had an unusually high
-  maximum temperature, against 10 % in their own 1991-2020 history (1.8 times as frequent; 23.7 % in 2023), and
+  maximum temperature, against 10 % in their own 1991-2020 history (1.7 times as frequent; 23.7 % in 2023), and
   days we label EXTREME had a NOAA storm report in the station's county or zone 4.7 times as often as normal days
   (16.6 % against 3.5 %).
 
-The numbers in this report come from the Gold files of the run of **⟨TODO: date of the final end-to-end run⟩**.
-The sample files committed with Workshop 3 (run of 2026-11-20 16:44 UTC) give the same story.
+The numbers in this report come from the Gold files of the final end-to-end run, **2026-11-26 06:31 UTC**
+(`governance_20261126_063159.parquet` and `storytelling_20261126_063159.parquet`, committed in `datalake_gold/`).
+The dashboards were tested with Dash 3.4.0, Plotly 6.9.0 and Python 3.13.
 
 **How the dashboard statement maps to our project.** As in Workshop 3, the statement is written for opinion
 data. Our texts are official bulletins, so sentiment is replaced by two ordinal scores:
@@ -58,12 +59,16 @@ cleaning, `Retry-After`, historical loads) are not repeated here.
 | 6 | The dashboard libraries were not declared. | Poetry group `dashboard` (Dash 3, Plotly 6, Dash Bootstrap Components 2) and `dashboard/requirements.txt` for the image; `requirements.txt` exported with the group. | `pyproject.toml`, `poetry.lock`, `requirements.txt` |
 | 7 | `dashboard/README.md` (Workshop 1) planned to read a PostgreSQL model. | Rewritten: the course decided that Gold Parquet files are the only source of the presentation layer. | `dashboard/README.md` |
 
-**End-to-end verification** ⟨TODO: check every statement of this paragraph after the final run⟩. From a clean state (`docker compose down -v`, empty `datalake_gold/`) we ran
-`bronze_ingestion` → `silver_processing` (started by its FileSensor) → `gold_processing`:
-⟨TODO: Bronze run id / duration, Silver runs, Gold duration⟩. `check_gold` confirmed the 9 Gold columns, the
-12 governance sections and the 11 storytelling sections. Both dashboards started on their own
-(`docker compose up -d dashboard-governance`, then `dashboard-storytelling`) and, after **Refresh data**, showed
-the new `computed_at` in their headers (section 6).
+**End-to-end verification.** The final run was made on a Windows 11 laptop that had never run the project, from a
+fresh clone of the repository and a new Airflow metadata database (no earlier runs), following only the README.
+The Silver files committed in Workshop 3 already hold the 1991-2026 GHCN-Daily history and five years of Storm
+Events, so no historical load was needed. On 2026-11-26 we ran `bronze_ingestion` (last run 06:28 UTC, all tasks
+successful; sources without new data are skipped), `silver_processing` processed the new Bronze files after its
+FileSensor saw them, and `gold_processing` ran at 06:29 UTC. Its `check_gold` task confirmed the 9 Gold columns,
+the 12 governance sections and the 11 storytelling sections, and wrote the two files stamped `20261126_063159`.
+After **Refresh data** both dashboard containers showed the new Gold run (06:31 UTC) in their headers and the NWS
+observations of 05:50 UTC the same morning (Figures 6 to 8). With the corrected Gold code, all 25 alert words of the
+keyword chart now have a severity colour (Figure 7).
 
 ## 3. Governance dashboard
 
@@ -103,11 +108,13 @@ historical load (36,925 rows in one day) and a day of hourly runs (15 alerts) di
 magnitude. The table is
 sorted worst first so the first rows are the actions to take.
 
-**What it shows on the current data.** All four topics have 0 % duplicates after Gold de-duplication (14.5 % of the
-80,348 Silver rows were copies), 100 % schema compliance and at most 1.9 % of records flagged by one check
-(precipitation outliers, which are real storms). The two critical rows are timeliness: hourly ingestion
-compliance was ⟨TODO: value⟩ over the last 7 days, because the Docker stack only runs while a laptop is on
-(finding 6 of Workshop 3).
+**What it shows on the current data.** Gold holds 70,324 records. All four topics have 0 % duplicates after Gold
+de-duplication (14.2 % of the 81,977 Silver rows were copies), 100 % schema compliance over 30 Silver files and at
+most 1.94 % of records flagged by one check (precipitation outliers, which are real storms). Every source was
+fresh at the time of the screenshot (0.4 h since the newest ingestion). The two critical rows are timeliness:
+only 3 of the 151 expected hourly runs reached Silver over the last 7 days (2.0 %), because the stack was off
+between 2026-11-20 and 2026-11-26 while the project moved to another laptop (finding 6 of Workshop 3: the stack only
+runs while a machine is on).
 
 ## 4. Storytelling dashboard
 
@@ -134,15 +141,18 @@ for step 4. Every chart has hover details; time charts zoom by dragging; the ban
 **Narrative summary card.** The text is computed from the Gold file on every refresh, nothing is hard-coded.
 On the current data it reads:
 
-> *Since 2021, unusually hot days are 1.8 times as frequent as in 1991-2020.*
+> *Since 2021, unusually hot days are 1.7 times as frequent as in 1991-2020.*
 >
-> - Right now no official NWS alert covers any of the 3 stations.
+> - Right now 1 of 3 stations are inside an active NWS alert: KAUS (Freeze Warning).
 > - From 2021 to 2026, 17.5 % of days had an unusually high maximum temperature, against 10 % in the stations' own
 >   1991-2020 history. 2023 was the hottest year (23.7 % of days).
 > - Days we label EXTREME had a NOAA storm report in the station's county or zone 16.6 % of the time, against
 >   3.5 % for normal days (4.7 times more): the label points at real impacts.
-> - In the last 12 days the NWS issued 238 alerts in Texas; the most common was Dense Fog Advisory (69) and the
->   most severe frequent type was Flood Warning (mean severity 2.9 of 4).
+> - In the last 17 days the NWS issued 354 alerts in Texas; the most common was Dense Fog Advisory (86) and the
+>   most severe frequent type was Freeze Watch (mean severity 3.0 of 4).
+
+The first finding changes with every run: on the sample of 2026-11-20 no alert covered a station; on the morning of
+the final run a Freeze Warning covered Austin (KAUS), and the map and the KAUS card showed it in the alert colour.
 
 **Plain language.** Labels avoid pipeline terms: "Usual range, 8 in 10 days" instead of p10-p90, "Rarest 1 %
 limits" instead of p1-p99, "Max temperature" instead of TMAX, "Days with a storm report nearby" instead of
@@ -191,8 +201,9 @@ charts.
 
 ## 6. Reproducibility evidence
 
-The project was reproduced from a fresh clone following only `README.md` (section "Workshop 4"):
-`docker compose build`, `docker compose up -d`, historical loads, then the three DAGs in sequence.
+The project was reproduced on a laptop that had never run it, from a fresh clone and following only `README.md`
+(section "Workshop 4"): `.env` from `.env.example`, `docker compose build`, `docker compose up -d`, then the three
+DAGs in sequence.
 
 ![Airflow DAG list](../evidence/01_airflow_dags.png)
 *Figure 1. The three DAGs in the Airflow UI at localhost:8080.*
@@ -237,7 +248,17 @@ The project was reproduced from a fresh clone following only `README.md` (sectio
 6. **Stale freshness.** Freshness computed at the Gold run was out of date on the dashboard (adjustment 3).
 7. **Library conflicts.** Dash and Airflow both depend on Flask; a separate dashboard image avoids the conflict
    (adjustment 5).
-8. ⟨TODO: anything that went wrong during the final end-to-end run, and how it was solved⟩
+8. **Setting up a new Windows laptop.** The final run was made on a machine that had never run the project, which
+   exposed four problems the README now covers: Docker Desktop needed the Windows "Virtual Machine Platform"
+   (`wsl --install` as administrator); the installed Python 3.14 is outside the project range, so Python 3.13 was
+   installed next to it and selected with `poetry env use`; Windows Smart App Control blocked `pipx.exe`, so Poetry
+   runs as a module (`py -3.13 -m poetry`); and PowerShell splits `--only main,dashboard` at the comma unless it is
+   quoted. The PySpark unit tests cannot start Spark on plain Windows (no Hadoop binaries); the Gold code runs
+   inside the Airflow containers, where the final run executed it.
+9. **First look in a real browser.** The first screenshots showed rotated day labels over the axis title, minor
+   labels on the logarithmic axis, threshold labels over the bars, a donut legend that collided with the slice
+   labels and a source note cut off by long category labels. All five were fixed in the shared theme (two small
+   commits) before the final screenshots.
 
 ## 8. Limitations and next steps
 
