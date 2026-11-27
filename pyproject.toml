@@ -30,6 +30,12 @@ dev = [
     "nbconvert (>=7.17.2,<8.0.0)",
     "pytest (>=9,<10)"
 ]
+# Workshop 4: the two Plotly Dash dashboards (not installed in the Airflow image, see dashboard/Dockerfile)
+dashboard = [
+    "dash (>=3.0,<4.0)",
+    "plotly (>=6.0,<7.0)",
+    "dash-bootstrap-components (>=2.0,<3.0)"
+]
 
 [tool.poetry]
 package-mode = false

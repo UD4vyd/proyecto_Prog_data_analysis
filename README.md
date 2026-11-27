@@ -31,13 +31,19 @@ observations plus the alerts active now.
 ## Repository structure
 
 ```
-config/         stations.csv (46 selected stations), sources.yaml (source catalogue)
-data/raw/       landing zone, raw responses saved byte for byte with .headers.json
-data/staging/   derived files
-docs/           ingestion contract, source status log, Workshop 1 report
-notebooks/      01_source_profiling.ipynb (station selection and profiling)
-workshop_1/     samples, poll script, mapping.md, data_quality_issues.csv
-ingest.py       command-line stub (--mode historical|incremental|status)
+airflow/dags/     bronze_ingestion, silver_processing, gold_processing
+src/              pipeline code: sources, Bronze storage, Silver normalizers, Gold PySpark summaries
+dashboard/        the two Plotly Dash apps (Workshop 4), see dashboard/README.md
+config/           stations.csv, sources.yaml, pipeline.yaml, governance_thresholds.yaml
+datalake_bronze/  raw JSON per run (samples committed)
+datalake_silver/  clean Parquet per topic (samples committed)
+datalake_gold/    governance_*.parquet and storytelling_*.parquet (sample committed)
+data/raw/         Workshop 1 landing zone, raw responses saved byte for byte with .headers.json
+docs/             ingestion contract, source status log, Workshop 1 report
+notebooks/        profiling (01), Silver exploration (02), data quality findings (03), Gold preview (04)
+tests/            pytest: pipeline, Gold (needs Java) and dashboards
+workshop_1..4/    reports, evidence and samples of each workshop
+ingest.py         command line: --mode historical|incremental|status
 ```
 
 ## Setup
@@ -170,4 +176,78 @@ Notebooks: [data quality findings](notebooks/03_data_quality_findings.ipynb) and
 Deliverables: [report](workshop_3/Workshop3_Report.pdf), Gold DAG `airflow/dags/gold_processing_dag.py`,
 PySpark modules in `src/gold/`, Silver and Bronze improvements in `src/normalization/`, `src/storage/silver.py`
 and `src/sources/http.py`, sample Gold files in `datalake_gold/`, screenshots in `workshop_3/evidence/`.
+
+## Workshop 4: dashboards and end-to-end run
+
+Status: the three DAGs feed two independent Plotly Dash apps that read only the Gold files.
+
+| Service | URL | Reads |
+|---|---|---|
+| Airflow UI | http://localhost:8080 | DAGs `bronze_ingestion`, `silver_processing`, `gold_processing` |
+| Governance dashboard | http://localhost:8050 | newest `datalake_gold/governance_*.parquet` |
+| Storytelling dashboard | http://localhost:8051 | newest `datalake_gold/storytelling_*.parquet` |
+
+### From a fresh clone
+
+Requirements: Docker Desktop (8 GB of memory for the VM), Git. Python 3.11-3.13 and Poetry only for the
+local runs, tests and notebooks.
+
+```bash
+git clone https://github.com/UD4vyd/proyecto_Prog_data_analysis.git
+cd proyecto_Prog_data_analysis
+git checkout v1.0-workshop4
+cp .env.example .env              # fill FERNET_KEY and NWS_USER_AGENT (on Linux also AIRFLOW_UID=$(id -u))
+docker compose build              # Airflow image (with Java for Spark) and the dashboard image
+docker compose up -d              # Airflow on :8080, governance dashboard on :8050, storytelling on :8051
+```
+
+The repository includes sample Bronze, Silver and Gold files, so both dashboards show data right away.
+
+### Run the pipeline end to end
+
+1. Open http://localhost:8080 (user and password from `.env`) and turn on the three DAGs.
+2. One time only, load the history the indicator needs (1991-2020 baseline and five years of storm reports):
+
+   ```bash
+   docker compose exec airflow-scheduler python /opt/airflow/project/ingest.py --mode historical --source ghcn_daily --start-year 1991 --end-year 2026 --skip-silver
+   docker compose exec airflow-scheduler python /opt/airflow/project/ingest.py --mode historical --source storm_events --start-year 2021 --end-year 2025 --skip-silver
+   ```
+
+3. Trigger the DAGs in order, waiting for each run to finish (Trigger button in the UI, or):
+
+   ```bash
+   docker compose exec airflow-scheduler airflow dags trigger bronze_ingestion
+   # silver_processing starts by itself: its FileSensor sees the new Bronze files
+   docker compose exec airflow-scheduler airflow dags trigger gold_processing
+   ```
+
+4. Press **Refresh data** in both dashboards (they also reload every 5 minutes). The header shows the time
+   of the Gold run that produced the data.
+
+On a schedule, Bronze runs every hour, Silver right after each Bronze file and Gold every day at 06:15 UTC
+(00:15 in Texas).
+
+### Start each dashboard on its own
+
+```bash
+docker compose up -d dashboard-governance          # only the governance dashboard
+docker compose up -d dashboard-storytelling        # only the storytelling dashboard
+```
+
+Without Docker (Poetry group `dashboard`):
+
+```bash
+poetry install --with dashboard
+poetry run python dashboard/governance_app.py       # http://localhost:8050
+poetry run python dashboard/storytelling_app.py     # http://localhost:8051
+```
+
+Dashboard libraries are pinned in the Poetry group `dashboard` and in `dashboard/requirements.txt` (used by the
+dashboard image). They are not installed in the Airflow image, which pins its own Flask. `requirements.txt` is
+exported with `poetry export --only main,dashboard --without-hashes -o requirements.txt`.
+
+Tests: `poetry run pytest` (the dashboard figure test runs when the `dashboard` group is installed).
+
+Deliverables: [report](workshop_4/Workshop4_Report.pdf), apps in `dashboard/`, thresholds in
+`config/governance_thresholds.yaml`, Gold fix in `src/gold/storytelling.py`, screenshots in `workshop_4/evidence/`.
 

@@ -147,5 +147,30 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  # Workshop 4: the two Plotly Dash dashboards. They only read the Gold Parquet files (read-only mount) and do
+  # not depend on Airflow, so each one can also be started on its own:
+  #   docker compose up -d dashboard-governance      -> http://localhost:8050
+  #   docker compose up -d dashboard-storytelling    -> http://localhost:8051
+  dashboard-governance:
+    &dashboard-common
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    image: extreme-weather-dashboard:1.0
+    command: python dashboard/governance_app.py
+    volumes:
+      - ./dashboard:/app/dashboard:ro
+      - ./config:/app/config:ro
+      - ./datalake_gold:/app/datalake_gold:ro
+    ports:
+      - "8050:8050"
+    restart: unless-stopped
+
+  dashboard-storytelling:
+    <<: *dashboard-common
+    command: python dashboard/storytelling_app.py
+    ports:
+      - "8051:8051"
+
 volumes:
   postgres-db-volume:
