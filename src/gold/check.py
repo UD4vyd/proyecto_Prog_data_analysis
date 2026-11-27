@@ -12,7 +12,7 @@ SECTIONS = {
                    "outlier_rate", "text_length", "text_length_daily", "ingestion_compliance", "freshness",
                    "station_completeness", "alert_status"},
     "storytelling": {"station_day_class", "class_distribution", "current_situation", "alert_severity_daily",
-                     "alert_event_breakdown", "top_keywords", "keyword_severity", "source_comparison",
+                     "alert_event_breakdown", "top_keywords", "keyword_severity", "source_comparison", "source_severity",
                      "storm_impact_by_type", "storm_monthly_volume", "extreme_vs_storms"},
 }
 

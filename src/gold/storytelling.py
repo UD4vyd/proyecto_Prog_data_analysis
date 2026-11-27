@@ -17,6 +17,7 @@ Sections and the user story (Workshop 1, section 11) each one serves:
     top_keywords             US1  most frequent words and bigrams of alert texts and storm narratives
     keyword_severity         US1  mean severity of the alerts that contain each top keyword
     source_comparison        US5  records and covered period per source (API vs web scraping)
+    source_severity          US5  records per source on a common LOW / MEDIUM / HIGH scale (API vs scraping)
     storm_impact_by_type     US7  events, casualties and damage per Storm Events type
     storm_monthly_volume     US7  storm reports per month and type
     extreme_vs_storms        US7  share of station-days with a storm report in the same county, per class
@@ -235,6 +236,41 @@ def source_rows(spark, frames):
     return parts
 
 
+def source_severity(classified, alerts, storms):
+    """Records of each source on one common LOW / MEDIUM / HIGH scale, so API and scraping sources compare.
+
+    Workshop 4: the course asks for the "sentiment" of the API source next to the scraping source. Each source
+    is brought to the same three levels (the role of positive / neutral / negative):
+        F2 GHCN-Daily (API)          NORMAL / UNUSUAL / EXTREME station-day class (days without baseline left out)
+        F3 NWS alerts (API)          CAP severity Minor / Moderate / Severe or Extreme (Unknown left out)
+        F1 Storm Events (scraping)   no reported impact / property or crop damage above 0 / deaths or injuries
+    Unknown damage (null) counts as no reported damage. F4 observations have no such scale and are not included.
+    """
+    daily = classified.filter(F.col("class") != "NO_BASELINE").withColumn(
+        "level", F.when(F.col("class").startswith("EXTREME"), "HIGH")
+        .when(F.col("class").startswith("UNUSUAL"), "MEDIUM").otherwise("LOW"))
+    issued = _issued(alerts).withColumn(
+        "level", F.when(F.col("severity").isin("Severe", "Extreme"), "HIGH")
+        .when(F.col("severity") == "Moderate", "MEDIUM")
+        .when(F.col("severity") == "Minor", "LOW")).filter(F.col("level").isNotNull())
+    damage = F.coalesce("damage_property_usd", F.lit(0.0)) + F.coalesce("damage_crops_usd", F.lit(0.0))
+    victims = F.coalesce("deaths_direct", F.lit(0)) + F.coalesce("injuries_direct", F.lit(0))
+    reports = storms.withColumn(
+        "level", F.when(victims > 0, "HIGH").when(damage > 0, "MEDIUM").otherwise("LOW"))
+    parts = []
+    for topic, name, method, frame in [("daily_summaries", "F2 GHCN-Daily", "API", daily),
+                                       ("weather_alerts", "F3 NWS alerts", "API", issued),
+                                       ("storm_events", "F1 Storm Events", "web scraping", reports)]:
+        counts = frame.groupBy("level").count()
+        counts = counts.withColumn("pct", F.round(100 * F.col("count") / F.sum("count").over(Window.partitionBy()),
+                                                  2))
+        parts += [rows(counts, "source_severity", topic, dim_1=F.lit(name), dim_2=F.lit(method),
+                       metric=F.lit("records"), value="count", label="level"),
+                  rows(counts, "source_severity", topic, dim_1=F.lit(name), dim_2=F.lit(method),
+                       metric=F.lit("records_pct"), value="pct", label="level")]
+    return parts
+
+
 def storm_rows(storms):
     """Impact per event type and reports per month (Storm Events, local standard time month)."""
     damage = F.coalesce("damage_property_usd", F.lit(0.0)) + F.coalesce("damage_crops_usd", F.lit(0.0))
@@ -300,6 +336,7 @@ def build(spark, now):
     parts += alert_rows(frames["weather_alerts"])
     parts += keyword_rows(frames["weather_alerts"], frames["storm_events"])
     parts += source_rows(spark, frames)
+    parts += source_severity(classified, frames["weather_alerts"], frames["storm_events"])
     parts += storm_rows(frames["storm_events"])
     parts += extreme_vs_storms(spark, classified, frames["storm_events"])
     return union_all(parts)

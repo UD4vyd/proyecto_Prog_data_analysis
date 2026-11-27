@@ -102,6 +102,22 @@ def test_narrative_uses_the_numbers_of_the_file():
     assert any("5.0 times more" in f for f in text["findings"])
 
 
+def test_source_severity_puts_api_sources_first():
+    frame = gold([
+        ("source_severity", "storm_events", None, "F1 Storm Events", "web scraping", "records", 9.0, "LOW"),
+        ("source_severity", "storm_events", None, "F1 Storm Events", "web scraping", "records_pct", 90.0, "LOW"),
+        ("source_severity", "storm_events", None, "F1 Storm Events", "web scraping", "records", 1.0, "HIGH"),
+        ("source_severity", "storm_events", None, "F1 Storm Events", "web scraping", "records_pct", 10.0, "HIGH"),
+        ("source_severity", "weather_alerts", None, "F3 NWS alerts", "API", "records", 3.0, "MEDIUM"),
+        ("source_severity", "weather_alerts", None, "F3 NWS alerts", "API", "records_pct", 100.0, "MEDIUM"),
+    ])
+    table = sp.source_severity(frame).set_index("source")
+    assert table.index.tolist() == ["F3 NWS alerts", "F1 Storm Events"]
+    assert table.at["F1 Storm Events", "records"] == 10
+    assert table.at["F1 Storm Events", "MEDIUM"] == 0  # a level without rows is 0 %, not missing
+    assert sp.source_severity(gold([])).empty  # Gold files written before Workshop 4
+
+
 # ---------------------------------------------------------------- figures on the committed sample Gold files
 
 @pytest.fixture(scope="module")
@@ -138,3 +154,14 @@ def test_every_figure_builds_from_gold(apps):
         assert fig.layout.title.text
     assert gov_app.kpi_table(governance, gp.load_thresholds()) is not None
     assert story_app.narrative_card(story) is not None
+
+
+def test_source_severity_figure(apps):
+    story_app = apps[1]
+    frame = gold([("source_severity", "storm_events", None, "F1 Storm Events", "web scraping", metric, value, level)
+                  for level, n in [("LOW", 8.0), ("MEDIUM", 1.0), ("HIGH", 1.0)]
+                  for metric, value in [("records", n), ("records_pct", 10 * n)]])
+    fig = story_app.source_severity_figure(frame, "storytelling_test.parquet")
+    fig.to_dict()
+    assert [trace.name.split(":")[0] for trace in fig.data] == ["Low", "Medium", "High"]
+    assert not story_app.source_severity_figure(gold([]), "old.parquet").layout.title.text  # placeholder

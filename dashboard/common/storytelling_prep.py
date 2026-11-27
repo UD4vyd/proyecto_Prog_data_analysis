@@ -157,6 +157,31 @@ def sources(story):
     return table.sort_values("first").reset_index(drop=True)
 
 
+LEVEL_ORDER = ["LOW", "MEDIUM", "HIGH"]
+
+
+def source_severity(story):
+    """One row per source: records and share of each common level (LOW / MEDIUM / HIGH), API sources first.
+
+    Gold files written before Workshop 4 have no source_severity section: the result is then empty.
+    """
+    rows = section(story, "source_severity")
+    columns = ["source", "method", "records", *LEVEL_ORDER, *[f"{level}_records" for level in LEVEL_ORDER]]
+    if rows.empty:
+        return pd.DataFrame(columns=columns)
+    pct = rows[rows["metric"] == "records_pct"].pivot_table(index=["dim_1", "dim_2"], columns="label",
+                                                            values="value")
+    counts = rows[rows["metric"] == "records"].pivot_table(index=["dim_1", "dim_2"], columns="label",
+                                                           values="value")
+    pct = pct.reindex(columns=LEVEL_ORDER).fillna(0)
+    counts = counts.reindex(columns=LEVEL_ORDER).fillna(0)
+    table = pct.join(counts.add_suffix("_records"))
+    table["records"] = counts.sum(axis=1)
+    table = table.rename_axis(["source", "method"]).reset_index()
+    table["scraping"] = table["method"] != "API"  # API sources first, then the scraping source
+    return table.sort_values(["scraping", "source"]).reset_index(drop=True)[columns]
+
+
 def storm_monthly(story):
     """Storm Events reports per month, with the most reported event type of each month."""
     rows = section(story, "storm_monthly_volume")

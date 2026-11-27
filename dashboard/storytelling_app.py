@@ -389,6 +389,37 @@ def sources_figure(story, file_name):
                            "is happening now.")
 
 
+LEVEL_TEXT = {"LOW": "Low: normal day, minor alert, no reported damage",
+              "MEDIUM": "Medium: unusual day, moderate alert, damage reported",
+              "HIGH": "High: extreme day, severe alert, deaths or injuries"}
+LEVEL_CLASS = {"LOW": "NORMAL", "MEDIUM": "UNUSUAL", "HIGH": "EXTREME"}  # same colours as the station-day classes
+
+
+def source_severity_figure(story, file_name):
+    table = prep.source_severity(story)
+    if table.empty:
+        return empty_figure("This Gold file has no source_severity section (written before Workshop 4).",
+                            height=300)
+    labels = [f"{r.source} · {r.method}<br>{r.records:,.0f} records" for r in table.itertuples()]
+    fig = go.Figure()
+    for level in prep.LEVEL_ORDER:
+        fig.add_trace(go.Bar(
+            x=table[level], y=labels, orientation="h", name=LEVEL_TEXT[level],
+            marker=dict(color=CLASS_COLORS[LEVEL_CLASS[level]], line=dict(color="#ffffff", width=1)),
+            text=table[level].map(lambda v: f"{v:.0f} %" if v >= 4 else ""), textposition="inside",
+            insidetextanchor="middle", textfont=dict(color=TEXT if level == "MEDIUM" else "#ffffff"),
+            customdata=table[[f"{level}_records"]],
+            hovertemplate="%{y}<br>" + level.title() + ": %{x:.1f} % (%{customdata[0]:,.0f} records)<extra></extra>"))
+    # Legend in the same order as the bar segments, left to right (Plotly reverses stacked bars by default).
+    fig.update_layout(barmode="stack", legend=dict(traceorder="normal"))
+    fig.update_xaxes(title_text="Share of the records of each source (%)", range=[0, 100.5], ticksuffix=" %")
+    fig.update_yaxes(title_text=None, categoryorder="array", categoryarray=labels[::-1])
+    return finish(fig, "How serious is what each source reports? API sources next to the scraped source",
+                  source(file_name, "section source_severity (F4 observations have no severity scale)"),
+                  height=420, subtitle="Each source brought to the same three levels. Bar label: share of its "
+                                       "records; the record count is next to the source name.")
+
+
 # ---------------------------------------------------------------- layout
 
 def layout():
@@ -444,7 +475,11 @@ def layout():
             dbc.Col(ui.chart_card("storms-chart"), lg=6, className="mb-3"),
             dbc.Col(ui.chart_card("storm-volume-chart"), lg=6, className="mb-3"),
         ]),
-        ui.section_title("6. Where the data come from"),
+        ui.section_title("6. Where the data come from", "How big, how long and how serious is each source?"),
+        dbc.Row(dbc.Col(ui.chart_card("source-severity-chart", note="Alerts are only issued when there is something "
+                                                                     "to warn about, so they lean to Medium and High; "
+                                                                     "most station days and storm reports are Low."),
+                        className="mb-3")),
         dbc.Row(dbc.Col(ui.chart_card("sources-chart", note="The label is a monitoring aid: it says how rare a "
                                                              "measured value is, it does not forecast."),
                         className="mb-4")),
@@ -527,12 +562,13 @@ def update_keywords(data, choice):
 
 
 @app.callback(Output("storms-chart", "figure"), Output("storm-volume-chart", "figure"),
-              Output("sources-chart", "figure"), Input("gold-file", "data"))
+              Output("sources-chart", "figure"), Output("source-severity-chart", "figure"), Input("gold-file", "data"))
 def update_storms(data):
     story, name = _story(data)
     if story is None:
-        return empty_figure("No Gold data"), empty_figure("No Gold data"), empty_figure("No Gold data")
-    return storms_match_figure(story, name), storm_volume_figure(story, name), sources_figure(story, name)
+        return [empty_figure("No Gold data")] * 4
+    return (storms_match_figure(story, name), storm_volume_figure(story, name), sources_figure(story, name),
+            source_severity_figure(story, name))
 
 
 if __name__ == "__main__":

@@ -78,3 +78,27 @@ def test_keyword_severity_covers_the_top_alert_words(spark):
                                                          "AND metric = 'mean_severity_score'").collect()}
     assert words and words == set(severity)
     assert severity["river"] == 2.5  # one Severe (3) and one Moderate (2) alert
+
+
+def test_source_severity_puts_every_source_on_one_scale(spark):
+    """Workshop 4: API and scraping sources share LOW / MEDIUM / HIGH (the role of sentiment)."""
+    classified = spark.createDataFrame(
+        [("NORMAL",), ("NORMAL",), ("UNUSUAL_LOW",), ("EXTREME_HIGH",), ("NO_BASELINE",)], "class string")
+    alerts = spark.createDataFrame([
+        ("Actual", "Alert", "Minor"), ("Actual", "Alert", "Moderate"), ("Actual", "Alert", "Extreme"),
+        ("Actual", "Alert", "Unknown"), ("Test", "Alert", "Severe"),
+    ], "status string, message_type string, severity string")
+    storms = spark.createDataFrame([
+        (None, None, 0, 0),        # unknown damage, no victims: LOW
+        (5000.0, 0.0, 0, 0),       # damage only: MEDIUM
+        (0.0, 0.0, 0, 2),          # injuries: HIGH
+    ], "damage_property_usd double, damage_crops_usd double, deaths_direct int, injuries_direct int")
+    result = storytelling.union_all(storytelling.source_severity(classified, alerts, storms))
+    counts = {(r.topic, r.label): r.value for r in result.filter("metric = 'records'").collect()}
+    assert counts == {
+        ("daily_summaries", "LOW"): 2, ("daily_summaries", "MEDIUM"): 1, ("daily_summaries", "HIGH"): 1,
+        ("weather_alerts", "LOW"): 1, ("weather_alerts", "MEDIUM"): 1, ("weather_alerts", "HIGH"): 1,
+        ("storm_events", "LOW"): 1, ("storm_events", "MEDIUM"): 1, ("storm_events", "HIGH"): 1,
+    }
+    pct = {(r.topic, r.label): r.value for r in result.filter("metric = 'records_pct'").collect()}
+    assert pct[("daily_summaries", "LOW")] == 50.0
