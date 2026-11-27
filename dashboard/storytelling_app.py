@@ -30,7 +30,7 @@ from dashboard.common import storytelling_prep as prep
 from dashboard.common.data import GoldFileMissing, computed_at, load
 from dashboard.common.palette import (CLASS_COLORS, CLASS_ORDER, CLASS_TEXT, METHOD_COLORS, NEUTRAL,
                                       SEVERITY_COLORS, SEVERITY_ORDER, TEXT, TEXT_MUTED)
-from dashboard.common.theme import empty_figure, finish
+from dashboard.common.theme import day_axis, empty_figure, finish
 
 KIND = "storytelling"
 ELEMENT_SHORT = {"TMAX": "Max temperature", "TMIN": "Min temperature", "PRCP": "Rain"}
@@ -96,7 +96,7 @@ def map_figure(story, file_name):
                     lataxis_range=[25.5, 36.8], lonaxis_range=[-107, -93], showland=True, landcolor="#f2f2f2",
                     showsubunits=True, subunitcolor="#9c9c9c", showcountries=True, countrycolor="#9c9c9c",
                     showocean=True, oceancolor="#e8f1fb", showlakes=False, bgcolor="rgba(0,0,0,0)")
-    fig.update_layout(margin=dict(l=0, r=0, t=70, b=40), legend=dict(y=1.0))
+    fig.update_layout(margin=dict(l=0, r=0, t=70, b=85), legend=dict(y=1.0))
     when = now["observed_at"].max()
     return finish(fig, "Right now: latest observation of each station",
                   source(file_name, "section current_situation (F4 observations + F3 active alerts)"), height=380,
@@ -147,7 +147,8 @@ def donut_figure(story, file_name, station="all", element="all"):
         hovertemplate="%{label}: %{value:,.0f} station-days (%{percent:.1%})<extra></extra>"))
     fig.add_annotation(text=f"<b>{total:,.0f}</b><br>station-days", x=0.5, y=0.5, xref="paper", yref="paper",
                        showarrow=False, font=dict(size=14))
-    fig.update_layout(showlegend=True, margin=dict(l=30, r=30, t=100, b=55))
+    # Every slice carries its name and share, so a separate legend is not needed (it collided with the labels).
+    fig.update_layout(showlegend=False, margin=dict(l=40, r=40, t=110, b=90))
     what = "all stations" if station == "all" else station
     measure = "all measures" if element == "all" else ELEMENT_SHORT[element].lower()
     return finish(fig, "How often is a day unusual?", source(file_name, "section class_distribution"),
@@ -250,7 +251,7 @@ def alert_volume_figure(story, file_name):
     fig.add_annotation(x=peak["day"], y=peak["alerts"], text=f"Peak: {peak['alerts']:.0f} alerts",
                        showarrow=True, arrowhead=0, ax=0, ay=-28, font=dict(color=TEXT))
     fig.update_layout(barmode="stack")
-    fig.update_xaxes(title_text="Day (Texas time)", tickformat="%b %d", dtick=86400000)
+    day_axis(fig, daily["day"], "Day (Texas time)")
     fig.update_yaxes(title_text="Alerts issued")
     return finish(fig, "Alerts issued per day in Texas, by severity", source(file_name, "section alert_severity_daily "
                   "(F3 NWS alerts, real alerts only)"), subtitle="Taller bars are days of more official warnings.")
@@ -265,7 +266,7 @@ def severity_trend_figure(story, file_name):
         line=dict(color=SEVERITY_COLORS["Severe"], width=2), marker=dict(size=8),
         customdata=daily[["alerts"]],
         hovertemplate="%{x|%a %b %d}: average %{y:.2f} over %{customdata[0]:.0f} alerts<extra></extra>"))
-    fig.update_xaxes(title_text="Day (Texas time)", tickformat="%b %d", dtick=86400000)
+    day_axis(fig, daily["day"], "Day (Texas time)")
     fig.update_yaxes(title_text="Average severity", range=[0.8, 4.2], tickvals=[1, 2, 3, 4],
                      ticktext=["1 Minor", "2 Moderate", "3 Severe", "4 Extreme"])
     return finish(fig, "How serious were the alerts? Average severity per day",

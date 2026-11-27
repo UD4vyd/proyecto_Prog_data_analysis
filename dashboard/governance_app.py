@@ -25,7 +25,7 @@ from dashboard.common import governance_prep as prep
 from dashboard.common.data import GoldFileMissing, computed_at, load
 from dashboard.common.palette import (NEUTRAL, STATION_COLORS, STATUS, TEXT_MUTED, TOPIC_COLORS, TOPIC_ORDER,
                                       TOPIC_TEXT)
-from dashboard.common.theme import empty_figure, finish
+from dashboard.common.theme import day_axis, empty_figure, finish
 
 KIND = "governance"
 FIELD_UNUSABLE_PCT = 50  # a field above this null rate cannot feed a chart (reference line)
@@ -49,13 +49,12 @@ def null_rate_figure(gold, file_name, topic="all", include_zero=False):
         text=rows["null_pct"].map(lambda v: f"{v:.1f} %"), textposition="outside", cliponaxis=False,
         customdata=rows["topic"].map(TOPIC_TEXT),
         hovertemplate="<b>%{y}</b><br>%{customdata}<br>Null or empty: %{x:.2f} %<extra></extra>"))
-    fig.add_vline(x=FIELD_UNUSABLE_PCT, line_dash="dash", line_color=TEXT_MUTED,
-                  annotation_text="50 %: too empty to chart", annotation_position="top right",
-                  annotation_font_color=TEXT_MUTED)
+    fig.add_vline(x=FIELD_UNUSABLE_PCT, line_dash="dash", line_color=TEXT_MUTED)
     fig.update_xaxes(title_text="Null or empty values (% of records)", range=[0, 112], ticksuffix=" %")
     fig.update_yaxes(title_text=None)
     height = max(320, 120 + 24 * len(rows))
-    subtitle = "Colour = source topic. Fields at 0 % are hidden unless selected." if topic == "all" else None
+    subtitle = "Dashed line: 50 %, too empty to chart." + (" Colour = source topic; fields at 0 % are hidden unless "
+                                                           "selected." if topic == "all" else "")
     return finish(fig, "Null rate per field, most severe first", source(file_name, "section null_rate"),
                   height=height, subtitle=subtitle)
 
@@ -75,9 +74,7 @@ def outlier_figure(gold, file_name):
             else station, marker=dict(color=STATION_COLORS.get(station, NEUTRAL), cornerradius=4),
             hovertemplate=f"<b>%{{y}}</b><br>{station}: %{{x:.3f}} % of records flagged<extra></extra>"))
     limit = prep.load_thresholds()["outlier_flagged_pct"]["limit"]
-    fig.add_vline(x=limit, line_dash="dash", line_color=STATUS["warning"][0],
-                  annotation_text=f"{limit:g} % threshold", annotation_position="top left",
-                  annotation_font_color=TEXT_MUTED)
+    fig.add_vline(x=limit, line_dash="dash", line_color=STATUS["warning"][0])
     fig.update_layout(barmode="group", bargroupgap=0.08)
     top = max(limit, rows["flagged_pct"].max()) * 1.15
     fig.update_xaxes(title_text="Records flagged by the check (%)", range=[0, top], ticksuffix=" %")
@@ -85,7 +82,7 @@ def outlier_figure(gold, file_name):
     return finish(fig, "Outlier rate per numeric check and station",
                   source(file_name, "section outlier_rate (Silver IQR, Z-score, range and NCEI QC flags)"),
                   height=max(360, 140 + 34 * len(order)),
-                  subtitle="Extreme values are kept and flagged, never removed: here they are the signal.")
+                  subtitle=f"Dashed line: {limit:g} % threshold. Extreme values are kept and flagged, never removed.")
 
 
 def volume_figure(gold, file_name, scale="log"):
@@ -100,9 +97,10 @@ def volume_figure(gold, file_name, scale="log"):
                              hovertemplate="%{x|%Y-%m-%d}<br>" + TOPIC_TEXT[topic]
                              + ": %{y:,.0f} records<extra></extra>"))
     fig.update_layout(barmode="group")
-    fig.update_xaxes(title_text="UTC day of ingestion into Silver", tickformat="%b %d", dtick=86400000)
+    day_axis(fig, rows["day"], "UTC day of ingestion into Silver")
+    # Log scale: one label per power of ten (10, 100, 1k, 10k), no minor labels.
     fig.update_yaxes(title_text="Records written (log scale)" if scale == "log" else "Records written",
-                     type=scale)
+                     type=scale, dtick=1 if scale == "log" else None)
     return finish(fig, "Ingested record volume per day and source", source(file_name, "section volume_daily"),
                   subtitle="Peaks are the historical loads; hourly runs add a few hundred records a day.")
 
@@ -124,7 +122,7 @@ def ingestion_figure(gold, file_name):
     fig.add_hline(y=limit, line_dash="dash", line_color=STATUS["critical"][0],
                   annotation_text=f"target {limit:g} %", annotation_position="bottom right",
                   annotation_font_color=TEXT_MUTED)
-    fig.update_xaxes(title_text="UTC day", tickformat="%b %d", dtick=86400000)
+    day_axis(fig, rows["day"], "UTC day")
     fig.update_yaxes(title_text="Hourly runs that reached Silver (%)", range=[-3, 105], ticksuffix=" %")
     return finish(fig, "Ingestion compliance of the hourly sources", source(file_name, "section ingestion_compliance"),
                   subtitle="24 Bronze runs expected per day; the stack only runs while the laptop is on.")
