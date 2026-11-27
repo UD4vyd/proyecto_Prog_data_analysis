@@ -20,16 +20,19 @@ summaries. This workshop adds the layer people actually use:
   steps, from "is anyone under an alert right now?" to "does our EXTREME label match real storm reports?".
 - **Gold only.** Both apps read the newest `governance_*.parquet` or `storytelling_*.parquet` with
   `pd.read_parquet()` and nothing else. They reload the newest file every 5 minutes and with a button.
-- **Integration.** One Gold correction (the keyword-severity association did not cover 9 of the 25 alert words
-  shown in the keyword chart), the KPI thresholds as configuration, a separate Docker image for the dashboards
-  and a Poetry group for their libraries (section 2).
+- **Integration.** Two Gold corrections (the keyword-severity association did not cover 9 of the 25 alert words
+  shown in the keyword chart, and a new `source_severity` section puts the API and scraping sources on one
+  severity scale so they can be compared), the KPI thresholds as configuration, a separate Docker image for the
+  dashboards, a Poetry group for their libraries, and the Silver files of the final run committed with its Gold
+  files so the Gold layer can be rebuilt from the repository (section 2).
 - **Key insight for the analyst.** Since 2021, 17.5 % of the days at our three stations had an unusually high
   maximum temperature, against 10 % in their own 1991-2020 history (1.7 times as frequent; 23.7 % in 2023), and
   days we label EXTREME had a NOAA storm report in the station's county or zone 4.7 times as often as normal days
   (16.6 % against 3.5 %).
 
-The numbers in this report come from the Gold files of the final end-to-end run, **2026-11-26 06:31 UTC**
-(`governance_20261126_063159.parquet` and `storytelling_20261126_063159.parquet`, committed in `datalake_gold/`).
+The numbers in this report come from the Gold files of the final end-to-end run, **2026-11-27 18:04 UTC**
+(`governance_20261127_180438.parquet` and `storytelling_20261127_180438.parquet`, committed in `datalake_gold/`
+together with the Silver files they were built from).
 The dashboards were tested with Dash 3.4.0, Plotly 6.9.0 and Python 3.13.
 
 **How the dashboard statement maps to our project.** As in Workshop 3, the statement is written for opinion
@@ -40,7 +43,7 @@ data. Our texts are official bulletins, so sentiment is replaced by two ordinal 
 | Sentiment distribution (pie / donut) | share of station-days NORMAL / UNUSUAL / EXTREME against 1991-2020 |
 | Sentiment trend line | (a) monthly share of days above the usual range, with the 10 % expected; (b) mean CAP severity of the NWS alerts per day (1 Minor to 4 Extreme) |
 | Top keywords coloured by sentiment | top words of NWS alert texts coloured by the mean severity of the alerts that use them |
-| Source comparison (API vs scraping) | period covered and records of F2, F3, F4 (APIs) and F1 Storm Events (web scraping of the NOAA file listing) |
+| Source comparison (API vs scraping) | (a) share of Low / Medium / High records of F2 and F3 (APIs) next to F1 Storm Events (web scraping of the NOAA file listing), with the record count of each source; (b) period covered and records of F1 to F4 |
 | Volume activity | alerts per day by severity, and Storm Events reports per month |
 | Narrative summary card | key findings computed from the Gold file, in plain language |
 
@@ -58,17 +61,26 @@ cleaning, `Retry-After`, historical loads) are not repeated here.
 | 5 | Installing Dash in the Airflow image would mix two Flask versions (Airflow pins its own). | Separate light image `dashboard/Dockerfile` (Python 3.12, Dash, Plotly, pandas, pyarrow) with two services, `dashboard-governance` and `dashboard-storytelling`, in `docker-compose.yml`. `datalake_gold/` and `config/` are mounted read-only. | `docker-compose.yml`, `dashboard/`, `.dockerignore` |
 | 6 | The dashboard libraries were not declared. | Poetry group `dashboard` (Dash 3, Plotly 6, Dash Bootstrap Components 2) and `dashboard/requirements.txt` for the image; `requirements.txt` exported with the group. | `pyproject.toml`, `poetry.lock`, `requirements.txt` |
 | 7 | `dashboard/README.md` (Workshop 1) planned to read a PostgreSQL model. | Rewritten: the course decided that Gold Parquet files are the only source of the presentation layer. | `dashboard/README.md` |
+| 8 | The statement asks for the *sentiment* and volume of the API source next to the scraping source, but Gold only had the volume and period of each source: F1 Storm Events (the scraped source) has no class and no CAP severity. | New Gold section `source_severity`: every source on one common scale, the role of positive / neutral / negative. F2: NORMAL / UNUSUAL / EXTREME day. F3: Minor / Moderate / Severe or Extreme alert (`Unknown`, cancellations and test messages left out). F1: no reported damage or victims / property or crop damage above 0 / deaths or injuries. New 100 % stacked bar chart in step 6 of the storytelling dashboard, `check_gold` requires the section, new tests in both test files. | `src/gold/storytelling.py`, `src/gold/check.py`, `dashboard/`, `tests/` |
+| 9 | The Gold files committed after the first end-to-end run (2026-11-26) were built from Silver files that were never committed, so the Gold layer could not be rebuilt from the repository. | The final run (2026-11-27) commits its four new Silver files with the final Gold pair; intermediate Gold files of that day are not committed. | `datalake_silver/`, `datalake_gold/` |
 
-**End-to-end verification.** The final run was made on a Windows 11 laptop that had never run the project, from a
-fresh clone of the repository and a new Airflow metadata database (no earlier runs), following only the README.
-The Silver files committed in Workshop 3 already hold the 1991-2026 GHCN-Daily history and five years of Storm
-Events, so no historical load was needed. On 2026-11-26 we ran `bronze_ingestion` (last run 06:28 UTC, all tasks
-successful; sources without new data are skipped), `silver_processing` processed the new Bronze files after its
-FileSensor saw them, and `gold_processing` ran at 06:29 UTC. Its `check_gold` task confirmed the 9 Gold columns,
-the 12 governance sections and the 11 storytelling sections, and wrote the two files stamped `20261126_063159`.
-After **Refresh data** both dashboard containers showed the new Gold run (06:31 UTC) in their headers and the NWS
-observations of 05:50 UTC the same morning (Figures 6 to 8). With the corrected Gold code, all 25 alert words of the
-keyword chart now have a severity colour (Figure 7).
+**End-to-end verification.** The pipeline was run end to end twice, on two laptops of the team.
+
+1. *Fresh clone, 2026-11-26.* A Windows 11 laptop that had never run the project, a fresh clone of the repository
+   and a new Airflow metadata database, following only the README. The Silver files committed in Workshop 3
+   already hold the 1991-2026 GHCN-Daily history and five years of Storm Events, so no historical load was
+   needed. `bronze_ingestion`, `silver_processing` (started by its FileSensor) and `gold_processing` all
+   succeeded, and both dashboards showed the new Gold run after **Refresh data**. This run validated the README.
+2. *Final run, 2026-11-27.* After adjustments 8 and 9, on a second laptop with `docker compose build` and
+   `docker compose up -d`. `bronze_ingestion` ran at 17:41 UTC (all tasks successful; sources without new data
+   are skipped), `silver_processing` wrote four new Silver files after its FileSensor saw the Bronze files, and
+   `gold_processing` ran at 17:46 UTC and again at 18:04 UTC after the next hourly Bronze run. Each time
+   `check_gold` confirmed the 9 Gold columns, the 12 governance sections and the 12 storytelling sections
+   (including the new `source_severity`). After **Refresh data** both dashboards showed the 18:04 run in their
+   headers (Figures 6 to 8). The stack was then stopped, so the committed Gold pair `20261127_180438` is the one
+   described in this report.
+
+With the corrected Gold code, all 25 alert words of the keyword chart have a severity colour (Figure 7).
 
 ## 3. Governance dashboard
 
@@ -108,13 +120,14 @@ historical load (36,925 rows in one day) and a day of hourly runs (15 alerts) di
 magnitude. The table is
 sorted worst first so the first rows are the actions to take.
 
-**What it shows on the current data.** Gold holds 70,324 records. All four topics have 0 % duplicates after Gold
-de-duplication (14.2 % of the 81,977 Silver rows were copies), 100 % schema compliance over 30 Silver files and at
+**What it shows on the current data.** Gold holds 70,340 records. All four topics have 0 % duplicates after Gold
+de-duplication (14.2 % of the 81,993 Silver rows were copies), 100 % schema compliance over 31 Silver files and at
 most 1.94 % of records flagged by one check (precipitation outliers, which are real storms). Every source was
-fresh at the time of the screenshot (0.4 h since the newest ingestion). The two critical rows are timeliness:
-only 3 of the 151 expected hourly runs reached Silver over the last 7 days (2.0 %), because the stack was off
-between 2026-11-20 and 2026-11-26 while the project moved to another laptop (finding 6 of Workshop 3: the stack only
-runs while a machine is on).
+fresh at the time of the screenshot (0.1 h since the newest ingestion). The two critical rows are timeliness:
+over the last 7 days only 1 of 162 expected hourly runs of NWS observations (0.6 %) and 2 of 163 of NWS alerts
+(1.2 %) reached Silver, because the stack of the final laptop was off between 2026-11-20 and 2026-11-27 (finding 6
+of Workshop 3: the stack only runs while a machine is on). The dashboard does what it should here: it makes the
+gap impossible to miss.
 
 ## 4. Storytelling dashboard
 
@@ -132,7 +145,7 @@ days match real storm impacts?*
 | 3. One station, day by day | Band chart: observed value against the p10-p90 and p1-p99 range of the same date in 1991-2020; triangles for unusual and extreme days | `station_day_class` | US3 |
 | 4. What does the NWS warn about? | Alerts per day stacked by severity (volume activity); mean severity per day (trend line); top words of alert texts coloured by severity, with phrases and storm-report words as alternatives | `alert_severity_daily`, `top_keywords`, `keyword_severity` | US1 |
 | 5. Does our label match real impacts? | Grouped bars: % of station-days with a storm report in the same county or zone, per class and station; storm reports per month with the three peaks labelled | `extreme_vs_storms`, `storm_monthly_volume` | US7 |
-| 6. Where the data come from | Timeline of the period and size of each source, coloured by API or web scraping | `source_comparison` | US5 |
+| 6. Where the data come from | Source comparison: 100 % stacked bars of Low / Medium / High records per source, API sources above the scraped source, with the record count of each; timeline of the period and size of each source, coloured by API or web scraping | `source_severity`, `source_comparison` | US5 |
 
 Filters: station and measure for step 2 (applied to both charts), station and measure for step 3, keyword set
 for step 4. Every chart has hover details; time charts zoom by dragging; the band chart has 3 months / 1 year /
@@ -143,16 +156,30 @@ On the current data it reads:
 
 > *Since 2021, unusually hot days are 1.7 times as frequent as in 1991-2020.*
 >
-> - Right now 1 of 3 stations are inside an active NWS alert: KAUS (Freeze Warning).
+> - Right now no official NWS alert covers any of the 3 stations (latest observations Nov 27, 17:25 UTC).
 > - From 2021 to 2026, 17.5 % of days had an unusually high maximum temperature, against 10 % in the stations' own
 >   1991-2020 history. 2023 was the hottest year (23.7 % of days).
 > - Days we label EXTREME had a NOAA storm report in the station's county or zone 16.6 % of the time, against
 >   3.5 % for normal days (4.7 times more): the label points at real impacts.
-> - In the last 17 days the NWS issued 354 alerts in Texas; the most common was Dense Fog Advisory (86) and the
->   most severe frequent type was Freeze Watch (mean severity 3.0 of 4).
+> - In the last 19 days the NWS issued 368 alerts in Texas; the most common was Dense Fog Advisory (86) and the
+>   most severe frequent type was High Wind Watch (mean severity 3.0 of 4).
 
-The first finding changes with every run: on the sample of 2026-11-20 no alert covered a station; on the morning of
-the final run a Freeze Warning covered Austin (KAUS), and the map and the KAUS card showed it in the alert colour.
+The first finding changes with every run: on the morning of the 2026-11-26 run a Freeze Warning covered Austin
+(KAUS), and the map and the KAUS card showed it in the alert colour; at the final run no alert covered a station.
+
+**Source comparison.** On the final Gold file the three sources read very differently on the common scale:
+
+| Source | Method | Records | Low | Medium | High |
+|---|---|---|---|---|---|
+| F2 GHCN-Daily (station-days since 2021) | API | 19,303 | 82.0 % | 15.6 % | 2.4 % |
+| F3 NWS alerts (issued) | API | 368 | 26.4 % | 47.3 % | 26.4 % |
+| F1 Storm Events (2021-2025) | web scraping | 29,051 | 88.1 % | 11.0 % | 0.9 % |
+
+Alerts are only issued when there is something to warn about, so most of them are Medium or High, while most
+station-days and most storm reports are Low: 88 % of the scraped storm reports list no damage and no victims. The
+chart therefore says *what kind of signal* each source carries, not that one source is "more negative" than
+another. The timeline below it counts 403 alert records, more than the 368 here, because it counts every stored
+alert message: the difference is 34 cancellations and 1 test message, which are not new alerts.
 
 **Plain language.** Labels avoid pipeline terms: "Usual range, 8 in 10 days" instead of p10-p90, "Rarest 1 %
 limits" instead of p1-p99, "Max temperature" instead of TMAX, "Days with a storm report nearby" instead of
@@ -172,7 +199,9 @@ history arrives a few days late, so the station cards show both dates: "now" fro
 
 **Chart types.** Line charts for every time series (share of hot days, mean severity, ingestion compliance);
 bars for comparisons of categories (null rates, outliers, keywords, storm match), horizontal when labels are
-long; stacked bars only where the parts add up to a meaningful total (alerts per day by severity). The donut is
+long; stacked bars only where the parts add up to a meaningful total (alerts per day by severity, and 100 %
+stacked bars for the source comparison, where each source has a different number of records and only the shares
+are comparable; the counts sit next to the source names). The donut is
 the only part-of-whole chart and has exactly three categories, as the statement recommends; with five classes
 (high and low separated) we would have used bars. One heatmap, for a station x year matrix. No dual-axis
 charts: alert volume and mean severity are two charts side by side.
@@ -201,9 +230,9 @@ charts.
 
 ## 6. Reproducibility evidence
 
-The project was reproduced on a laptop that had never run it, from a fresh clone and following only `README.md`
-(section "Workshop 4"): `.env` from `.env.example`, `docker compose build`, `docker compose up -d`, then the three
-DAGs in sequence.
+The project was first reproduced on a laptop that had never run it, from a fresh clone and following only
+`README.md` (section "Workshop 4"): `.env` from `.env.example`, `docker compose build`, `docker compose up -d`, then
+the three DAGs in sequence. The figures below are from the final run of 2026-11-27 (section 2), made the same way.
 
 ![Airflow DAG list](../evidence/01_airflow_dags.png)
 *Figure 1. The three DAGs in the Airflow UI at localhost:8080.*
@@ -215,10 +244,10 @@ DAGs in sequence.
 *Figure 3. Runs of `silver_processing`, each started by the FileSensor after a Bronze file.*
 
 ![Gold runs](../evidence/04_gold_runs.png)
-*Figure 4. Runs of `gold_processing`, including the final end-to-end run.*
+*Figure 4. Runs of `gold_processing`, including the two runs of the final end-to-end test (17:46 and 18:04 UTC).*
 
 ![Docker services](../evidence/05_docker_ps.png)
-*Figure 5. `docker compose ps`: Airflow services and the two dashboard services.*
+*Figure 5. Output of `docker compose ps` during the final run: Airflow services and the two dashboard services.*
 
 ![Governance dashboard](../evidence/06_governance_full.png)
 *Figure 6. Governance dashboard at localhost:8050, full page, with the Gold file of the final run.*
@@ -227,7 +256,8 @@ DAGs in sequence.
 *Figure 7. Storytelling dashboard at localhost:8051, full page, with the Gold file of the final run.*
 
 ![Dashboard after a new Gold run](../evidence/08_refresh_after_gold_run.png)
-*Figure 8. Header of a dashboard before and after **Refresh data** following a new `gold_processing` run.*
+*Figure 8. Header of the governance dashboard before (Gold run of 17:46 UTC) and after **Refresh data** following
+a new `gold_processing` run (18:04 UTC).*
 
 ## 7. Challenges and resolutions
 
@@ -248,22 +278,35 @@ DAGs in sequence.
 6. **Stale freshness.** Freshness computed at the Gold run was out of date on the dashboard (adjustment 3).
 7. **Library conflicts.** Dash and Airflow both depend on Flask; a separate dashboard image avoids the conflict
    (adjustment 5).
-8. **Setting up a new Windows laptop.** The final run was made on a machine that had never run the project, which
+8. **Setting up a new Windows laptop.** The 2026-11-26 run was made on a machine that had never run the project, which
    exposed four problems the README now covers: Docker Desktop needed the Windows "Virtual Machine Platform"
    (`wsl --install` as administrator); the installed Python 3.14 is outside the project range, so Python 3.13 was
    installed next to it and selected with `poetry env use`; Windows Smart App Control blocked `pipx.exe`, so Poetry
    runs as a module (`py -3.13 -m poetry`); and PowerShell splits `--only main,dashboard` at the comma unless it is
-   quoted. The PySpark unit tests cannot start Spark on plain Windows (no Hadoop binaries); the Gold code runs
-   inside the Airflow containers, where the final run executed it.
+   quoted. On that laptop the PySpark unit tests could not start Spark (no Hadoop binaries); on the second laptop
+   they ran, and in any case the Gold code runs inside the Airflow containers, where both runs executed it.
 9. **First look in a real browser.** The first screenshots showed rotated day labels over the axis title, minor
    labels on the logarithmic axis, threshold labels over the bars, a donut legend that collided with the slice
    labels and a source note cut off by long category labels. All five were fixed in the shared theme (two small
    commits) before the final screenshots.
+10. **A sentiment for the scraped source.** The statement compares the sentiment of the API source with the
+    scraping source, but Storm Events reports carry neither of our two scores. We defined a common three-level
+    scale from their impact columns (adjustment 8) instead of leaving the scraped source out. Checking the first
+    chart against the data corrected our own expectation: we assumed storm reports would lean to High, but 88 %
+    of them list no damage and no victims, so the note under the chart was rewritten from the numbers.
+11. **A scheduled Gold run that started too early.** When the stack of the final run started, Airflow launched
+    the pending scheduled `gold_processing` run at the same moment as the first `bronze_ingestion` run, so that
+    Gold file (17:42 UTC) was built before Silver had processed the new Bronze files. We triggered
+    `gold_processing` again once Silver had finished and did not commit the early file. The README order
+    (Bronze, wait for Silver, then Gold) avoids it.
 
 ## 8. Limitations and next steps
 
 - Ingestion is only as continuous as the machine that runs Docker; the governance dashboard makes the gaps
   visible but cannot fill them. A machine that is always on, or a cloud scheduler, is the real fix.
+- The common severity scale treats an unknown Storm Events damage (null, 15 % of the reports) as no reported
+  damage, so the Medium share of F1 is a lower bound. The three sources also measure different things (a day, a
+  warning, a reported event), so the chart compares the kind of signal of each source, not a single sentiment.
 - Three stations are configured; with `stations: all` the station colours fall back to grey after the first
   three and the per-station charts would need small multiples.
 - The NWS alert history covers only the days the pipeline has been running, so the alert charts describe a short
