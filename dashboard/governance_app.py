@@ -80,9 +80,10 @@ def outlier_figure(gold, file_name):
     fig.update_xaxes(title_text="Records flagged by the check (%)", range=[0, top], ticksuffix=" %")
     fig.update_yaxes(title_text=None, categoryorder="array", categoryarray=order)
     return finish(fig, "Outlier rate per numeric check and station",
-                  source(file_name, "section outlier_rate (Silver IQR, Z-score, range and NCEI QC flags)"),
+                  source(file_name, "section outlier_rate"),
                   height=max(360, 140 + 34 * len(order)),
-                  subtitle=f"Dashed line: {limit:g} % threshold. Extreme values are kept and flagged, never removed.")
+                  subtitle=f"Checks: IQR, Z-score, range and NCEI QC flags. Dashed line: {limit:g} % threshold. "
+                           "Extreme values are kept and flagged, never removed.")
 
 
 def volume_figure(gold, file_name, scale="log"):
@@ -247,7 +248,7 @@ def refresh(_clicks, _ticks, current):
     """Find the newest Gold file. The automatic refresh only redraws the charts when the file changed."""
     try:
         gold, name = load(KIND)
-    except GoldFileMissing as error:
+    except (GoldFileMissing, ValueError) as error:
         return None, "No Gold data yet", ui.error_panel(str(error))
     run = computed_at(gold)
     stamp = [html.Div(f"Data last updated (Gold run): {run:%Y-%m-%d %H:%M} UTC", className="fw-semibold"),
@@ -266,8 +267,9 @@ def _gold(data):
 
 
 @app.callback(Output("kpi-cards", "children"), Output("kpi-table", "children"), Output("table-source", "children"),
-              Input("gold-file", "data"))
-def update_kpis(data):
+              Input("gold-file", "data"), Input("interval", "n_intervals"))
+def update_kpis(data, _ticks):
+    """Also runs on every automatic refresh, so freshness counts hours up to now even if Gold did not change."""
     gold, name = _gold(data)
     if gold is None:
         return [], None, None

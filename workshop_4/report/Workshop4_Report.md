@@ -2,7 +2,7 @@
 
 **Project:** Extreme Weather Monitoring (Texas)<br>
 **Team 5:** Andrés Mendoza, David Martínez, Juan Escallón<br>
-**Course:** Data Analysis Programming 2026-II, Universidad Distrital. Prof. Carlos Andrés Sierra.<br>
+**Course:** Data Analysis Programming 2026-I, Universidad Distrital. Prof. Carlos Andrés Sierra.<br>
 **Repository:** https://github.com/UD4vyd/proyecto_Prog_data_analysis (branch `w4`, tag `v1.0-workshop4`)
 
 ## 1. Executive summary
@@ -122,12 +122,14 @@ sorted worst first so the first rows are the actions to take.
 
 **What it shows on the current data.** Gold holds 70,340 records. All four topics have 0 % duplicates after Gold
 de-duplication (14.2 % of the 81,993 Silver rows were copies), 100 % schema compliance over 31 Silver files and at
-most 1.94 % of records flagged by one check (precipitation outliers, which are real storms). Every source was
-fresh at the time of the screenshot (0.1 h since the newest ingestion). The two critical rows are timeliness:
-over the last 7 days only 1 of 162 expected hourly runs of NWS observations (0.6 %) and 2 of 163 of NWS alerts
-(1.2 %) reached Silver, because the stack of the final laptop was off between 2026-11-20 and 2026-11-27 (finding 6
-of Workshop 3: the stack only runs while a machine is on). The dashboard does what it should here: it makes the
-gap impossible to miss.
+most 1.94 % of records flagged by one check (precipitation outliers, which are real storms). The three critical
+rows are timeliness. The screenshot was taken at 19:55 UTC, after the stack had been stopped, so the NWS
+observations were 2.2 h old and broke their 2 h freshness limit (the newest source, NWS alerts, was 1.9 h old):
+the card shows freshness up to the moment of the refresh, not of the Gold run (adjustment 3). Over the last 7 days
+only 1 of 162 expected hourly runs of NWS observations (0.6 %) and 2 of 163 of NWS alerts (1.2 %) reached Silver,
+because the stack of the final laptop was off between 2026-11-20 and 2026-11-27 (finding 6 of Workshop 3: the
+stack only runs while a machine is on). The dashboard does what it should here: it makes the gap impossible to
+miss.
 
 ## 4. Storytelling dashboard
 
@@ -257,7 +259,8 @@ the three DAGs in sequence. The figures below are from the final run of 2026-11-
 
 ![Dashboard after a new Gold run](../evidence/08_refresh_after_gold_run.png)
 *Figure 8. Header of the governance dashboard before (Gold run of 17:46 UTC) and after **Refresh data** following
-a new `gold_processing` run (18:04 UTC).*
+a new `gold_processing` run (18:04 UTC). Re-captured from the same two Gold files after the header text was
+corrected.*
 
 ## 7. Challenges and resolutions
 
@@ -275,7 +278,10 @@ a new `gold_processing` run (18:04 UTC).*
 5. **Refresh without flicker.** An automatic reload that redraws every chart every few minutes would make the
    page jump while the analyst reads it. The reload now compares the file name with the one in a `dcc.Store` and only redraws when a new Gold
    file exists; the button always redraws.
-6. **Stale freshness.** Freshness computed at the Gold run was out of date on the dashboard (adjustment 3).
+6. **Stale freshness.** Freshness computed at the Gold run was out of date on the dashboard (adjustment 3). A second
+   case appeared in the audit: because the automatic reload skips files it already shows, the KPI cards were
+   not recomputed either, so freshness froze until a new Gold file arrived. The cards and the summary table now
+   recompute on every automatic reload (they are cheap); only the charts wait for a new file.
 7. **Library conflicts.** Dash and Airflow both depend on Flask; a separate dashboard image avoids the conflict
    (adjustment 5).
 8. **Setting up a new Windows laptop.** The 2026-11-26 run was made on a machine that had never run the project, which

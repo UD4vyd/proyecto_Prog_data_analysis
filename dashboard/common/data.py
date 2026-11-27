@@ -36,6 +36,8 @@ def _read(path, mtime):
     missing = set(COLUMNS) - set(frame.columns)
     if missing:
         raise ValueError(f"{path}: Gold columns missing {sorted(missing)}")
+    if frame.empty:
+        raise ValueError(f"{path}: the Gold file has no rows. Check the last gold_processing run.")
     frame["period"] = pd.to_datetime(frame["period"])
     frame["computed_at"] = pd.to_datetime(frame["computed_at"], utc=True)
     return frame

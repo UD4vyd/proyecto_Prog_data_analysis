@@ -69,10 +69,13 @@ def narrative_card(story):
     ]), className="h-100 shadow-sm story-card")
 
 
+MAP_HEIGHT = 580  # tall enough for Texas to fill the card next to the key findings
+
+
 def map_figure(story, file_name):
     now = prep.current(story)
     if now.empty:
-        return empty_figure("No current observations in this Gold file.", height=380)
+        return empty_figure("No current observations in this Gold file.", height=MAP_HEIGHT)
     fig = go.Figure()
     for has_alert, name in [(False, "No active alert"), (True, "Inside an active NWS alert")]:
         part = now[(now["active_alerts"] > 0) == has_alert]
@@ -96,10 +99,10 @@ def map_figure(story, file_name):
                     lataxis_range=[25.5, 36.8], lonaxis_range=[-107, -93], showland=True, landcolor="#f2f2f2",
                     showsubunits=True, subunitcolor="#9c9c9c", showcountries=True, countrycolor="#9c9c9c",
                     showocean=True, oceancolor="#e8f1fb", showlakes=False, bgcolor="rgba(0,0,0,0)")
-    fig.update_layout(margin=dict(l=0, r=0, t=70, b=85), legend=dict(y=1.0))
+    fig.update_layout(margin=dict(l=0, r=0, t=70, b=95), legend=dict(y=1.0))
     when = now["observed_at"].max()
     return finish(fig, "Right now: latest observation of each station",
-                  source(file_name, "section current_situation (F4 observations + F3 active alerts)"), height=380,
+                  source(file_name, "section current_situation (F4 observations + F3 active alerts)"), height=MAP_HEIGHT,
                   subtitle=f"Observations of {when:%b %d, %H:%M} UTC. Hover a station for details.")
 
 
@@ -498,7 +501,7 @@ def refresh(_clicks, _ticks, current):
     """Find the newest Gold file. The automatic refresh only redraws the charts when the file changed."""
     try:
         story, name = load(KIND)
-    except GoldFileMissing as error:
+    except (GoldFileMissing, ValueError) as error:
         return None, "No Gold data yet", ui.error_panel(str(error))
     run = computed_at(story)
     stamp = [html.Div(f"Data last updated: {run:%Y-%m-%d %H:%M} UTC", className="fw-semibold"),

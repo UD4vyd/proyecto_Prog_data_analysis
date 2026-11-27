@@ -1,6 +1,6 @@
 # Extreme Weather Monitoring (Texas)
 
-Team 5, Data Analysis Programming 2026-II, Universidad Distrital.
+Team 5, Data Analysis Programming 2026-I, Universidad Distrital.
 Andrés Mendoza, David Martínez, Juan Escallón.
 
 ## Project

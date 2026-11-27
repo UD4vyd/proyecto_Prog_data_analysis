@@ -29,6 +29,13 @@ def test_latest_file_takes_the_newest_stamp(tmp_path):
         data.latest_file("governance", tmp_path / "empty")
 
 
+
+def test_empty_gold_file_is_reported_not_crashed(tmp_path):
+    pytest.importorskip("pyarrow")
+    gold([]).to_parquet(tmp_path / "governance_20261127_000000.parquet")
+    with pytest.raises(ValueError, match="no rows"):
+        data.load("governance", tmp_path)
+
 def test_null_cell_rate_weights_topics_by_cells():
     frame = gold([
         ("null_rate", "a", None, "x", None, "null_pct", 100.0, None),
@@ -101,6 +108,15 @@ def test_narrative_uses_the_numbers_of_the_file():
     assert any("30.0 %" in f for f in text["findings"])
     assert any("5.0 times more" in f for f in text["findings"])
 
+
+
+def test_narrative_says_one_station_is(monkeypatch):
+    now = pd.DataFrame({"icao": ["KAUS", "KDFW", "KIAH"], "active_alerts": [1.0, 0.0, 0.0],
+                        "alert_events": ["Wind Advisory", "", ""],
+                        "observed_at": pd.Timestamp("2026-11-27 18:00", tz="UTC")})
+    monkeypatch.setattr(sp, "current", lambda story: now)
+    findings = sp.narrative(gold([]))["findings"]
+    assert findings[0] == "Right now 1 of 3 stations is inside an active NWS alert: KAUS (Wind Advisory)."
 
 def test_source_severity_puts_api_sources_first():
     frame = gold([

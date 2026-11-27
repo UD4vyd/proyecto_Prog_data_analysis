@@ -193,14 +193,6 @@ def storm_monthly(story):
     return table.rename_axis("month").reset_index().sort_values("month").reset_index(drop=True)
 
 
-def storm_impact(story, metric="damage_usd", top=12):
-    """Storm Events impact per event type (events, deaths, injuries or damage), largest first."""
-    rows = section(story, "storm_impact_by_type")
-    rows = rows[rows["metric"] == metric][["dim_1", "value"]].rename(columns={"dim_1": "event_type"})
-    rows = rows[rows["value"] > 0]
-    return rows.sort_values(["value", "event_type"], ascending=[False, True]).head(top).reset_index(drop=True)
-
-
 def extreme_vs_storms(story):
     """Station-days and share with a storm report in the station county or zone, per station and class."""
     rows = section(story, "extreme_vs_storms")
@@ -227,7 +219,8 @@ def narrative(story):
                             f"(latest observations {when:%b %d, %H:%M} UTC).")
         else:
             names = ", ".join(f"{r.icao} ({r.alert_events})" for r in with_alert.itertuples())
-            findings.append(f"Right now {len(with_alert)} of {len(now)} stations are inside an active NWS alert: "
+            verb = "is" if len(with_alert) == 1 else "are"
+            findings.append(f"Right now {len(with_alert)} of {len(now)} stations {verb} inside an active NWS alert: "
                             f"{names}.")
     yearly = high_share(story, "TMAX", freq="YS")
     headline = "How unusual is the weather at our Texas stations?"

@@ -23,7 +23,7 @@ def header(dashboard_name, audience, updated_id):
             html.Div(id=updated_id, className="updated text-end"),
         ], className="d-flex justify-content-between align-items-start flex-wrap gap-2"),
         html.P(TOPIC_ANGLE, className="mb-1 mt-2"),
-        html.Small(f"{TEAM} · Data Analysis Programming 2026-II, Universidad Distrital · Audience: {audience}",
+        html.Small(f"{TEAM} · Data Analysis Programming 2026-I, Universidad Distrital · Audience: {audience}",
                    style={"color": TEXT_MUTED}),
     ], className="app-header")), className="mb-3")
 

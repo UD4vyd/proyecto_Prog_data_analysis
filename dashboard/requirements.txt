@@ -1,9 +1,10 @@
 # Libraries of the two Plotly Dash dashboards (Workshop 4), installed by dashboard/Dockerfile.
 # The same libraries are in the Poetry group "dashboard" for local runs (poetry install --with dashboard).
 # They are kept out of the Airflow image: Airflow pins its own Flask version.
-dash>=3.0,<4
-plotly>=6.0,<7
-dash-bootstrap-components>=2.0,<3
-pandas>=2.2
-pyarrow>=17
-pyyaml>=6.0
+# Exact versions of poetry.lock, so the image and a local run use the same libraries.
+dash==3.4.0
+plotly==6.9.0
+dash-bootstrap-components==2.0.4
+pandas==3.1.1
+pyarrow==25.0.1
+pyyaml==6.0.3
