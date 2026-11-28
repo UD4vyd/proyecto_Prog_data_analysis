@@ -260,5 +260,8 @@ Notes for Windows (checked on a fresh Windows 11 laptop):
 Tests: `poetry run pytest` (the dashboard figure test runs when the `dashboard` group is installed).
 
 Deliverables: [report](workshop_4/Workshop4_Report.pdf), apps in `dashboard/`, thresholds in
-`config/governance_thresholds.yaml`, Gold fix in `src/gold/storytelling.py`, screenshots in `workshop_4/evidence/`.
+`config/governance_thresholds.yaml`, Gold fix in `src/gold/storytelling.py`, screenshots in `workshop_4/evidence/`,
+[walkthrough video of both dashboards](workshop_4/evidence/09_dashboards_walkthrough.webm) (no audio, on-screen
+captions; record it again with `python workshop_4/record_walkthrough.py` while both dashboards are running; needs
+`pip install playwright` and `python -m playwright install ffmpeg`).
 

@@ -262,6 +262,12 @@ the three DAGs in sequence. The figures below are from the final run of 2026-11-
 a new `gold_processing` run (18:04 UTC). Re-captured from the same two Gold files after the header text was
 corrected.*
 
+**Walkthrough video.** `workshop_4/evidence/09_dashboards_walkthrough.webm` (2 min 47 s, no audio) is a
+screen recording of both dashboards, made on 2026-11-28 with the Gold files of that day. On-screen captions take
+the place of narration: they name each section while the recording uses the filters, switches and tooltips of
+both apps. It plays in Edge, Chrome or VLC and can be recorded again with
+`python workshop_4/record_walkthrough.py` while the two dashboard services are running.
+
 ## 7. Challenges and resolutions
 
 1. **No sentiment in weather bulletins.** Solved in Workshop 3 by two ordinal scores; here the challenge was to
